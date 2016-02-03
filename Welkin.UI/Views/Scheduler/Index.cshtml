@@ -1,0 +1,109 @@
+﻿@using Welkin.UI.Models
+@{
+    ViewBag.Title = "Scheduler";
+    ViewBag.Current = "Scheduler";
+}
+<div>
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-4">
+                <h4>ACCOUNT SETUP</h4>
+            </div><!-- /.col-lg-6 -->
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div id="team-schedule">
+                        @(Html.Kendo().Scheduler<SchedulerModel>()
+                              .Name("scheduler")
+                              .Date(DateTime.Today)
+                              .StartTime(new DateTime(2016, 6, 13, 7, 00, 00))
+                              .Height(600)
+                              .Views(views =>
+                                     {
+                                         views.DayView();
+                                         views.WorkWeekView(workWeekView => workWeekView.Selected(true));
+                                         views.WeekView();
+                                         views.MonthView();
+                                         views.AgendaView();
+                                         views.TimelineView();
+                                     })
+                              .Timezone("Etc/UTC")
+                              .Resources(resource =>
+                                         {
+                                             resource.Add(m => m.OwnerID)
+                                                 .Title("Owner")
+                                                 .DataTextField("Text")
+                                                 .DataValueField("Value")
+                                                 .DataColorField("Color")
+                                                 .BindTo(new[]
+                                                         {
+                                                             new {Text = "Alex", Value = 1, Color = "#f8a398"},
+                                                             new {Text = "Bob", Value = 2, Color = "#51a0ed"},
+                                                             new {Text = "Charlie", Value = 3, Color = "#56ca85"}
+                                                         });
+                                         })
+                              .DataSource(d => d
+                                  .Model(m =>
+                                         {
+                                             m.Id(f => f.TaskID);
+                                             m.Field(f => f.Title).DefaultValue("No title");
+                                             m.Field(f => f.OwnerID).DefaultValue(1);
+                                             m.Field(f => f.Title).DefaultValue("No title");
+                                             m.RecurrenceId(f => f.RecurrenceID);
+                                         })
+                              )
+                              )
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Cases for tommorow</div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><span class="badge">12</span> Land</li>
+                                    <li class="list-group-item"><span class="badge">5</span> Partition</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Reports</div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">Deed Ledger</li>
+                                    <li class="list-group-item">Monthly Ledger</li>
+                                </ul>
+                                <ul class="list-group">
+                                    <li class="list-group-item">Case Ledger</li>
+                                    <li class="list-group-item">Monthly Ledger</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Quick actions</div>
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">Borrow Deed</li>
+                                    <li class="list-group-item">Payment for Case</li>
+                                    <li class="list-group-item">Payment for Deed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

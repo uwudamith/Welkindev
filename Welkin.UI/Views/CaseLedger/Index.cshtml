@@ -1,0 +1,174 @@
+﻿@{
+    ViewBag.Title = "Case Ledger";
+    ViewBag.Current = "CaseLedger";
+}
+<div>
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-4">
+                <h4>CASE LEDGER <span>2015-16</span></h4>
+            </div><!-- /.col-lg-6 -->
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Case No">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <form class="form-horizontal" role="form">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="type" class="col-lg-3 control-label">Type</label>
+                            <div class="col-lg-7">
+                                <input id="type" value="1" style="width: 100%;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label for="txtParty" class="col-lg-3 control-label">Party</label>
+                            <div class="col-lg-7">
+                                <input id="txtParty" value="1" style="width: 100%;"/>
+                            </div>
+                            <button type="button" class="btn btn-default col-lg-1">
+                                <i class="glyphicon glyphicon-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="txtCaseNo" class="col-lg-3 control-label">Case No</label>
+                            <div class="col-lg-7">
+                                <input class="form-control" id="txtCaseNo" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label for="ddlCourt" class="col-lg-3 control-label">Court</label>
+                            <div class="col-lg-7">
+                                <input id="ddlCourt" value="1" style="width: 100%;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="type" class="col-lg-3 control-label">Start Date</label>
+                            <div class="col-lg-7">
+                                @(Html.Kendo().DatePicker()
+                                      .Name("datepicker")
+                                      .Value(DateTime.Today)
+                                      .HtmlAttributes(new {style = "width: 100%"})
+                                      )
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label for="txtFee" class="col-lg-3 control-label">Fee</label>
+                            <div class="col-lg-7">
+                                <input class="form-control" id="txtFee" type="text">
+                            </div>
+                            <button type="button" class="btn btn-default col-lg-1">
+                                <i class="glyphicon glyphicon-usd"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label for="txtDescription" class="col-lg-3 control-label">Description</label>
+                            <div class="col-lg-7">
+                                <textarea class="form-control" rows="5" id="txtDescription"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-7">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title pull-left">
+                                            Attachments
+                                        </h3>
+
+                                        <button class="btn btn-default pull-right">
+                                            <i class="glyphicon glyphicon-plus-sign"></i>
+                                        </button>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul class="list-group">
+                                            <li class="list-group-item"><span class="badge">12</span> Photos</li>
+                                            <li class="list-group-item"><span class="badge">5</span> Documents</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        //var data = [
+        //    { Name: "Land", Id: "1" },
+        //    { Name: "Type1", Id: "2" },
+        //    { Name: "Type2", Id: "3" }
+        //];
+
+        var partyData = [
+            { text: "Plaintiff", value: "1" },
+            { text: "Party1", value: "2" },
+            { text: "Party2", value: "3" }
+        ];
+
+        //var courtData = [
+        //    { Name: "Galle - DC", Id: "1" },
+        //    { Name: "Kurunegala - DC", Id: "2" },
+        //    { Name: "Colombo -DC", Id: "3" }
+        //];
+
+        // create DropDownList from input HTML element
+        $("#type").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "Id",
+            optionLabel: "Select Case Type",
+            // dataSource: data,
+            index: 0
+        });
+
+        $("#txtParty").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: partyData,
+            index: 0
+        });
+
+        $("#ddlCourt").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "Id",
+            optionLabel: "Select Court",
+            //dataSource: courtData,
+            index: 0
+        });
+    });
+
+</script>

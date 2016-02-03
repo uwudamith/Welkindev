@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "Deed Ledger";
+    ViewBag.Current = "DeedLedger";
+}
+<div>
+<div class="page-header">
+    <div class="row">
+        <div class="col-lg-4">
+            <h4>DEED LEDGER <span>2015-16</span></h4>
+        </div><!-- /.col-lg-6 -->
+        <div class="col-lg-4">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Deed No">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+    </div><!-- /.row -->
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <form class="form-horizontal" role="form">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="type" class="col-lg-3 control-label">Type</label>
+                        <div class="col-lg-7">
+                            <input id="type" value="1" style="width: 100%;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="txtGrantee" class="col-lg-3 control-label">Grantee</label>
+                        <div class="col-lg-7">
+                            <input id="txtGrantee" value="1" style="width: 100%;"/>
+                        </div>
+                        <button type="button" class="btn btn-default col-lg-1">
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="txtDeedNo" class="col-lg-3 control-label">Deed No</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" id="txtDeedNo" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="ddlGrantor" class="col-lg-3 control-label">Grantor</label>
+                        <div class="col-lg-7">
+                            <input id="ddlGrantor" value="1" style="width: 100%;"/>
+                        </div>
+                        <button type="button" class="btn btn-default col-lg-1">
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="txtNameOfLand" class="col-lg-3 control-label">Name of land</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" id="txtNameOfLand" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="ddlDistrict" class="col-lg-3 control-label">District</label>
+                        <div class="col-lg-7">
+                            <input id="ddlDistrict" value="1" style="width: 100%;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-1">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="txtConsideration" class="col-lg-3 control-label">Consideration</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" id="txtConsideration" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="txtFee" class="col-lg-3 control-label">Fee</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" id="txtFee" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-1">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="txtStampDuty" class="col-lg-3 control-label">Stamp Duty</label>
+                        <div class="col-lg-7">
+                            <input class="form-control" id="txtStampDuty" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <label for="type" class="col-lg-3 control-label">Date</label>
+                        <div class="col-lg-7">
+                            @(Html.Kendo().DatePicker()
+                                  .Name("date")
+                                  .Value(DateTime.Today)
+                                  .HtmlAttributes(new {style = "width: 100%"})
+                                  )
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-1">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="txtRemarks" class="col-lg-3 control-label">Remarks</label>
+                        <div class="col-lg-7">
+                            <textarea class="form-control" rows="5" id="txtRemarks"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <div class="col-lg-3"></div>
+                        <div class="col-lg-7">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title pull-left">
+                                        Attachments
+                                    </h3>
+
+                                    <button class="btn btn-default pull-right">
+                                        <i class="glyphicon glyphicon-plus-sign"></i>
+                                    </button>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="panel-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item"><span class="badge">12</span> Photos</li>
+                                        <li class="list-group-item"><span class="badge">5</span> Documents</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="input-2" class="col-lg-3 control-label">Availability</label>
+                        <div class="col-lg-6">
+                            <input id="input-2" type="checkbox" checked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="type" class="col-lg-3 control-label">Registered On</label>
+                        <div class="col-lg-7">
+                            @(Html.Kendo().DatePicker()
+                                  .Name("dtRegisterOn")
+                                  .Value(DateTime.Today)
+                                  .HtmlAttributes(new {style = "width: 100%"})
+                                  )
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+
+                </div>
+                <div class="col-lg-5">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary col-lg-3">
+                            Borrow
+                        </button>
+                        <button type="button" class="btn btn-primary col-lg-3" style="margin-left: 10px;">
+                            Browse
+                        </button>
+                        <button type="button" class="btn btn-success col-lg-3" style="margin-left: 10px;">
+                            Save
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-1">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<script>
+    $(document).ready(function() {
+        var data = [
+            { text: "Gift", value: "1" },
+            { text: "Type1", value: "2" },
+            { text: "Type2", value: "3" }
+        ];
+
+        var granteeData = [
+            { text: "Anjana", value: "1" },
+            { text: "Pethum", value: "2" },
+            { text: "Sumudu", value: "3" }
+        ];
+
+        var ddlGrantorData = [
+            { text: "Damith", value: "1" },
+            { text: "Janith", value: "2" },
+            { text: "Nalin", value: "3" }
+        ];
+
+
+        var ddlDistrictData = [
+            { text: "Kurunegala", value: "1" },
+            { text: "Colombo", value: "2" },
+            { text: "Kandy", value: "3" }
+        ];
+
+        // create DropDownList from input HTML element
+        $("#type").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: data,
+            index: 0
+        });
+
+        $("#txtGrantee").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: granteeData,
+            index: 0
+        });
+
+        $("#ddlGrantor").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: ddlGrantorData,
+            index: 0
+        });
+
+        $("#ddlDistrict").kendoDropDownList({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: ddlDistrictData,
+            index: 0
+        });
+
+        $(":checkbox").checkboxpicker();
+
+    });
+</script>

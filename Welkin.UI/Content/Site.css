@@ -1,0 +1,127 @@
+﻿body {
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+/* Set padding to keep content from hitting the edges */
+
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+
+.dl-horizontal dt { white-space: normal; }
+
+/* Set width on the form input elements since they're 100% wide by default */
+
+/*input,
+select,
+textarea {
+    max-width: 280px;
+}*/
+
+.welkin-logo-section { margin-bottom: 10px; }
+
+
+/* make sidebar nav vertical */
+
+@media (min-width: 768px) {
+    .sidebar-nav .navbar .navbar-collapse {
+        max-height: none;
+        padding: 0;
+    }
+
+    .sidebar-nav .navbar ul { float: none; }
+
+    .sidebar-nav .navbar ul:not { display: block; }
+
+    .sidebar-nav .navbar li {
+        display: block;
+        float: none;
+    }
+
+    .sidebar-nav .navbar li a {
+        padding-bottom: 12px;
+        padding-top: 12px;
+    }
+
+    .panel-heading h3 {
+        line-height: normal;
+        overflow: hidden;
+        padding-top: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 75%;
+    }
+}
+
+.tree {
+    -moz-border-radius: 4px;
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -webkit-border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    background-color: #fbfbfb;
+    border: 1px solid #999;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    min-height: 20px;
+    padding: 19px;
+}
+
+.tree li {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative
+}
+
+.tree li::before, .tree li::after {
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto
+}
+
+.tree li::before {
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px
+}
+
+.tree li::after {
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 25px;
+    width: 25px
+}
+
+.tree li span {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 3px 8px;
+    text-decoration: none
+}
+
+.tree li.parent_li > span { cursor: pointer }
+
+.tree > ul > li::before, .tree > ul > li::after { border: 0 }
+
+.tree li:last-child::before { height: 30px }
+
+.tree li.parent_li > span:hover, .tree li.parent_li > span:hover + ul li span {
+    background: #eee;
+    border: 1px solid #94a0b4;
+    color: #000
+}
