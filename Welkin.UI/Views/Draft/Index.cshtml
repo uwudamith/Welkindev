@@ -73,9 +73,9 @@
                 </div>
                 <div class="col-lg-7">
                     <div class="form-group">
-                        <label for="txtGrantee" class="col-lg-3 control-label">Grantee</label>
+                        <label for="ddlGrantee" class="col-lg-3 control-label">Grantee</label>
                         <div class="col-lg-7">
-                            <input id="txtGrantee" value="1" style="width: 100%;"/>
+                            <input id="ddlGrantee" value="1" style="width: 100%;"/>
                         </div>
                         <button type="button" class="btn btn-default col-lg-1">
                             <i class="glyphicon glyphicon-edit"></i>
@@ -101,5 +101,13 @@
             }
             e.stopPropagation();
         });
+
+        $("#ddlGrantee").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            optionLabel: "Select a Grantee",
+            index: 0
+        });
+
     });
 </script>

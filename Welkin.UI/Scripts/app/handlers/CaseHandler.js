@@ -12,11 +12,11 @@
            
         }, options);
         if ($this.settings.sAgent) {
-            debugger;
+         
             $this.settings.sAgent.registerEvents([
                 {
-                    name: "PopulateDropdown",
-                    fn: $this.populateDropdown
+                    name: "PopulateCaseDropdown",
+                    fn: $this.populateCaseDropdown
                 }
             ]);
             $this.settings.sAgent.start();
@@ -24,7 +24,7 @@
         
     };
 
-    populateDropdown = function (a) {
+    populateCaseDropdown = function (a) {
         
         var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
         var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;

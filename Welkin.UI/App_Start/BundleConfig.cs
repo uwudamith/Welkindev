@@ -8,11 +8,12 @@ namespace Welkin.UI
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+           // bundles.Clear();
             ScriptBundle(bundles);
 
             ThemeBundle(bundles);
 
-            bundles.IgnoreList.Clear();
+            //bundles.IgnoreList.Clear();
         }
 
         private static void ScriptBundle(BundleCollection bundles)
@@ -31,7 +32,9 @@ namespace Welkin.UI
                  "~/Scripts/app/boot.js",
                 "~/Scripts/app/utils/utils.signalR.js",
                 "~/Scripts/app/handlers/CaseHandler.js",
-                "~/Scripts/app/handlers/DeedHandler.js"
+                "~/Scripts/app/handlers/DeedHandler.js",
+               "~/Scripts/app/handlers/DraftHandler.js"
+
                 ));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're

@@ -298,6 +298,7 @@
     <Content Include="Scripts\app\boot.js" />
     <Content Include="Scripts\app\handlers\CaseHandler.js" />
     <Content Include="Scripts\app\handlers\DeedHandler.js" />
+    <Content Include="Scripts\app\handlers\DraftHandler.js" />
     <Content Include="Scripts\bootstrap-checkbox.js" />
     <Content Include="Scripts\bootstrap-checkbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -387,7 +388,6 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Scripts\app\utils\utils.signalR.js" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\jquery-2.2.0.js" />
     <Content Include="Scripts\jquery-2.2.0.min.js" />

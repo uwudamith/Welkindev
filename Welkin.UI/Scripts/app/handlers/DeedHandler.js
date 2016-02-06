@@ -2,14 +2,15 @@
 
 $this = this;
     initialize = function(options) {
+        
        $this.settings = $scope.$.extend(true, {
            
         }, options);
         if ($this.settings.sAgent) {
             $this.settings.sAgent.registerEvents([
                 {
-                    name: "PopulateDropdown",
-                    fn: $this.PopulateDropdown
+                    name: "PopulateDeedDropdown",
+                    fn: $this.PopulateDeedDropdown
                 }
             ]);
             $this.settings.sAgent.start();
@@ -17,8 +18,8 @@ $this = this;
     };
 
     
-     PopulateDropdown = function (a) {
-         
+     PopulateDeedDropdown = function (a) {
+       
         var deedTypes = JSON.parse(JSON.parse(a).JsonResult)[0].DeedTypes;
         var grantees = JSON.parse(JSON.parse(a).JsonResult)[0].Grantees;
          var grantors = JSON.parse(JSON.parse(a).JsonResult)[0].Grantors;
