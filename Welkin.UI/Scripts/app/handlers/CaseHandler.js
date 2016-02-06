@@ -26,14 +26,19 @@
 
         var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
         var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
+         var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
 
-        var ddl = $("#type").data("kendoDropDownList");
+        var ddl = $("#ddlType").data("kendoDropDownList");
         ddl.setDataSource(caseTypes);
         ddl.refresh();
 
         var ddlCourt = $("#ddlCourt").data("kendoDropDownList");
         ddlCourt.setDataSource(courts);
         ddlCourt.refresh();
+
+         var ddlParty = $("#ddlParty").data("kendoDropDownList");
+        ddlParty.setDataSource(parties);
+        ddlParty.refresh();
     };
 
 

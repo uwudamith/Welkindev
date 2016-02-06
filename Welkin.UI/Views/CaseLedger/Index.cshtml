@@ -25,17 +25,17 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <label for="type" class="col-lg-3 control-label">Type</label>
+                            <label for="ddlType" class="col-lg-3 control-label">Type</label>
                             <div class="col-lg-7">
-                                <input id="type" value="1" style="width: 100%;"/>
+                                <input id="ddlType" value="1" style="width: 100%;"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <label for="txtParty" class="col-lg-3 control-label">Party</label>
+                            <label for="ddlParty" class="col-lg-3 control-label">Party</label>
                             <div class="col-lg-7">
-                                <input id="txtParty" value="1" style="width: 100%;"/>
+                                <input id="ddlParty" value="1" style="width: 100%;"/>
                             </div>
                             <button type="button" class="btn btn-default col-lg-1">
                                 <i class="glyphicon glyphicon-edit"></i>
@@ -147,7 +147,7 @@
         //];
 
         // create DropDownList from input HTML element
-        $("#type").kendoDropDownList({
+        $("#ddlType").kendoDropDownList({
             dataTextField: "Name",
             dataValueField: "Id",
             optionLabel: "Select Case Type",
@@ -155,10 +155,10 @@
             index: 0
         });
 
-        $("#txtParty").kendoDropDownList({
-            dataTextField: "text",
-            dataValueField: "value",
-            dataSource: partyData,
+        $("#ddlParty").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "Id",
+            optionLabel: "Select Party",
             index: 0
         });
 
