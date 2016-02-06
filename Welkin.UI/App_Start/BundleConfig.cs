@@ -30,7 +30,8 @@ namespace Welkin.UI
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
                  "~/Scripts/app/boot.js",
                 "~/Scripts/app/utils/utils.signalR.js",
-                "~/Scripts/app/handlers/CaseHandler.js"
+                "~/Scripts/app/handlers/CaseHandler.js",
+                "~/Scripts/app/handlers/DeedHandler.js"
                 ));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're

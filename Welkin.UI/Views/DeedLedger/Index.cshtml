@@ -25,17 +25,17 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="form-group">
-                        <label for="type" class="col-lg-3 control-label">Type</label>
+                        <label for="ddlType" class="col-lg-3 control-label">Type</label>
                         <div class="col-lg-7">
-                            <input id="type" value="1" style="width: 100%;"/>
+                            <input id="ddlType" value="1" style="width: 100%;"/>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="form-group">
-                        <label for="txtGrantee" class="col-lg-3 control-label">Grantee</label>
+                        <label for="ddlGrantee" class="col-lg-3 control-label">Grantee</label>
                         <div class="col-lg-7">
-                            <input id="txtGrantee" value="1" style="width: 100%;"/>
+                            <input id="ddlGrantee" value="1" style="width: 100%;"/>
                         </div>
                         <button type="button" class="btn btn-default col-lg-1">
                             <i class="glyphicon glyphicon-edit"></i>
@@ -244,31 +244,31 @@
         ];
 
         // create DropDownList from input HTML element
-        $("#type").kendoDropDownList({
-            dataTextField: "text",
-            dataValueField: "value",
-            dataSource: data,
+        $("#ddlType").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            optionLabel:"Select a Deed Type",
             index: 0
         });
 
-        $("#txtGrantee").kendoDropDownList({
-            dataTextField: "text",
-            dataValueField: "value",
-            dataSource: granteeData,
+        $("#ddlGrantee").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            optionLabel:"Select a Grantee",
             index: 0
         });
 
         $("#ddlGrantor").kendoDropDownList({
-            dataTextField: "text",
-            dataValueField: "value",
-            dataSource: ddlGrantorData,
+            dataTextField: "Name",
+            dataValueField: "ID",
+            optionLabel:"Select a Grantor",
             index: 0
         });
 
         $("#ddlDistrict").kendoDropDownList({
-            dataTextField: "text",
-            dataValueField: "value",
-            dataSource: ddlDistrictData,
+            dataTextField: "Name",
+            dataValueField: "ID",
+            optionLabel:"Select a District",
             index: 0
         });
 

@@ -61,6 +61,7 @@
         ///</param> 
         var $hub = this.getHub(hName);
         if ($hub)
+           // debugger;
             for (var i = 0, x = arrfn.length; i < x; i++)
                 $hub.client[arrfn[i].name] = arrfn[i].fn;
     };

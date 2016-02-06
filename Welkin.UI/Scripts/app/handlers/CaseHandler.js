@@ -5,12 +5,14 @@
     /// <param name="$scope">Application Scope </param>
     /// <param name="$">jQuery</param> 
     $this = this;
-
+  
     init = function(options) {
+      
         $this.settings = $scope.$.extend(true, {
            
         }, options);
         if ($this.settings.sAgent) {
+            debugger;
             $this.settings.sAgent.registerEvents([
                 {
                     name: "PopulateDropdown",
@@ -23,7 +25,7 @@
     };
 
     populateDropdown = function (a) {
-
+        
         var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
         var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
          var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;

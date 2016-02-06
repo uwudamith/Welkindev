@@ -297,6 +297,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\app\boot.js" />
     <Content Include="Scripts\app\handlers\CaseHandler.js" />
+    <Content Include="Scripts\app\handlers\DeedHandler.js" />
     <Content Include="Scripts\bootstrap-checkbox.js" />
     <Content Include="Scripts\bootstrap-checkbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
