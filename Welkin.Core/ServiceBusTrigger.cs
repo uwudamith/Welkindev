@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Avanzar.Welkin.Common;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Practices.Unity;
@@ -11,18 +12,23 @@ namespace Welkin.Core
 {
     public class ServiceBusTrigger
     {
+        private IEntityFactory _entityFactory;
+        public ServiceBusTrigger(IEntityFactory entityFactory)
+        {
+            _entityFactory = entityFactory;
+        }
         /// <summary>
         ///     Processes the bus queue message.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="logger">The logger.</param>
-        public static void ProcessBusQueueMessage([ServiceBusTrigger("inputqueue")] string message,
+        public  void ProcessBusQueueMessage([ServiceBusTrigger("inputqueue")] string message,
             TextWriter logger)
         {
             var requestList = Request.DeserializeList(message);
             foreach (var req in requestList)
             {
-                var instance = new ServiceBusTrigger();
+                var instance = this;//new ServiceBusTrigger();
 
                 if (req.Targert != null)
                     instance.GetType().GetMethod(req.Targert).Invoke(instance, new object[] {req});
@@ -84,7 +90,7 @@ namespace Welkin.Core
         {
             
             request.Source = EntityRequestHandler.Deserialize<Master>(request.Json);
-            var instance =   Program.Container.Resolve<IEntityFactory>().CreateEntity<Master>(request.Type.ToString());
+            var instance =   _entityFactory.CreateEntity<Master>(request.Type.ToString());
             if (!(request.Source is Master)) return;
             var r = new Response<Master> {Request = request};
             try
@@ -94,7 +100,7 @@ namespace Welkin.Core
             }
             catch (Exception e)
             {
-                r.Result = Program.Container.Resolve<IEntityFactory>().CreateEntity<Master>("Master");
+                r.Result = _entityFactory.CreateEntity<Master>("Master");
                 r.StatusType = Enums.StatusType.Error;
                 r.Message = e.Message;
             }
@@ -104,7 +110,7 @@ namespace Welkin.Core
         public async void GetData(Request request)
         {
            // request.Source = EntityRequestHandler.Deserialize<Master>(request.Json);
-            var instance = Program.Container.Resolve<IEntityFactory>().CreateEntity<Master>(request.Type.ToString());
+            var instance = _entityFactory.CreateEntity<Master>(request.Type.ToString());
             //if (!(request.Source is Master)) return;
             var r = new Response<Master> { Request = request };
             try
@@ -114,7 +120,7 @@ namespace Welkin.Core
             }
             catch (Exception e)
             {
-                r.Result = Program.Container.Resolve<IEntityFactory>().CreateEntity<Master>("Master");
+                r.Result = _entityFactory.CreateEntity<Master>("Master");
                 r.StatusType = Enums.StatusType.Error;
                 r.Message = e.Message;
             }
