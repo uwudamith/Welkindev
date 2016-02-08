@@ -27,7 +27,7 @@
                         <div class="form-group">
                             <label for="ddlType" class="col-lg-3 control-label">Type</label>
                             <div class="col-lg-7">
-                                <input id="ddlType" value="1" style="width: 100%;"/>
+                                <input id="ddlType" value="1" style="width: 100%;" />
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                         <div class="form-group">
                             <label for="ddlParty" class="col-lg-3 control-label">Party</label>
                             <div class="col-lg-7">
-                                <input id="ddlParty" value="1" style="width: 100%;"/>
+                                <input id="ddlParty" value="1" style="width: 100%;" />
                             </div>
                             <button type="button" class="btn btn-default col-lg-1">
                                 <i class="glyphicon glyphicon-edit"></i>
@@ -56,7 +56,7 @@
                         <div class="form-group">
                             <label for="ddlCourt" class="col-lg-3 control-label">Court</label>
                             <div class="col-lg-7">
-                                <input id="ddlCourt" value="1" style="width: 100%;"/>
+                                <input id="ddlCourt" value="1" style="width: 100%;" />
                             </div>
                         </div>
                     </div>
@@ -69,8 +69,8 @@
                                 @(Html.Kendo().DatePicker()
                                       .Name("datepicker")
                                       .Value(DateTime.Today)
-                                      .HtmlAttributes(new {style = "width: 100%"})
-                                      )
+                                      .HtmlAttributes(new { style = "width: 100%" })
+                                )
                             </div>
                         </div>
                     </div>
@@ -121,18 +121,100 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
 
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <label for="txtFee" class="col-lg-10 control-label">Add new step</label>
+                            <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addStepModel">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                        <div id="caseSteps"></div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" id="addStepModel" role="dialog">
+    <div class="modal-dialog step-model">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Step</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-11">
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtStepName" class="col-lg-4 control-label">Step Name</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtStepName" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="type" class="col-lg-4 control-label">Due On</label>
+                                        <div class="col-lg-8">
+                                            @(Html.Kendo().DatePicker()
+                                            .Name("dtDueOnDate")
+                                            .Value(DateTime.Today)
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="ddlUsers" class="col-lg-4 control-label">By Whom</label>
+                                        <div class="col-lg-8">
+                                            <select id="ddlUsers" multiple="multiple" data-placeholder="Select user(s)">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="ddlStatus" class="col-lg-4 control-label">Status</label>
+                                        <div class="col-lg-8">
+                                            <input id="ddlStatus" value="1" style="width: 100%;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-step">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script>
-    $(document).ready(function() {
-        //var data = [
-        //    { Name: "Land", Id: "1" },
-        //    { Name: "Type1", Id: "2" },
-        //    { Name: "Type2", Id: "3" }
-        //];
+    $(document).ready(function () {
 
         var partyData = [
             { text: "Plaintiff", value: "1" },
@@ -140,18 +222,11 @@
             { text: "Party2", value: "3" }
         ];
 
-        //var courtData = [
-        //    { Name: "Galle - DC", Id: "1" },
-        //    { Name: "Kurunegala - DC", Id: "2" },
-        //    { Name: "Colombo -DC", Id: "3" }
-        //];
-
         // create DropDownList from input HTML element
         $("#ddlType").kendoDropDownList({
             dataTextField: "Name",
             dataValueField: "ID",
             optionLabel: "Select Case Type",
-            // dataSource: data,
             index: 0
         });
 
@@ -166,9 +241,124 @@
             dataTextField: "Name",
             dataValueField: "ID",
             optionLabel: "Select Court",
-            //dataSource: courtData,
             index: 0
         });
+
+
+        $("#caseSteps").kendoGrid({
+            dataSource: {
+                data: [],
+                pageSize: 5
+            },
+            pageable: {
+                input: true,
+                numeric: false
+            },
+            columns: [
+                { field: "StepId", hidden: true, },
+                { field: "StepName", title: "Step" },
+                { field: "DueDate", title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
+                { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },
+                { field: "Tasks", title: "Task" ,template: "<a href='\\#'><span class='glyphicon glyphicon-calendar pull-right'></span></a>" },
+                { field: "Status", title: "Status" }
+            ]
+        });
+
+        var usersData = new kendo.data.DataSource({
+            data : [
+                { Name: "Damith", Id: "1" },
+                { Name: "Janith", Id: "2" },
+                { Name: "Dimuthu", Id: "3" }
+            ]
+        });
+
+        var ddlUsers = $("#ddlUsers").kendoMultiSelect({
+            dataSource: usersData,
+            dataTextField: "Name",
+            dataValueField: "Id"
+        })
+
+
+        var statusData = [
+            { Name: "Pending", Id: "1" },
+            { Name: "Completed", Id: "2" },
+        ];
+
+        $("#ddlStatus").kendoDropDownList({
+            dataSource: statusData,
+            dataTextField: "Name",
+            dataValueField: "Id",
+        });
+
+        var clearAddStepData = function () {
+            //Clear step name textbox
+            $("#txtStepName").val("");
+            // Set today date to due date datepicker
+            var todayDate = kendo.toString(kendo.parseDate(new Date()), 'MM/dd/yyyy');
+            $("#dtDueOnDate").data("kendoDatePicker").value(todayDate);
+            // Remove selected indexes from multi select
+            var ddlUsers = $('#ddlUsers').data("kendoMultiSelect");
+            ddlUsers.value([]);
+            // Set status to pending
+            var ddlStatus = $("#ddlStatus").data("kendoDropDownList");
+            ddlStatus.select(0);
+        };
+
+        $('#addStepModel').on('hidden.bs.modal', function () {
+            clearAddStepData();
+        })
+
+        $("#save-step").click(function () {
+
+            var nextStepModel = {
+                StepId: '',
+                StepName: '',
+                DueDate: '',
+                ByWhom:[],
+                Tasks: '',
+                Status: ''
+            };
+
+            if ($("#txtStepName").val() == "") {
+                alert('Please enter step name');
+                return;
+            } else {
+                nextStepModel.StepName = $("#txtStepName").val();
+            }
+
+            nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
+            nextStepModel.Status = parseInt($("#ddlStatus").data("kendoDropDownList").value());
+            nextStepModel.ByWhom = $('#ddlUsers').data("kendoMultiSelect").dataItems();
+
+            if (addToCaseItems(nextStepModel)) {
+                $('#addStepModel').modal('toggle');
+            }
+        });
+
+        var addToCaseItems = function (data) {
+            $("#caseSteps").data("kendoGrid").dataSource.add(data);
+            return true;
+        }
+
+
     });
+
+</script>
+
+<script id="usersTemplate" type="text/x-kendo-template">
+    # for (var i = 0, length = ByWhom.length ;i < length; i++) { #
+    <span>
+        #= ByWhom[i].Name #
+        # if(i !== length -1) { #
+        |
+        # } #
+    </span>
+    # } #
+
+    # if(ByWhom.length > 0) { #
+    <a href='\\#'>
+        <span class="glyphicon glyphicon-calendar pull-right"></span>
+    </a>
+    # } #
 
 </script>
