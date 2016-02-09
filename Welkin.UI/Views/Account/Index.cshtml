@@ -1,0 +1,449 @@
+﻿@{
+    ViewBag.Title = "Account Setup";
+    ViewBag.Current = "AccountSetup";
+}
+
+<div>
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-4">
+                <h4>ACCOUNT SETUP</h4>
+            </div><!-- /.col-lg-6 -->
+            <div class="col-lg-4">
+
+            </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-5">
+                    <form class="form-horizontal" role="form">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="ddlType" class="col-lg-3 control-label">Type</label>
+                                    <div class="col-lg-7">
+                                        <input id="ddlAccountType" value="1" style="width: 100%;" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="txtAccountName" class="col-lg-3 control-label">Name</label>
+                                    <div class="col-lg-7">
+                                        <input class="form-control" id="txtAccountName" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="txtContactNo" class="col-lg-3 control-label">Contact No</label>
+                                    <div class="col-lg-7">
+                                        <input class="form-control" id="txtContactNo" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Add Users
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div id="grdUsers">
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Stamp Duty
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addStampDuty">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div id="grdStampDuty"></div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Lawyer Fee - Deed Ledger
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Deed Categories
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Case Categories
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Courts
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title pull-left">
+                                Archive
+                            </h3>
+
+                            <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                <i class="glyphicon glyphicon-plus-sign"></i>
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal popup area -->
+<div class="modal fade" tabindex="-1" id="addUsersModel" role="dialog">
+    <div class="modal-dialog step-model">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add User</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-11">
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtUserName" class="col-lg-4 control-label">Name</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtUserName" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtAddress" class="col-lg-4 control-label">Address</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtAddress" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtEmail" class="col-lg-4 control-label">Email</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtEmail" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtTelephone" class="col-lg-4 control-label">Telephone</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtTelephone" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="ddlDesignation" class="col-lg-4 control-label">Designation</label>
+                                        <div class="col-lg-8">
+                                            <input id="ddlDesignation" value="1" style="width: 100%;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="ddlLevel" class="col-lg-4 control-label">Level</label>
+                                        <div class="col-lg-8">
+                                            <input id="ddlLevel" value="1" style="width: 100%;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-step">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Stamp duty popup-->
+<div class="modal fade" tabindex="-1" id="addStampDuty" role="dialog">
+    <div class="modal-dialog step-model">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Stamp Duty</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-11">
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtRange" class="col-lg-4 control-label">Range</label>
+                                        <input id="hdnStampDutyId" type="hidden">
+                                        <input id="hdnUUID" type="hidden">
+                                        <div class="col-lg-4">
+                                            <input class="form-control" id="txtRangeMin" type="text">
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <input class="form-control" id="txtRangeMax" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtPercentage" class="col-lg-4 control-label">Percentage</label>
+                                        <div class="col-lg-4">
+                                            <input id="txtPercentage" class="form-control" type="text">
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-stampDuty">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    $(document).ready(function () {
+        var accountTypeData = [
+            { Name: "Law Firm", Id: "1" },
+            { Name: "Law Firm1", Id: "2" },
+            { Name: "Law Firm2", Id: "3" }
+        ];
+
+        // create DropDownList from input HTML element
+        $("#ddlAccountType").kendoDropDownList({
+            dataSource: accountTypeData,
+            dataTextField: "Name",
+            dataValueField: "Id",
+            index: 0
+        });
+
+        $("#grdUsers").kendoGrid({
+            dataSource: {
+                data: [],
+            },
+            columns: [
+                { field: "UserId", hidden: true, },
+                { field: "Name", title: "Name" },
+                { field: "Designation", width: 150, title: "Designation" },
+                { field: "Level", title: "Level" },
+                { width: 50, title: "Edit" ,template: "<a href='\\#'><span class='glyphicon glyphicon-edit pull-right'></span></a>" }
+            ]
+        });
+
+        var userTypeData = [
+            { Name: "Lawyer", Id: "1" },
+            { Name: "Jr. Lawyer", Id: "2" }
+        ];
+
+        // create DropDownList from input HTML element
+        $("#ddlDesignation").kendoDropDownList({
+            dataSource: userTypeData,
+            dataTextField: "Name",
+            dataValueField: "Id",
+            index: 0
+        });
+
+        var userLevelData = [
+            { Name: "Admin", Id: "1" },
+            { Name: "Co-admin", Id: "2" }
+        ];
+
+        // create DropDownList from input HTML element
+        $("#ddlLevel").kendoDropDownList({
+            dataSource: userLevelData,
+            dataTextField: "Name",
+            dataValueField: "Id",
+            index: 0
+        });
+
+
+
+        $("#grdStampDuty").kendoGrid({
+            dataSource: {
+                data: [],
+            },
+            columns: [
+                { field: "StampDutyId", hidden: true, },
+                { field: "Range", title: "Range" },
+                { field: "Percentage", width: 50, title: "Percentage", template: "<span>#=Percentage#%</span>" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-plus-sign'></i></button>" }, title: " ", width: 50}
+                
+            ]
+        });
+
+        $("#grdStampDuty").on("click", ".btn-edit", function (e) {
+            e.preventDefault();
+            var dataItem = $("#grdStampDuty").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+            openStampDutyPopup(dataItem);
+        });
+
+        var clearStampDuty = function () {
+            $("#hdnStampDutyId").val("");
+            $("#txtRangeMin").val("");
+            $("#txtRangeMax").val("");
+            $("#txtPercentage").val("");
+            $("#hdnUUID").val("");
+        }
+
+        var openStampDutyPopup = function (data) {
+             var splited = data.Range.split("-");
+            $("#hdnStampDutyId").val(data.StampDutyId);
+            $("#txtRangeMin").val(splited[0])
+            $("#txtRangeMax").val(splited[1])
+            $("#txtPercentage").val(data.Percentage)
+            $("#hdnUUID").val(data.uid);
+
+            $('#addStampDuty').modal('toggle');
+            
+        }
+
+        // Add stamp duty
+        $("#save-stampDuty").click(function () {
+
+            if ($("#txtRangeMin").val() == "") {
+                alert("Enter Min Value");
+                return;
+            }
+
+            if ($("#txtRangeMax").val() == "") {
+                alert("Enter Max Value");
+                return;
+            }
+
+            if ($("#txtPercentage").val() == "") {
+                alert("Enter Percentage");
+                return;
+            }
+
+            var stampDuty = {
+                StampDutyId: parseInt($("#hdnStampDutyId").val()),
+                Range: $("#txtRangeMin").val() +"-"+ $("#txtRangeMax").val(),
+                Percentage :$("#txtPercentage").val()
+            }
+
+            var uuid = $("#hdnUUID").val();
+            if (uuid != "") {
+                var row = $("#grdStampDuty").data("kendoGrid").tbody.find("tr[data-uid='" + uuid + "']");
+                var dataItem = $("#grdStampDuty").data("kendoGrid").dataItem(row);
+                dataItem.Range = stampDuty.Range;
+                dataItem.Percentage = stampDuty.Percentage;
+               
+                //$("#grdStampDuty").data("kendoGrid").dataSource.read();
+                $("#grdStampDuty").data("kendoGrid").refresh();
+
+                $('#addStampDuty').modal('toggle');
+
+            } else {
+                $("#grdStampDuty").data("kendoGrid").dataSource.add(stampDuty);
+                $('#addStampDuty').modal('toggle');
+            }
+
+            clearStampDuty();
+        });
+    });
+
+</script>
