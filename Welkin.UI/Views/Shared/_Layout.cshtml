@@ -44,6 +44,9 @@
                         </div>
                         <div class="navbar-collapse collapse sidebar-navbar-collapse">
                             <ul class="nav navbar-nav">
+                                <li class="@(ViewBag.Current == "AccountSetup" ? "active" : "") ">
+                                    <a href="@Url.Action("Index", "Account")" target="_self">Account Setup</a>
+                                </li>
                                 <li class="@(ViewBag.Current == "Scheduler" ? "active" : "") ">
                                     <a href="@Url.Action("Index", "Scheduler")" target="_self">Scheduler</a>
                                 </li>

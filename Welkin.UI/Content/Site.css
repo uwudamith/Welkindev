@@ -125,3 +125,12 @@ textarea {
     border: 1px solid #94a0b4;
     color: #000
 }
+
+/* Hide kendo grid headers*/
+#grdStampDuty .k-header {
+   display: none;
+}
+
+#grdUsers .k-header {
+   display: none;
+}

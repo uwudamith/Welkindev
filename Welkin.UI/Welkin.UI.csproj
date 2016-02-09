@@ -194,6 +194,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\QueueHandler.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CaseLedgerController.cs" />
     <Compile Include="Controllers\DeedLedgerController.cs" />
     <Compile Include="Controllers\DraftController.cs" />
@@ -664,6 +665,7 @@
     <Content Include="Views\CaseLedger\Index.cshtml" />
     <Content Include="Views\DeedLedger\Index.cshtml" />
     <Content Include="Views\Draft\Index.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
