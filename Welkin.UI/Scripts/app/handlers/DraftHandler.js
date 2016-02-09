@@ -18,9 +18,9 @@ $this = this;
 
      PopulateDraftDropdown = function (a) {
         var grantees = JSON.parse(JSON.parse(a).JsonResult)[0].Grantees;  
-        var ddlGrantee = $("#ddlGrantee").data("kendoDropDownList");
-        ddlGrantee.setDataSource(grantees);
-        ddlGrantee.refresh();
+        //var ddlGrantee = $("#ddlGrantee").data("kendoDropDownList");
+        //ddlGrantee.setDataSource(grantees);
+        //ddlGrantee.refresh();
 
     };
   return this;

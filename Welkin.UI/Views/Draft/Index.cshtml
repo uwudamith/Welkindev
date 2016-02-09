@@ -22,65 +22,14 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-lg-5">
-                    <div class="tree">
-                        <ul>
-                            <li>
-                                <span><i class="icon-calendar"></i> 2013, Week 2</span>
-                                <ul>
-                                    <li>
-                                        <span class="badge badge-success"><i class="icon-minus-sign"></i> Monday, January 7: 8.00 hours</span>
-                                        <ul>
-                                            <li>
-                                                <a href=""><span><i class="icon-time"></i> 8.00</span> &ndash; Changed CSS to accomodate...</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="badge badge-success"><i class="icon-minus-sign"></i> Tuesday, January 8: 8.00 hours</span>
-                                        <ul>
-                                            <li>
-                                                <span><i class="icon-time"></i> 6.00</span> &ndash; <a href="">Altered code...</a>
-                                            </li>
-                                            <li>
-                                                <span><i class="icon-time"></i> 2.00</span> &ndash; <a href="">Simplified our approach to...</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="badge badge-warning"><i class="icon-minus-sign"></i> Wednesday, January 9: 6.00 hours</span>
-                                        <ul>
-                                            <li>
-                                                <a href=""><span><i class="icon-time"></i> 3.00</span> &ndash; Fixed bug caused by...</a>
-                                            </li>
-                                            <li>
-                                                <a href=""><span><i class="icon-time"></i> 3.00</span> &ndash; Comitting latest code to Git...</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="badge badge-important"><i class="icon-minus-sign"></i> Wednesday, January 9: 4.00 hours</span>
-                                        <ul>
-                                            <li>
-                                                <a href=""><span><i class="icon-time"></i> 2.00</span> &ndash; Create component that...</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-7">
-                    <div class="form-group">
-                        <label for="ddlGrantee" class="col-lg-3 control-label">Grantee</label>
-                        <div class="col-lg-7">
-                            <input id="ddlGrantee" value="1" style="width: 100%;"/>
+                <div class="col-lg-6">
+                        <div class="demo-section k-content">
+                            <h4>Template explorer</h4>
+                            <div id="treeview-left"></div>
                         </div>
-                        <button type="button" class="btn btn-default col-lg-1">
-                            <i class="glyphicon glyphicon-edit"></i>
-                        </button>
-                    </div>
+                </div>
+                <div class="col-lg-6">
+                   <div>Template Preview</div>
                 </div>
 
             </div>
@@ -89,17 +38,41 @@
 </div>
 <script>
     $(function() {
-        $(".tree li:has(ul)").addClass("parent_li").find(" > span").attr("title", "Collapse this branch");
-        $(".tree li.parent_li > span").on("click", function(e) {
-            var children = $(this).parent("li.parent_li").find(" > ul > li");
-            if (children.is(":visible")) {
-                children.hide("fast");
-                $(this).attr("title", "Expand this branch").find(" > i").addClass("icon-plus-sign").removeClass("icon-minus-sign");
-            } else {
-                children.show("fast");
-                $(this).attr("title", "Collapse this branch").find(" > i").addClass("icon-minus-sign").removeClass("icon-plus-sign");
-            }
-            e.stopPropagation();
+        var inlineDefault = new kendo.data.HierarchicalDataSource({
+            data: [
+                {
+                    text: "Case", items: [
+                      {
+                          text: "Land", items: [
+                              {
+                                  text:"Mortgage.docx"
+                              }
+                          ]
+                      },
+                      { text: "Partition" }
+                    ]
+                },
+                {
+                    text: "Deed"
+                },
+                {
+                    text: "General"
+                },
+                {
+                    text: "Misc", items: [
+                        {
+                            text: "Pedigree Diagram V1"
+                        },
+                        {
+                            text: "Pedigree Diagram V2"
+                        }
+                    ]
+                }
+            ]
+        });
+
+        $("#treeview-left").kendoTreeView({
+            dataSource: inlineDefault
         });
 
         $("#ddlGrantee").kendoDropDownList({
