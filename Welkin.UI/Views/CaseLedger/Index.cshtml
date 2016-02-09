@@ -251,16 +251,16 @@
                 pageSize: 5
             },
             pageable: {
-                input: true,
-                numeric: false
+                input: false,
+                numeric: true
             },
             columns: [
                 { field: "StepId", hidden: true, },
                 { field: "StepName", title: "Step" },
-                { field: "DueDate", title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
+                { field: "DueDate",width:150, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
                 { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },
-                { field: "Tasks", title: "Task" ,template: "<a href='\\#'><span class='glyphicon glyphicon-calendar pull-right'></span></a>" },
-                { field: "Status", title: "Status" }
+                { field: "Tasks",width:50, title: "Task" ,template: "<a href='\\#'><span class='glyphicon glyphicon-calendar pull-right'></span></a>" },
+                { field: "Status", width: 70, title: "Status", template: kendo.template($("#statusTemplate").html()) },
             ]
         });
 
@@ -345,6 +345,7 @@
 
 </script>
 
+<!-- Template for display user details inside grid-->
 <script id="usersTemplate" type="text/x-kendo-template">
     # for (var i = 0, length = ByWhom.length ;i < length; i++) { #
     <span>
@@ -360,5 +361,14 @@
         <span class="glyphicon glyphicon-calendar pull-right"></span>
     </a>
     # } #
+</script>
 
+<!-- Template for display status -->
+<script id="statusTemplate" type="text/x-kendo-template">
+    # if(Status == 1) { #
+    <span class='glyphicon glyphicon-thumbs-down pull-right'></span>
+    # } #
+    # if(Status == 2) { #
+    <span class='glyphicon glyphicon-thumbs-up pull-right'></span>
+    # } #
 </script>
