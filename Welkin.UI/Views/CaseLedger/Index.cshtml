@@ -67,7 +67,7 @@
                             <label for="type" class="col-lg-3 control-label">Start Date</label>
                             <div class="col-lg-7">
                                 @(Html.Kendo().DatePicker()
-                                      .Name("datepicker")
+                                      .Name("dtStartDate")
                                       .Value(DateTime.Today)
                                       .HtmlAttributes(new { style = "width: 100%" })
                                 )
@@ -75,7 +75,12 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        
+                        <div class="form-group">
+                            <label for="txtTotalFee" class="col-lg-4 control-label">Total Fee</label>
+                            <div class="col-lg-6">
+                                <input class="form-control" id="txtTotalFee" type="text" disabled>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -135,7 +140,7 @@
                             <div class="col-lg-2">
                                 <div class="form-group">
                                     <div class="col-lg-12">
-                                        <input id="input-2" type="checkbox" checked>
+                                        <input id="chkSendReminders" type="checkbox" checked>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +154,7 @@
                                     <button type="button" class="btn btn-primary">
                                         Browse
                                     </button>
-                                    <button type="button" class="btn btn-success" style="margin-left: 10px;">
+                                    <button type="button" class="btn btn-success save-case" style="margin-left: 10px;">
                                         Save
                                     </button>
                                 </div>
@@ -310,153 +315,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<script>
-    $(document).ready(function () {
-
-        $("#files").kendoUpload({
-            async: {
-                saveUrl: "save",
-                removeUrl: "remove",
-                autoUpload: true
-            }
-        });
-        $(":checkbox").checkboxpicker();
-
-        var partyData = [
-            { text: "Plaintiff", value: "1" },
-            { text: "Party1", value: "2" },
-            { text: "Party2", value: "3" }
-        ];
-
-        // create DropDownList from input HTML element
-        $("#ddlType").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel: "Select Case Type",
-            index: 0
-        });
-
-        $("#ddlParty").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel: "Select Party",
-            index: 0
-        });
-
-        $("#ddlCourt").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel: "Select Court",
-            index: 0
-        });
-
-
-        $("#caseSteps").kendoGrid({
-            dataSource: {
-                data: [],
-                pageSize: 5
-            },
-            pageable: {
-                input: false,
-                numeric: true
-            },
-            columns: [
-                { field: "StepId", hidden: true, },
-                { field: "StepName", title: "Step" },
-                { field: "Fee", title: "Fee" },
-                { field: "DueDate", width: 150, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
-                { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },
-                { field: "Tasks", width: 50, title: "Task", template: "<a href='\\#'><span class='glyphicon glyphicon-calendar pull-right'></span></a>" },
-                { field: "Status", width: 70, title: "Status", template: kendo.template($("#statusTemplate").html()) },
-            ]
-        });
-
-        var usersData = new kendo.data.DataSource({
-            data : [
-                { Name: "Damith", Id: "1" },
-                { Name: "Janith", Id: "2" },
-                { Name: "Dimuthu", Id: "3" }
-            ]
-        });
-
-        var ddlUsers = $("#ddlUsers").kendoMultiSelect({
-            dataSource: usersData,
-            dataTextField: "Name",
-            dataValueField: "Id"
-        })
-
-
-        var statusData = [
-            { Name: "Pending", Id: "1" },
-            { Name: "Completed", Id: "2" },
-        ];
-
-        $("#ddlStatus").kendoDropDownList({
-            dataSource: statusData,
-            dataTextField: "Name",
-            dataValueField: "Id",
-        });
-
-        var clearAddStepData = function () {
-            //Clear step name textbox
-            $("#txtStepName").val("");
-            // Set today date to due date datepicker
-            var todayDate = kendo.toString(kendo.parseDate(new Date()), 'MM/dd/yyyy');
-            $("#dtDueOnDate").data("kendoDatePicker").value(todayDate);
-            // Remove selected indexes from multi select
-            var ddlUsers = $('#ddlUsers').data("kendoMultiSelect");
-            ddlUsers.value([]);
-            // Set status to pending
-            var ddlStatus = $("#ddlStatus").data("kendoDropDownList");
-            ddlStatus.select(0);
-            //Clear fee
-            $("#txtFee").val("");
-
-        };
-
-        $('#addStepModel').on('hidden.bs.modal', function () {
-            clearAddStepData();
-        })
-
-        $("#save-step").click(function () {
-
-            var nextStepModel = {
-                StepId: '',
-                StepName: '',
-                Fee:'',
-                DueDate: '',
-                ByWhom:[],
-                Tasks: '',
-                Status: ''
-            };
-
-            if ($("#txtStepName").val() == "") {
-                alert('Please enter step name');
-                return;
-            } else {
-                nextStepModel.StepName = $("#txtStepName").val();
-            }
-
-            nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
-            nextStepModel.Status = parseInt($("#ddlStatus").data("kendoDropDownList").value());
-            nextStepModel.ByWhom = $('#ddlUsers').data("kendoMultiSelect").dataItems();
-            nextStepModel.Fee = $("#txtFee").val()
-
-            if (addToCaseItems(nextStepModel)) {
-                $('#addStepModel').modal('toggle');
-            }
-        });
-
-        var addToCaseItems = function (data) {
-            $("#caseSteps").data("kendoGrid").dataSource.add(data);
-            return true;
-        }
-
-
-    });
-
-</script>
 
 <!-- Template for display user details inside grid-->
 <script id="usersTemplate" type="text/x-kendo-template">

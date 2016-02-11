@@ -34,5 +34,11 @@ namespace Welkin.UI.Controllers
             await QueueHandler.PushToServiceAsync(rList);
             return View("Index");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> SaveCaseLedger(string model)
+        {
+            return View("Index");
+        }
     }
 }
