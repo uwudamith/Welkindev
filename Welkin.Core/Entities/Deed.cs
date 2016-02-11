@@ -21,7 +21,7 @@ namespace Welkin.Core.Entities
             throw new NotImplementedException();
         }
 
-        public Task<object> GetData(string cName, string query)
+        public Task<object> GetData(string cName, string query,string spName)
         {
             throw new NotImplementedException();
         }
@@ -31,11 +31,23 @@ namespace Welkin.Core.Entities
             throw new NotImplementedException();
         }
 
-        public async Task UpsertDocument(string document, string type)
+        public async Task UpsertDocument(string document, string collection)
         {
             try
             {
-                await _dataRepo.UpsertDocument(document, type);
+                await _dataRepo.UpsertDocument(document,collection);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Invalid operation : " + ex.InnerException);
+            }
+        }
+
+        public async Task ReplaceDocument(string document, string collection)
+        {
+            try
+            {
+                await _dataRepo.ReplaceDocument(document, collection);
             }
             catch (Exception ex)
             {

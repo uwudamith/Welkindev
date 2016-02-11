@@ -26,7 +26,7 @@ namespace Welkin.Core.Entities
             throw new NotImplementedException();
         }
 
-        public Task UpsertDocument(string document, string type)
+        public Task UpsertDocument(string document, string collection)
         {
             throw new NotImplementedException();
         }
@@ -36,9 +36,14 @@ namespace Welkin.Core.Entities
             return await _dataRepository.GetAll<T>(t, collectionName);
         }
 
-        public Task<object> GetData(string cName, string query)
+        public Task<object> GetData(string cName, string query,string spName)
         {
-            return _dataRepository.GetData(cName, query);
+            return _dataRepository.GetData(cName, query,spName);
+        }
+
+        public Task ReplaceDocument(string document, string collection)
+        {
+            throw new NotImplementedException();
         }
     }
 }

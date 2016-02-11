@@ -16,7 +16,7 @@
 
 
                 if ($scope.PageMode.controller === "DeedLedger" && $scope.PageMode.action === "Index") {
-                    $scope.DeedHandler.initialize({
+                    $scope.DeedHandler.init({
                         sAgent: new $scope.Utils.SignalR({
                             config: {
                                 id: "1",
@@ -42,7 +42,7 @@
                 }
 
                 if ($scope.PageMode.controller === "Draft" && $scope.PageMode.action === "Index") {
-                    $scope.DraftHandler.initDraft({
+                    $scope.DraftHandler.init({
                         sAgent: new $scope.Utils.SignalR({
                             config: {
                                 id: "1",

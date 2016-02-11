@@ -10,9 +10,17 @@ namespace Welkin.Core.Entities
         /// Upserts the document.
         /// </summary>
         /// <param name="document">The document.</param>
-        /// <param name="type">The type.</param>
+        /// <param name="collection"></param>
         /// <returns></returns>
-        Task UpsertDocument(string document, string type);
+        Task UpsertDocument(string document,string collection);
+
+        /// <summary>
+        /// Replaces the document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="collection">The collection.</param>
+        /// <returns></returns>
+        Task ReplaceDocument(string document, string collection);
 
         /// <summary>
         /// Queries all documents.
@@ -28,6 +36,6 @@ namespace Welkin.Core.Entities
         /// <returns></returns>
         Task<IOrderedQueryable<T>> GetAll<T>(T t, string collectionName = null);
 
-        Task<object> GetData(string cName, string query);
+        Task<object> GetData(string cName, string query,string spName);
     }
 }

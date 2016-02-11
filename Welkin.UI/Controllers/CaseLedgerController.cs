@@ -38,6 +38,16 @@ namespace Welkin.UI.Controllers
         [HttpPost]
         public async Task<ActionResult> SaveCaseLedger(string model)
         {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = @"__.filter(function(master) { return master; })",
+                JsCallback = "PopulateCaseDropdown",
+                Targert = "GetData",
+                UserId = 1,
+                Type = Enums.EntityType.Master
+            };
             return View("Index");
         }
     }

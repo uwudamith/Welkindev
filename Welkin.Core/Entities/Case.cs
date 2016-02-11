@@ -22,12 +22,11 @@ namespace Welkin.Core.Entities
             _dataRepository = dataRepository;
         }
 
-        public async Task UpsertDocument(string document, string type)
+        public async Task UpsertDocument(string document, string collection)
         {
             try
             {
-                await _dataRepository.UpsertDocument(document, type);
-                    //Program.Container.Resolve<IDataRepository>().UpsertDocument(document, type);
+                await _dataRepository.UpsertDocument(document,collection);
             }
             catch (Exception ex)
             {
@@ -45,9 +44,21 @@ namespace Welkin.Core.Entities
             throw new NotImplementedException();
         }
 
-        public Task<object> GetData(string cName, string query)
+        public Task<object> GetData(string cName, string query,string spName)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task ReplaceDocument(string document, string collection)
+        {
+            try
+            {
+                await _dataRepository.ReplaceDocument(document, collection);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Invalid operation : " + ex.InnerException);
+            }
         }
     }
 }

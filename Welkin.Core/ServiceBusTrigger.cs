@@ -10,7 +10,7 @@ using Welkin.Core.Entities;
 
 namespace Welkin.Core
 {
-    public class ServiceBusTrigger
+    public partial class ServiceBusTrigger
     {
         private IEntityFactory _entityFactory;
         public ServiceBusTrigger(IEntityFactory entityFactory)
@@ -59,29 +59,7 @@ namespace Welkin.Core
             await SignalRHandler.Send(r);
         }
 
-        /// <summary>
-        ///     Gets the cases.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        public async void GetCases(Request request)
-        {
-            if (!(request.Source is Case)) return;
-
-            var ca = request.Source as Case;
-            var r = new Response<List<Case>> {Request = request};
-            try
-            {
-                
-            }
-            catch (Exception e)
-            {
-                r.Result = new List<Case>();
-                r.StatusType = Enums.StatusType.Error;
-                r.Message = e.Message;
-            }
-            await SignalRHandler.Send(r);
-        }
-
+      
         /// <summary>
         ///     Gets the master data.
         /// </summary>
@@ -107,24 +85,10 @@ namespace Welkin.Core
            await SignalRHandler.Send(r);
         }
 
-        public async void GetData(Request request)
-        {
-           // request.Source = EntityRequestHandler.Deserialize<Master>(request.Json);
-            var instance = _entityFactory.CreateEntity<Master>(request.Type.ToString());
-            //if (!(request.Source is Master)) return;
-            var r = new Response<Master> { Request = request };
-            try
-            {
-                var data = await instance.GetData("Master", request.Json);
-                r.JsonResult = data.ToString();
-            }
-            catch (Exception e)
-            {
-                r.Result = _entityFactory.CreateEntity<Master>("Master");
-                r.StatusType = Enums.StatusType.Error;
-                r.Message = e.Message;
-            }
-            await SignalRHandler.Send(r);
-        }
+
+
+      
+
+      
     }
 }

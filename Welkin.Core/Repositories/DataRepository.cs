@@ -76,29 +76,44 @@ namespace Welkin.Core.Repositories
         /// Upserts the document.
         /// </summary>
         /// <param name="document">The document.</param>
-        /// <param name="type">The type.</param>
+        /// <param name="collection"></param>
         /// <returns></returns>
-        public async Task UpsertDocument(string document, string type)
+        public async Task UpsertDocument(string document,string collection)
         {
             try
             {
-                var collName = "Case";
-
                 var ms = new MemoryStream(Encoding.UTF8.GetBytes(document));
-
                 var doc = JsonSerializable.LoadFrom<Document>(ms);
-
                 var res =
                     await
                         _client
-                            .CreateDocumentAsync("dbs/" + GetDatabase().Id + "/colls/" + collName, doc);
+                            .CreateDocumentAsync("dbs/" + GetDatabase().Id + "/colls/" + collection, doc);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Invalid Document. : " + ex.InnerException);
+                Console.WriteLine("Invalid Document : " + ex.InnerException);
                 throw ex;
             }
         }
+
+        public async Task ReplaceDocument(string document, string collection)
+        {
+            try
+            {
+                var ms = new MemoryStream(Encoding.UTF8.GetBytes(document));
+                var doc = JsonSerializable.LoadFrom<Document>(ms);
+                var res =
+                    await
+                        _client
+                            .ReplaceDocumentAsync("dbs/" + GetDatabase().Id + "/colls/" + collection, doc);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Invalid Document : " + ex.InnerException);
+                throw ex;
+            }
+        }
+
 
         #endregion
 
@@ -176,7 +191,7 @@ namespace Welkin.Core.Repositories
                 Console.WriteLine(ex.InnerException);
             }
         }
-
+        #endregion
 
         /// <summary>
         /// Queries all documents.
@@ -209,7 +224,7 @@ namespace Welkin.Core.Repositories
             return docs;
         }
 
-        public async Task<object> GetData(string cName,string query)
+        public async Task<object> GetData(string cName,string query,string spName)
         {
             var collection =
             _client.CreateDocumentCollectionQuery("dbs/" + GetDatabase().Id)
@@ -217,20 +232,19 @@ namespace Welkin.Core.Repositories
                   .ToArray()
                   .FirstOrDefault();
 
-            return await QueryScalar(collection.SelfLink, query);
+            return await QueryScalar(collection.SelfLink, query,spName);
         }
       
 
-        private  static async Task<object> QueryScalar(string collectionLink, string javascriptQuery)
+        private  static async Task<object> QueryScalar(string collectionLink, string javascriptQuery,string spName)
         {
             // JavaScript integrated queries are supported using the server side SDK, so you'll be using
             // them within stored procedures and triggers. Here we show them standalone just to demonstrate
             // how to use the functional-Underscore.js style query API
             string javaScriptFunctionStub = string.Format("function() {{ {0}; }}", javascriptQuery);
-            string singleQuerySprocName = "query";
 
             StoredProcedure currentProcedure = _client.CreateStoredProcedureQuery(collectionLink)
-                .Where(s => s.Id == singleQuerySprocName)
+                .Where(s => s.Id == spName)
                 .AsEnumerable()
                 .FirstOrDefault();
 
@@ -245,7 +259,7 @@ namespace Welkin.Core.Repositories
                     collectionLink,
                     new StoredProcedure
                     {
-                        Id = singleQuerySprocName,
+                        Id = spName,
                         Body = javaScriptFunctionStub
                     });
             }
@@ -255,6 +269,6 @@ namespace Welkin.Core.Repositories
         }
 
 
-        #endregion
+       
     }
 }
