@@ -7,8 +7,8 @@
     
    
     $m = {
-        init: function(options) {
-        //alert("CaseHandler");
+        init: function (options) {
+            //alert("CaseHandler");
             this.settings = $scope.$.extend(true, {
 
             }, options);
@@ -24,25 +24,7 @@
 
             $(":checkbox").checkboxpicker();
 
-            // variables for case handler page
-            //$("#save-step") = $("#save-step");
-            //$("#txtStepName") = $("#txtStepName");
-            //$("#dtDueOnDate") = $("#dtDueOnDate");
-            //$("#ddlStatus") = $("#ddlStatus");
-            //$("#ddlUsers") = $("#ddlUsers");
-            //$("#txtFee") = $("#txtFee");
-            //$("#chkNotification") = $("#chkNotification");
-            //$('#addStepModel') = $('#addStepModel');
-            //$("#caseSteps") = $("#caseSteps");
-            //$("#files") = $("#files");
-            //$("#ddlType") = $("#ddlType");
-            //$("#ddlCourt") = $("#ddlCourt");
-            //$("#ddlParty") = $("#ddlParty");
-            //$(".save-case") = $(".save-case");
-            //$("#txtCaseNo") = $("#txtCaseNo");
-            //$("#dtStartDate") = $("#dtStartDate");
-            //$("#txtDescription") = $("#txtDescription");
-            //$("#chkSendReminders") = $("#chkSendReminders");
+            var masterData;
 
             var nextStepModel = {
                 StepId: '',
@@ -96,7 +78,7 @@
                 ]
             });
             // Save next step click function
-            $("#save-step").click(function() {
+            $("#save-step").click(function () {
 
                 if ($("#txtStepName").val() == "") {
                     alert('Please enter step name');
@@ -116,7 +98,7 @@
             });
 
             // After step model close function
-            $('#addStepModel').on('hidden.bs.modal', function() {
+            $('#addStepModel').on('hidden.bs.modal', function () {
                 $m.clearAddStepData();
             })
 
@@ -156,7 +138,7 @@
             });
 
             // On save-case click function
-            $(".save-case").click(function() {
+            $(".save-case").click(function () {
 
                 // Validate Type
                 if ($("#ddlType").data("kendoDropDownList").value() == "") {
@@ -195,12 +177,28 @@
                 caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
                 caseModel.CaseSteps = $m.getCaseStepsData();
 
-                $m.saveCaseLedger(caseModel);
+                $m.saveCaseLedger('/CaseLedger/SaveCaseLedger','POST',caseModel);
+            });
+
+            $("#save-party").click(function () {
+                var partyObj = {};
+                if ($("#txtUserName").val() == "") {
+                    alert("Please enter party name");
+                    return;
+                } else {
+                    partyObj.Id = $m.settings.common.createGUID();
+                    partyObj.Name = '';
+                    partyObj.Address = '';
+                    partyObj.Email = '';
+                    partyObj.Telephone = '';
+
+                };
+                debugger;
             });
         },
 
-        populateCaseDropdown: function(a) {
-
+        populateCaseDropdown: function (a) {
+            $m.masterData = a;
             var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
             var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
@@ -240,12 +238,11 @@
 
 
         },
-
-        addToCaseItems: function(data) {
+        addToCaseItems: function (data) {
             $("#caseSteps").data("kendoGrid").dataSource.add(data);
             return true;
         },
-        clearAddStepData: function() {
+        clearAddStepData: function () {
             //Clear step name textbox
             $("#txtStepName").val("");
             // Set today date to due date datepicker
@@ -260,16 +257,10 @@
             $("#chkNotification").prop('checked', true);
 
         },
-        saveCaseLedger: function(caseModel) {
-            $.ajax({
-                url: '/CaseLedger/SaveCaseLedger',
-                type: 'POST',
-                data: { 'model': JSON.stringify(caseModel) },
-                success: function() {
-                }
-            });
+        saveCaseLedger: function (url,type,model) {
+            $m.settings.common.ajaxFunction(url, type, model);
         },
-        getCaseStepsData: function() {
+        getCaseStepsData: function () {
             var data = $("#caseSteps").data("kendoGrid").dataSource.data();
             var dataList = [];
             for (var i = 0, len = data.length; i < len; i++) {
