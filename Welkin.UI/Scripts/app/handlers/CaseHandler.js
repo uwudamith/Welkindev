@@ -180,21 +180,24 @@
                 $m.saveCaseLedger('/CaseLedger/SaveCaseLedger','POST',caseModel);
             });
 
-            $("#save-party").click(function () {
+             var successFunc = function(data){
+              debugger;
                 var partyObj = {};
                 if ($("#txtUserName").val() == "") {
                     alert("Please enter party name");
                     return;
                 } else {
-                    partyObj.Id = $m.settings.common.createGUID();
+                    partyObj.Id = data;
                     partyObj.Name = '';
                     partyObj.Address = '';
                     partyObj.Email = '';
                     partyObj.Telephone = '';
-
                 };
-                debugger;
-            });
+            };
+
+            $("#save-party").click(function () {
+            $m.settings.common.createGUID(successFunc);
+             });
         },
 
         populateCaseDropdown: function (a) {

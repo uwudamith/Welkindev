@@ -9,15 +9,14 @@
         Configs: {
             hubUrl: ""
         },
-        ajaxFunction: function (url, type, model) {
-            var response;
+        ajaxFunction: function (url, type,callBackFunc, model) {
             if (model) {
                 $.ajax({
                     url: url,
                     type: type,
                     data: { 'model': JSON.stringify(model) },
                     success: function (data) {
-                        response = data;
+                        callBackFunc(data);
                     }
                 });
             } else {
@@ -25,15 +24,13 @@
                     url: url,
                     type: type,
                     success: function (data) {
-                        response = data;
+                        callBackFunc(data);
                     }
                 });
             }
-
-            return response;
         },
-        createGUID: function () {
-            return this.ajaxFunction('/Base/createGUID', 'GET');
+        createGUID: function (callBackFunc) {
+            return this.ajaxFunction('/Base/createGUID', 'GET', callBackFunc);
         },
         init: function () {
 
