@@ -200,7 +200,7 @@
         },
 
         populateCaseDropdown: function(a) {
-
+          
             var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
             var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
@@ -296,9 +296,11 @@
                 dataList.push(nextStepModel);
             }
             return dataList;
+        },
+        Notify:function(d) {
+            debugger;
         }
     };
-
     return $m;
 
 }(window.Welkin, window.Welkin.$, window.Welkin.CaseHandler || {}));

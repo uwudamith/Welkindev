@@ -4,7 +4,7 @@ using Welkin.Core.Entities;
 
 namespace Welkin.Core
 {
-   public partial class ServiceBusTrigger
+    public partial class ServiceBusTrigger
     {
         /// <summary>
         /// Saves the case.
@@ -13,7 +13,7 @@ namespace Welkin.Core
         public async void SaveCase(Request request)
         {
             var instance = _entityFactory.CreateEntity<Case>(request.Type.ToString());
-            var r = new Response<bool> { Request = request };
+            var r = new Response<bool> {Request = request};
             try
             {
                 await instance.UpsertDocument(request.Json, request.Type.ToString());

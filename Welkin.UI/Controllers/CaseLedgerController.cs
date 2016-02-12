@@ -42,12 +42,14 @@ namespace Welkin.UI.Controllers
 
             var r = new Request
             {
-                Json = @"__.filter(function(master) { return master; })",
-                JsCallback = "PopulateCaseDropdown",
-                Targert = "GetData",
+                Json = model ,
+                JsCallback = "Notify",
+                Targert = "SaveCase",
                 UserId = 1,
-                Type = Enums.EntityType.Master
+                Type = Enums.EntityType.Case
             };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
             return View("Index");
         }
     }
