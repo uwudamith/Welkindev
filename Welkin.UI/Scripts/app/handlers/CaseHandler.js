@@ -212,22 +212,30 @@
                 $("#ddlParty").data("kendoDropDownList").dataSource.insert(partyObj);
 
                 // Clear party model data
-                if(clearPartyModel()){
-                     $('#addPartyModel').modal('toggle');
-                     // Calling the save master data function
-                    $m.settings.common.saveMasterData(null,$m.masterData);
-                    
+                if (clearPartyModel()) {
+                    $('#addPartyModel').modal('toggle');
+                    // Calling the save master data function
+                    $m.settings.common.saveMasterData(null, $m.masterData);
+
                 }
             };
 
             $("#save-party").click(function () {
                 $m.settings.common.createGUID(savePartyData);
             });
-        },
 
+            $("#btn-search-case").click(function () {
+                if ($("#txt-search-case-no").val() == "") {
+                    alert("Search field should not be empty");
+                } else {
+                    var searchQuery = "SELECT * FROM c WHERE CONTAINS(c.CaseNumber,'" + $("#txt-search-case-no").val() + "')";
+                    $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery);
+                }
+            });
+        },
         populateCaseDropdown: function (a) {
             $m.masterData = JSON.parse(JSON.parse(a).JsonResult)[0];
-            
+
             var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
             var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
@@ -294,7 +302,7 @@
             var dataList = [];
             for (var i = 0, len = data.length; i < len; i++) {
                 var whomList = [];
-                for (j = 0, jLen = data[i].ByWhom.length; j < jLen; j++) {
+                for (var j = 0, jLen = data[i].ByWhom.length; j < jLen; j++) {
                     var obj = {
                         Id: data[i].ByWhom[j].Id,
                         Name: data[i].ByWhom[j].Name
@@ -317,7 +325,7 @@
             }
             return dataList;
         },
-        notify:function(d) {
+        notify: function (d) {
             var ss = JSON.parse(JSON.parse(d).JsonResult)
             debugger;
         }
