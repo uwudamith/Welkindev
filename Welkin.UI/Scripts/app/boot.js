@@ -1,7 +1,7 @@
-﻿(function(w,$) {
+﻿(function (w, $) {
 
     w.Welkin = {
-        $ : $,
+        $: $,
         PageMode: {
             action: "",
             controller: ""
@@ -9,10 +9,33 @@
         Configs: {
             hubUrl: ""
         },
-        init: function() {
-           
+        ajaxFunction: function (url, type,callBackFunc, model) {
+            if (model) {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: { 'model': JSON.stringify(model) },
+                    success: function (data) {
+                        callBackFunc(data);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    success: function (data) {
+                        callBackFunc(data);
+                    }
+                });
+            }
+        },
+        createGUID: function (callBackFunc) {
+            return this.ajaxFunction('/Base/createGUID', 'GET', callBackFunc);
+        },
+        init: function () {
+
             var $scope = this;
-            $(document).ready(function() {
+            $(document).ready(function () {
 
 
                 if ($scope.PageMode.controller === "DeedLedger" && $scope.PageMode.action === "Index") {
@@ -37,7 +60,12 @@
                             hub: {
                                 url: $scope.Configs.hubUrl
                             }
-                        })
+                        }),
+                        common: {
+                            ajaxFunction: $scope.ajaxFunction,
+                            createGUID:$scope.createGUID
+                        }
+
                     });
                 }
 
@@ -58,4 +86,4 @@
         }
     };
     w.Welkin.init();
-}(window,jQuery));
+}(window, jQuery));

@@ -195,6 +195,7 @@
     <Compile Include="App_Start\QueueHandler.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CaseLedgerController.cs" />
     <Compile Include="Controllers\DeedLedgerController.cs" />
     <Compile Include="Controllers\DraftController.cs" />
