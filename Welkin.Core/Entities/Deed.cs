@@ -54,5 +54,10 @@ namespace Welkin.Core.Entities
                 throw new InvalidOperationException("Invalid operation : " + ex.InnerException);
             }
         }
+
+        public List<object> ExecuteQuery(string cName, string query)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

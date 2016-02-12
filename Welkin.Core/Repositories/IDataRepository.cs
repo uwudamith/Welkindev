@@ -47,5 +47,7 @@ namespace Welkin.Core.Repositories
         Task<IOrderedQueryable<T>> GetAll<T>(T t, string collectionName = null);
 
         Task<object> GetData(string cName, string query,string spName);
+
+        List<object> ExecuteQuery(string cName, string query);
     }
 }

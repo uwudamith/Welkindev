@@ -45,5 +45,10 @@ namespace Welkin.Core.Entities
         {
             throw new NotImplementedException();
         }
+
+        public List<object> ExecuteQuery(string cName, string query)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
