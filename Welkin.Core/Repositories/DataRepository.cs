@@ -235,7 +235,7 @@ namespace Welkin.Core.Repositories
             return await QueryScalar(collection.SelfLink, query,spName);
         }
 
-        public async Task<object> ExecuteQuery(string cName,string query)
+        public List<object> ExecuteQuery(string cName,string query)
         {
             var collection =
            _client.CreateDocumentCollectionQuery("dbs/" + GetDatabase().Id)
@@ -243,8 +243,8 @@ namespace Welkin.Core.Repositories
                  .ToArray()
                  .FirstOrDefault();
 
-            var q = _client.CreateDocumentQuery(collection.SelfLink,query);
-            return q;
+            var q =  _client.CreateDocumentQuery(collection.SelfLink,query);
+            return q.ToList();
         }
       
 

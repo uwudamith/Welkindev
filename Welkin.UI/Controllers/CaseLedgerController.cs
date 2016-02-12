@@ -52,5 +52,24 @@ namespace Welkin.UI.Controllers
             await QueueHandler.PushToServiceAsync(rList);
             return View("Index");
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult> GetCases(string query)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = query,
+                JsCallback = "Notify",
+                Targert = "Get",
+                UserId = 1,
+                Type = Enums.EntityType.Case
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
     }
 }

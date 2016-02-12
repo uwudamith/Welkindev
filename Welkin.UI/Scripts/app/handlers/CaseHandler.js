@@ -17,6 +17,10 @@
                     {
                         name: "PopulateCaseDropdown",
                         fn: this.populateCaseDropdown
+                    },
+                    {
+                        name: "notify",
+                        fn: this.notify
                     }
                 ]);
                 this.settings.sAgent.start();
@@ -308,6 +312,10 @@
                 dataList.push(nextStepModel);
             }
             return dataList;
+        },
+        notify:function(d) {
+            var ss = JSON.parse(JSON.parse(d).JsonResult)
+            debugger;
         }
     };
 
