@@ -16,7 +16,7 @@
                     type: type,
                     data: { 'model': JSON.stringify(model) },
                     success: function (data) {
-                        callBackFunc(data);
+                        if(callBackFunc) callBackFunc(data);
                     }
                 });
             } else {
@@ -24,13 +24,16 @@
                     url: url,
                     type: type,
                     success: function (data) {
-                        callBackFunc(data);
+                        if(callBackFunc) callBackFunc(data);
                     }
                 });
             }
         },
         createGUID: function (callBackFunc) {
             return this.ajaxFunction('/Base/createGUID', 'GET', callBackFunc);
+        },
+        saveMasterData:function(callBackFunc,model){
+            return this.ajaxFunction('/Base/saveMasterData', 'POST', callBackFunc,model);
         },
         init: function () {
 
@@ -63,7 +66,8 @@
                         }),
                         common: {
                             ajaxFunction: $scope.ajaxFunction,
-                            createGUID:$scope.createGUID
+                            createGUID:$scope.createGUID,
+                            saveMasterData:$scope.saveMasterData
                         }
 
                     });
