@@ -205,15 +205,18 @@
                 }
                 
                 // Push to master data global variable
-                var party = JSON.parse(JSON.parse($m.masterData).JsonResult)[0].Parties;
+                var party = $m.masterData.Parties;
                 party.push(partyObj);
-                
+
                 // Adding to party data source
                 $("#ddlParty").data("kendoDropDownList").dataSource.insert(partyObj);
 
                 // Clear party model data
                 if(clearPartyModel()){
                      $('#addPartyModel').modal('toggle');
+                     // Calling the save master data function
+                    $m.settings.common.saveMasterData(null,$m.masterData);
+                    
                 }
             };
 
@@ -223,7 +226,8 @@
         },
 
         populateCaseDropdown: function (a) {
-            $m.masterData = a;
+            $m.masterData = JSON.parse(JSON.parse(a).JsonResult)[0];
+            
             var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
             var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;

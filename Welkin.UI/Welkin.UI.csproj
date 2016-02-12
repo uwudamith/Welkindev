@@ -667,6 +667,7 @@
     <Content Include="Views\DeedLedger\Index.cshtml" />
     <Content Include="Views\Draft\Index.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -692,7 +693,6 @@
     <Folder Include="Content\kendo\web\Uniform\" />
     <Folder Include="Scripts\kendo\cultures\" />
     <Folder Include="Scripts\kendo\messages\" />
-    <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
