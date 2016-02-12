@@ -28,14 +28,36 @@ namespace Welkin.Core
             await SignalRHandler.Send(r);
         }
 
-        public async void Get(Request request)
+        /// <summary>
+        /// Updates the case.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        public async void UpdateCase(Request request)
+        {
+            var instance = _entityFactory.CreateEntity<Case>(request.Type.ToString());
+            var r = new Response<bool> { Request = request };
+            try
+            {
+                await instance.ReplaceDocument(request.Json, request.Type.ToString());
+                r.Result = true;
+            }
+            catch (Exception e)
+            {
+                r.Result = false;
+                r.StatusType = Enums.StatusType.Error;
+                r.Message = e.Message;
+            }
+            await SignalRHandler.Send(r);
+        }
+
+        public async void GetCases(Request request)
         {
             var instance = _entityFactory.CreateEntity<Case>(request.Type.ToString());
             var r = new Response<bool> { Request = request };
             try
             {
                 r.JsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(instance.ExecuteQuery("Case",request.Json));
-              //  r.Result = true;
+                r.Result = true;
             }
             catch (Exception e)
             {

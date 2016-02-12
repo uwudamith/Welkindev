@@ -150,6 +150,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ServiceBusTrigger.cs" />
     <Compile Include="ServiceBusTriggerCase.Partial.cs" />
+    <Compile Include="ServiceBusTriggerDeed.Partial.cs" />
     <Compile Include="ServiceBusTriggerMaster.Partial.cs" />
     <Compile Include="SignalRHandler.cs" />
     <Compile Include="Trigger.cs" />

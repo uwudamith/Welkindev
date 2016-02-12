@@ -34,5 +34,59 @@ namespace Welkin.UI.Controllers
             await QueueHandler.PushToServiceAsync(rList);
             return View("Index");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> SaveDeedLedger(string model)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = model,
+                JsCallback = "notify",
+                Targert = "SaveDeed",
+                UserId = 1,
+                Type = Enums.EntityType.Deed
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdateDeedLedger(string model)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = model,
+                JsCallback = "notify",
+                Targert = "UpdateDeed",
+                UserId = 1,
+                Type = Enums.EntityType.Deed
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetDeeds(string query)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = query,
+                JsCallback = "Notify",
+                Targert = "GetDeeds",
+                UserId = 1,
+                Type = Enums.EntityType.Deed
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
     }
 }
