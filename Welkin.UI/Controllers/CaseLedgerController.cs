@@ -72,13 +72,13 @@ namespace Welkin.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetCases(string query)
+        public async Task<ActionResult> GetCases(string model)
         {
             var rList = new List<Request>();
 
             var r = new Request
             {
-                Json = query,
+                Json = model,
                 JsCallback = "notify",
                 Targert = "GetCases",
                 UserId = 1,
