@@ -53,7 +53,6 @@ namespace Welkin.UI.Controllers
             return View("Index");
         }
 
-
         [HttpPost]
         public async Task<ActionResult> GetCases(string query)
         {
