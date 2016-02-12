@@ -1,4 +1,4 @@
-﻿window.Welkin.CaseHandler = (function($scope, $, $m) {
+﻿window.Welkin.CaseHandler = (function ($scope, $, $m) {
     /// <summary>
     ///     Case ledger handler
     /// </summary>
@@ -24,7 +24,7 @@
 
             $(":checkbox").checkboxpicker();
 
-            var masterData;
+            var masterData = null;
 
             var nextStepModel = {
                 StepId: '',
@@ -88,7 +88,7 @@
                 }
 
                 nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
-                nextStepModel.Status = parseInt($("#ddlStatus").data("kendoDropDownList").value());
+                nextStepModel.Status = $("#ddlStatus").data("kendoDropDownList").value();
                 nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
                 nextStepModel.Fee = $("#txtFee").val();
                 nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
@@ -177,27 +177,45 @@
                 caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
                 caseModel.CaseSteps = $m.getCaseStepsData();
 
-                $m.saveCaseLedger('/CaseLedger/SaveCaseLedger','POST',caseModel);
+                $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', caseModel);
             });
 
-             var successFunc = function(data){
-              debugger;
+            var clearPartyModel = function () {
+                $("#txtUserName").val("");
+                $("#txtAddress").val("");
+                $("#txtEmail").val("");
+                $("#txtTelephone").val("");
+                return true;
+            };
+            var savePartyData = function (guid) {
                 var partyObj = {};
                 if ($("#txtUserName").val() == "") {
                     alert("Please enter party name");
                     return;
                 } else {
-                    partyObj.Id = data;
-                    partyObj.Name = '';
-                    partyObj.Address = '';
-                    partyObj.Email = '';
-                    partyObj.Telephone = '';
-                };
+                    partyObj.Id = guid;
+                    partyObj.Name = $("#txtUserName").val();
+                    partyObj.Address = $("#txtAddress").val();
+                    partyObj.Email = $("#txtEmail").val();
+                    partyObj.Telephone = $("#txtTelephone").val();
+                }
+                
+                // Push to master data global variable
+                var party = JSON.parse(JSON.parse($m.masterData).JsonResult)[0].Parties;
+                party.push(partyObj);
+                
+                // Adding to party data source
+                $("#ddlParty").data("kendoDropDownList").dataSource.insert(partyObj);
+
+                // Clear party model data
+                if(clearPartyModel()){
+                     $('#addPartyModel').modal('toggle');
+                }
             };
 
             $("#save-party").click(function () {
-            $m.settings.common.createGUID(successFunc);
-             });
+                $m.settings.common.createGUID(savePartyData);
+            });
         },
 
         populateCaseDropdown: function (a) {
@@ -260,7 +278,7 @@
             $("#chkNotification").prop('checked', true);
 
         },
-        saveCaseLedger: function (url,type,model) {
+        saveCaseLedger: function (url, type, model) {
             $m.settings.common.ajaxFunction(url, type, model);
         },
         getCaseStepsData: function () {
@@ -295,4 +313,4 @@
 
     return $m;
 
-}(window.Welkin, window.Welkin.$, window.Welkin.CaseHandler || {}));
+} (window.Welkin, window.Welkin.$, window.Welkin.CaseHandler || {}));
