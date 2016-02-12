@@ -6,6 +6,7 @@
         {
             Case,
             Master,
+            Deed,
             None
         }
 

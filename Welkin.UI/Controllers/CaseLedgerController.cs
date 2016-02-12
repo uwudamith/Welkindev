@@ -43,7 +43,7 @@ namespace Welkin.UI.Controllers
             var r = new Request
             {
                 Json = model ,
-                JsCallback = "Notify",
+                JsCallback = "notify",
                 Targert = "SaveCase",
                 UserId = 1,
                 Type = Enums.EntityType.Case
@@ -53,6 +53,23 @@ namespace Welkin.UI.Controllers
             return View("Index");
         }
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateCaseLedger(string model)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = model,
+                JsCallback = "notify",
+                Targert = "UpdateCase",
+                UserId = 1,
+                Type = Enums.EntityType.Case
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
 
         [HttpPost]
         public async Task<ActionResult> GetCases(string query)
@@ -62,8 +79,8 @@ namespace Welkin.UI.Controllers
             var r = new Request
             {
                 Json = query,
-                JsCallback = "Notify",
-                Targert = "Get",
+                JsCallback = "notify",
+                Targert = "GetCases",
                 UserId = 1,
                 Type = Enums.EntityType.Case
             };

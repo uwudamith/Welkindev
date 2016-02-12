@@ -33,5 +33,45 @@ namespace Welkin.Core
             }
             await SignalRHandler.Send(r);
         }
+
+        public async void SaveMaster(Request request)
+        {
+            var instance = _entityFactory.CreateEntity<Master>(request.Type.ToString());
+            var r = new Response<bool> { Request = request };
+            try
+            {
+                await instance.UpsertDocument(request.Json, request.Type.ToString());
+                r.Result = true;
+            }
+            catch (Exception e)
+            {
+                r.Result = false;
+                r.StatusType = Enums.StatusType.Error;
+                r.Message = e.Message;
+            }
+            await SignalRHandler.Send(r);
+        }
+
+        /// <summary>
+        /// Updates the master.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        public async void UpdateMaster(Request request)
+        {
+            var instance = _entityFactory.CreateEntity<Master>(request.Type.ToString());
+            var r = new Response<bool> { Request = request };
+            try
+            {
+                await instance.ReplaceDocument(request.Json, request.Type.ToString());
+                r.Result = true;
+            }
+            catch (Exception e)
+            {
+                r.Result = false;
+                r.StatusType = Enums.StatusType.Error;
+                r.Message = e.Message;
+            }
+            await SignalRHandler.Send(r);
+        }
     }
 }
