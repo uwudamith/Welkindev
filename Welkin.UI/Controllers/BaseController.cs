@@ -10,6 +10,7 @@ namespace Welkin.UI.Controllers
     public class BaseController : Controller
     {
         [HttpGet]
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
         public string createGUID()
         {
             return Guid.NewGuid().ToString();
