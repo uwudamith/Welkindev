@@ -303,6 +303,7 @@
     <Content Include="Scripts\app\handlers\DraftHandler.js" />
     <Content Include="Scripts\bootstrap-checkbox.js" />
     <Content Include="Scripts\bootstrap-checkbox.min.js" />
+    <Content Include="Scripts\bootstrap-notify.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\kendo\bootstrap.min.js" />
     <Content Include="Content\kendo\web\kendo.black.min.css.map" />
