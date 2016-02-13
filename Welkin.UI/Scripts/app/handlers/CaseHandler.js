@@ -74,11 +74,13 @@
                     { field: "StepId", hidden: true, },
                     { field: "SendNotifications", hidden: true, },
                     { field: "NextStep", title: "Next Step" },
-                    { field: "Fee", title: "Fee" },
-                    { field: "DueDate", width: 150, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
+                    { field: "Fee", title: "Fee",width: 100 },
+                    { field: "DueDate", width: 130, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
                     { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },
                     { field: "Tasks", width: 50, title: "Task", template: "<a href='\\#'><span class='glyphicon glyphicon-calendar pull-right'></span></a>" },
                     { field: "Status", width: 70, title: "Status", template: kendo.template($("#statusTemplate").html()) },
+                    { command: { text: "", template: "<button class='btn btn-primary btn-edit'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                    { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50}
                 ]
             });
             // Save next step click function
@@ -92,7 +94,7 @@
                 }
 
                 nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
-                nextStepModel.Status = 1;
+                nextStepModel.Status = '1';
                 nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
                 nextStepModel.Fee = $("#txtFee").val();
                 nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
