@@ -35,6 +35,16 @@
         saveMasterData:function(callBackFunc,model){
             return this.ajaxFunction('/Base/saveMasterData', 'POST', callBackFunc,model,true);
         },
+        showNotification:function(message,nType){
+            $.notify({
+                // options
+                message: message
+            }, {
+                    // settings
+                    type: nType
+                });
+            
+        },
         init: function () {
 
             var $scope = this;
@@ -67,7 +77,8 @@
                         common: {
                             ajaxFunction: $scope.ajaxFunction,
                             createGUID:$scope.createGUID,
-                            saveMasterData:$scope.saveMasterData
+                            saveMasterData:$scope.saveMasterData,
+                            showNotification:$scope.showNotification
                         }
 
                     });
