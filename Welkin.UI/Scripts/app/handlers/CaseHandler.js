@@ -73,7 +73,7 @@
                 columns: [
                     { field: "StepId", hidden: true, },
                     { field: "SendNotifications", hidden: true, },
-                    { field: "NextStep", title: "Next Step" },
+                    { field: "NextStep", title: "Next Step",width:200 },
                     { field: "Fee", title: "Fee",width: 100 },
                     { field: "DueDate", width: 130, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
                     { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },

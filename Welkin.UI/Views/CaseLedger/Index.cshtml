@@ -64,7 +64,7 @@
                 <div class="row">
                     <div class="col-lg-5">
                         <div class="form-group">
-                            <label for="type" class="col-lg-3 control-label">Start Date</label>
+                            <label for="dtStartDate" class="col-lg-3 control-label">Start Date</label>
                             <div class="col-lg-7">
                                 @(Html.Kendo().DatePicker()
                                       .Name("dtStartDate")
@@ -117,18 +117,27 @@
 
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <label for="txtFee" class="col-lg-10 control-label">Add new step</label>
-                            <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addStepModel">
-                                <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-11">
-                        <div id="caseSteps"></div>
+                            <div class="panel panel-default step-panel">
+                                <div class="panel-heading">
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-default pull-left" data-toggle="collapse" data-target="#collapse1" style="margin-left:10px;">
+                                            <i class="glyphicon glyphicon-circle-arrow-down"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addStepModel" style="margin-left:10px;margin-right:10px;">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                        </button>
+                                        <label for="txtFee" class="control-label pull-right">Add new step</label>
+                                    </div>
+                                    
+                                </div>
+                                <div class="clearfix"></div>
+                                <div id="collapse1" class="panel-collapse collapse">
+                                   <div id="caseSteps"></div>
+                                </div>
+                            </div>
                     </div>
                 </div>
                 <div class="row">

@@ -134,3 +134,7 @@ textarea {
 #grdUsers .k-header {
    display: none;
 }
+
+.step-panel .panel-heading{
+    height:52px;
+}
