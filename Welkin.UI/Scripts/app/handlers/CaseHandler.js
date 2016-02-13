@@ -331,8 +331,9 @@
             
         },
         notify: function (d) {
-            var ss = JSON.parse(JSON.parse(d).JsonResult)
-            debugger;
+            $m.settings.common.showNotification("Record Successfully Saves","success")
+            //var ss = JSON.parse(JSON.parse(d).JsonResult)
+           // debugger;
         }
     };
 
