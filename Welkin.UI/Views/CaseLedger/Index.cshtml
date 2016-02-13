@@ -12,7 +12,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" id="txt-search-case-no" placeholder="Case No">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" id="btn-search-case">Go!</button>
+                        <button class="btn btn-primary" type="button" id="btn-search-case">Go!</button>
                     </span>
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
@@ -144,18 +144,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-8">
+                            <div class="col-lg-7">
                                 <div class="form-group">
                                     <label for="ddlParty" class="control-label">Send automatic text reminders to the client on each next step</label>
                                 </div>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-3">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-primary">
                                         Browse
                                     </button>
                                     <button type="button" class="btn btn-success save-case" style="margin-left: 10px;">
-                                        Save
+                                        Save Changes
                                     </button>
                                 </div>
                             </div>
@@ -171,7 +171,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New Step</h4>
+                <h4 class="modal-title">Add Next Step</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -180,9 +180,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtStepName" class="col-lg-4 control-label">Step Name</label>
+                                        <label for="txtNextStep" class="col-lg-4 control-label">Next Step</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtStepName" type="text">
+                                            <input class="form-control" id="txtNextStep" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +232,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            @*<div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="ddlStatus" class="col-lg-4 control-label">Status</label>
@@ -241,14 +241,14 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*@
                         </form>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save-step">Save changes</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="save-step">Save Changes</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -297,9 +297,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtTelephone" class="col-lg-4 control-label">Telephone</label>
+                                        <label for="txtContactNumber" class="col-lg-4 control-label">Contact Number</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtTelephone" type="text">
+                                            <input class="form-control" id="txtContactNumber" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -309,8 +309,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save-party">Save changes</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="save-party">Save changes</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

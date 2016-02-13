@@ -9,12 +9,12 @@
         Configs: {
             hubUrl: ""
         },
-        ajaxFunction: function (url, type,callBackFunc, model) {
+        ajaxFunction: function (url, type,callBackFunc, model,isStringfy) {
             if (model) {
                 $.ajax({
                     url: url,
                     type: type,
-                    data: { 'model': JSON.stringify(model) },
+                    data: { 'model': isStringfy==true?JSON.stringify(model):model },
                     success: function (data) {
                         if(callBackFunc) callBackFunc(data);
                     }
@@ -30,10 +30,10 @@
             }
         },
         createGUID: function (callBackFunc) {
-            return this.ajaxFunction('/Base/createGUID', 'GET', callBackFunc);
+            return this.ajaxFunction('/Base/createGUID', 'GET', callBackFunc,null,false);
         },
         saveMasterData:function(callBackFunc,model){
-            return this.ajaxFunction('/Base/saveMasterData', 'POST', callBackFunc,model);
+            return this.ajaxFunction('/Base/saveMasterData', 'POST', callBackFunc,model,true);
         },
         init: function () {
 

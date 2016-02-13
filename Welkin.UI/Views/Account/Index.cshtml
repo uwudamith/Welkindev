@@ -216,9 +216,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtTelephone" class="col-lg-4 control-label">Telephone</label>
+                                        <label for="txtContactNumber" class="col-lg-4 control-label">Contact Number</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtTelephone" type="text">
+                                            <input class="form-control" id="txtContactNumber" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -236,9 +236,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="ddlLevel" class="col-lg-4 control-label">Level</label>
+                                        <label for="ddlRole" class="col-lg-4 control-label">Role</label>
                                         <div class="col-lg-8">
-                                            <input id="ddlLevel" value="1" style="width: 100%;" />
+                                            <input id="ddlRole" value="1" style="width: 100%;" />
                                         </div>
                                     </div>
                                 </div>
@@ -353,7 +353,7 @@
         ];
 
         // create DropDownList from input HTML element
-        $("#ddlLevel").kendoDropDownList({
+        $("#ddlRole").kendoDropDownList({
             dataSource: userLevelData,
             dataTextField: "Name",
             dataValueField: "Id",

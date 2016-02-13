@@ -32,7 +32,7 @@
 
             var nextStepModel = {
                 StepId: '',
-                StepName: '',
+                NextStep: '',
                 Fee: '',
                 DueDate: '',
                 ByWhom: [],
@@ -73,7 +73,7 @@
                 columns: [
                     { field: "StepId", hidden: true, },
                     { field: "SendNotifications", hidden: true, },
-                    { field: "StepName", title: "Step" },
+                    { field: "NextStep", title: "Next Step" },
                     { field: "Fee", title: "Fee" },
                     { field: "DueDate", width: 150, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
                     { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },
@@ -84,15 +84,15 @@
             // Save next step click function
             $("#save-step").click(function () {
 
-                if ($("#txtStepName").val() == "") {
+                if ($("#txtNextStep").val() == "") {
                     alert('Please enter step name');
                     return;
                 } else {
-                    nextStepModel.StepName = $("#txtStepName").val();
+                    nextStepModel.NextStep = $("#txtNextStep").val();
                 }
 
                 nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
-                nextStepModel.Status = $("#ddlStatus").data("kendoDropDownList").value();
+                nextStepModel.Status = 1;
                 nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
                 nextStepModel.Fee = $("#txtFee").val();
                 nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
@@ -134,12 +134,12 @@
                 index: 0
             });
 
-            $("#ddlStatus").kendoDropDownList({
-                dataTextField: "Name",
-                dataValueField: "Id",
-                optionLabel: "Select Status",
-                index: 0
-            });
+            //$("#ddlStatus").kendoDropDownList({
+            //    dataTextField: "Name",
+            //    dataValueField: "Id",
+            //    optionLabel: "Select Status",
+            //    index: 0
+            //});
 
             // On save-case click function
             $(".save-case").click(function () {
@@ -188,7 +188,7 @@
                 $("#txtUserName").val("");
                 $("#txtAddress").val("");
                 $("#txtEmail").val("");
-                $("#txtTelephone").val("");
+                $("#txtContactNumber").val("");
                 return true;
             };
             var savePartyData = function (guid) {
@@ -201,7 +201,7 @@
                     partyObj.Name = $("#txtUserName").val();
                     partyObj.Address = $("#txtAddress").val();
                     partyObj.Email = $("#txtEmail").val();
-                    partyObj.Telephone = $("#txtTelephone").val();
+                    partyObj.ContactNumber = $("#txtContactNumber").val();
                 }
                 
                 // Push to master data global variable
@@ -229,7 +229,7 @@
                     alert("Search field should not be empty");
                 } else {
                     var searchQuery = "SELECT * FROM c WHERE CONTAINS(c.CaseNumber,'" + $("#txt-search-case-no").val() + "')";
-                    $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery);
+                    $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery,false);
                 }
             });
         },
@@ -265,9 +265,9 @@
             ddlParty.setDataSource(parties);
             ddlParty.refresh();
 
-            var ddlStatus = $("#ddlStatus").data("kendoDropDownList");
-            ddlStatus.setDataSource(statusData);
-            ddlStatus.refresh();
+            //var ddlStatus = $("#ddlStatus").data("kendoDropDownList");
+            //ddlStatus.setDataSource(statusData);
+            //ddlStatus.refresh();
 
             var ddlUsers = $("#ddlUsers").data("kendoMultiSelect");
             ddlUsers.setDataSource(usersData);
@@ -281,21 +281,21 @@
         },
         clearAddStepData: function () {
             //Clear step name textbox
-            $("#txtStepName").val("");
+            $("#txtNextStep").val("");
             // Set today date to due date datepicker
             var todayDate = kendo.toString(kendo.parseDate(new Date()), 'MM/dd/yyyy');
             $("#dtDueOnDate").data("kendoDatePicker").value(todayDate);
             // Remove selected indexes from multi select
             $("#ddlUsers").data("kendoMultiSelect").value([]);
             // Set status to pending
-            $("#ddlStatus").data("kendoDropDownList").select(0);
+            //$("#ddlStatus").data("kendoDropDownList").select(0);
             //Clear fee
             $("#txtFee").val("");
             $("#chkNotification").prop('checked', true);
 
         },
         saveCaseLedger: function (url, type, model) {
-            $m.settings.common.ajaxFunction(url, type, model);
+            $m.settings.common.ajaxFunction(url, type,null, model,true);
         },
         getCaseStepsData: function () {
             var data = $("#caseSteps").data("kendoGrid").dataSource.data();
@@ -312,7 +312,7 @@
 
                 var nextStepModel = {
                     StepId: data[i].StepId,
-                    StepName: data[i].StepName,
+                    NextStep: data[i].NextStep,
                     Fee: data[i].Fee,
                     DueDate: data[i].DueDate,
                     ByWhom: whomList,
