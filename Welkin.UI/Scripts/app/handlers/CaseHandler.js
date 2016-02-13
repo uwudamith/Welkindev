@@ -327,6 +327,9 @@
             }
             return dataList;
         },
+        searchCaseResponse:function(data){
+            
+        },
         notify: function (d) {
             var ss = JSON.parse(JSON.parse(d).JsonResult)
             debugger;

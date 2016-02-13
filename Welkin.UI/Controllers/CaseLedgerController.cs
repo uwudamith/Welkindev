@@ -79,7 +79,7 @@ namespace Welkin.UI.Controllers
             var r = new Request
             {
                 Json = model,
-                JsCallback = "notify",
+                JsCallback = "searchCaseResponse",
                 Targert = "GetCases",
                 UserId = 1,
                 Type = Enums.EntityType.Case

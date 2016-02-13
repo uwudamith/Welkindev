@@ -56,6 +56,10 @@ namespace Welkin.UI
                 "~/Scripts/kendo/kendo.all.min.js",
                 "~/Scripts/kendo/kendo.aspnetmvc.min.js",
                 "~/Scripts/kendo/kendo.timezones.min.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/notify").Include(
+               "~/Scripts/bootstrap-notify.min.js"
+              ));
         }
 
         private static void ThemeBundle(BundleCollection bundles)
