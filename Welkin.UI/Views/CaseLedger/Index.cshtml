@@ -215,7 +215,7 @@
                                     <div class="form-group">
                                         <label for="ddlUsers" class="col-lg-4 control-label">By Whom</label>
                                         <div class="col-lg-8">
-                                            <select id="ddlUsers" multiple="multiple" data-placeholder="Select user(s)">
+                                            <select id="ddlUsers" multiple="multiple" data-placeholder="Select User(s)">
                                             </select>
                                         </div>
                                     </div>
@@ -324,6 +324,91 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div class="modal fade" tabindex="-1" id="addStepTasks" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Tasks</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-message"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="txtTaskDescription" class="col-lg-4 control-label">Description</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtTaskDescription" type="text">
+                                            <input id="hdnNextItemId" type="hidden">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="dtTaskDueOnDate" class="col-lg-4 control-label">Due On</label>
+                                        <div class="col-lg-8">
+                                            @(Html.Kendo().DatePicker()
+                                            .Name("dtTaskDueOnDate")
+                                            .HtmlAttributes(new { style = "width: 100%" })
+                                            )
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="chkTaskStatus" class="col-lg-4 control-label">Status</label>
+                                        <div class="col-lg-8">
+                                            <input class="chkTaskStatus" type="checkbox" >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="ddlTaskUsers" class="col-lg-4 control-label">By Whom</label>
+                                        <div class="col-lg-8">
+                                            <select id="ddlTaskUsers" multiple="multiple" data-placeholder="Select User(s)"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="col-lg-4">
+                                        
+                                    </div>
+                                    <div class="col-lg-8 pull-right">
+                                        <button type="button" class="btn btn-primary pull-right" id="add-step-items">Add Task Item</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="grdStepsTasks"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Save & Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- Template for display user details inside grid-->
 <script id="usersTemplate" type="text/x-kendo-template">
@@ -343,12 +428,23 @@
     # } #
 </script>
 
+<!-- Template for display user details inside grid-->
+<script id="taskUsersTemplate" type="text/x-kendo-template">
+    # for (var i = 0, length = ByWhom.length ;i < length; i++) { #
+    <span>
+        #= ByWhom[i].Name #
+        # if(i !== length -1) { #
+        |
+        # } #
+    </span>
+    # } #
+</script>
+
 <!-- Template for display status -->
 <script id="statusTemplate" type="text/x-kendo-template">
-    # if(Status == 1) { #
+    # if(IsPending) { #
     <span class='glyphicon glyphicon-thumbs-down pull-right'></span>
-    # } #
-    # if(Status == 2) { #
+    # }else{ #
     <span class='glyphicon glyphicon-thumbs-up pull-right'></span>
     # } #
 </script>

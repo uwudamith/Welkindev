@@ -24,7 +24,7 @@
                 onDisconnect: function ($hub, o) {
                     setTimeout(function() { 
                         $hub.server.connect(o.id);
-                    }, 2000);
+                    }, 200000);
                 }
             }
         };

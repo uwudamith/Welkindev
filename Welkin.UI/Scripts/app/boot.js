@@ -45,6 +45,17 @@
                 });
             
         },
+        setValidationMessages:function(target,type,message){
+            /// <summary>
+            /// This function used to generate dynamic alert boxes for validations
+            /// </summary>
+            /// <param name="target" type="type">Where to place the alertbox</param>
+            /// <param name="type" type="type">Possible types are success,info,warning,danger</param>
+            /// <param name="message" type="type">Message should display</param>
+
+            $("#" + target).empty();
+            $("#" + target).append("<div class='alert alert-" + type + "'><a class='close' data-dismiss='alert'>×</a>" + message + "</div>");
+        },
         init: function () {
 
             var $scope = this;
@@ -78,7 +89,8 @@
                             ajaxFunction: $scope.ajaxFunction,
                             createGUID:$scope.createGUID,
                             saveMasterData:$scope.saveMasterData,
-                            showNotification:$scope.showNotification
+                            showNotification: $scope.showNotification,
+                            setValidationMessages:$scope.setValidationMessages
                         }
 
                     });
