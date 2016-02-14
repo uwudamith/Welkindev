@@ -10,12 +10,12 @@
 
         // Data source for nextsteps
         nextStepDataSource: [],
-
         init: function (options) {
             //alert("CaseHandler");
             this.settings = $scope.$.extend(true, {
 
             }, options);
+
             if (this.settings.sAgent) {
                 this.settings.sAgent.registerEvents([
                     {
@@ -62,9 +62,21 @@
                     { field: "Status", width: 70, title: "Status", template: kendo.template($("#statusTemplate").html()) },
                     { command: { text: "", template: "<button class='btn btn-primary btn-edit'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
                     { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50}
-                ]
-            });
+                ],
+                dataBinding: function (e) {
+                    /// <summary>
+                    /// Set total fee value in textbox
+                    /// </summary>
+                    /// <param name="e" type="type"></param>
+                    var data = this.dataSource.data();
+                    var total = 0;
+                    $(data).each(function (index,item) {
+                        total = total + parseInt(item.Fee);
+                    });
 
+                    $("#txtTotalFee").val(total);
+                }
+            });
 
             var createNextStepData = function (guid) {
                 /// <summary>
@@ -221,6 +233,7 @@
                     $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery,false);
                 }
             });
+
         },
         populateCaseDropdown: function (a) {
             $m.masterData = JSON.parse(JSON.parse(a).JsonResult)[0];
@@ -299,7 +312,7 @@
             
         },
         notify: function (d) {
-            $m.settings.common.showNotification("Record Successfully Saves","success")
+            $m.settings.common.showNotification("Record Successfully Saves", "success");
             //var ss = JSON.parse(JSON.parse(d).JsonResult)
            // debugger;
         }
