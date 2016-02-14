@@ -7,6 +7,10 @@
     
    
     $m = {
+
+        // Data source for nextsteps
+        nextStepDataSource: [],
+
         init: function (options) {
             //alert("CaseHandler");
             this.settings = $scope.$.extend(true, {
@@ -30,29 +34,6 @@
 
             var masterData = null;
 
-            var nextStepModel = {
-                StepId: '',
-                NextStep: '',
-                Fee: '',
-                DueDate: '',
-                ByWhom: [],
-                Tasks: '',
-                Status: '',
-                SendNotifications: ''
-            };
-
-            var caseModel = {
-                CaseTypeId: '',
-                PartyId: '',
-                CaseNumber: '',
-                CourtId: '',
-                StartDate: '',
-                Description: '',
-                SendAutomaticReminders: '',
-                Files: [],
-                CaseSteps: []
-            };
-
             $("#files").kendoUpload({
                 async: {
                     saveUrl: "save",
@@ -63,7 +44,7 @@
 
             $("#caseSteps").kendoGrid({
                 dataSource: {
-                    data: [],
+                    data: $m.nextStepDataSource,
                     pageSize: 5
                 },
                 pageable: {
@@ -83,9 +64,16 @@
                     { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50}
                 ]
             });
-            // Save next step click function
-            $("#save-step").click(function () {
 
+
+            var createNextStepData = function (guid) {
+                /// <summary>
+                /// Create next step data with passing guid
+                /// </summary>
+                /// <param name="guid" type="type"></param>
+                var nextStepModel = {};
+
+                nextStepModel.StepId = guid;
                 if ($("#txtNextStep").val() == "") {
                     alert('Please enter step name');
                     return;
@@ -101,6 +89,11 @@
                 if ($m.addToCaseItems(nextStepModel)) {
                     $('#addStepModel').modal('toggle');
                 }
+            }
+
+            // Save next step click function
+            $("#save-step").click(function () {
+                $m.settings.common.createGUID(createNextStepData);
             });
 
             // After step model close function
@@ -136,15 +129,10 @@
                 index: 0
             });
 
-            //$("#ddlStatus").kendoDropDownList({
-            //    dataTextField: "Name",
-            //    dataValueField: "Id",
-            //    optionLabel: "Select Status",
-            //    index: 0
-            //});
-
             // On save-case click function
             $(".save-case").click(function () {
+
+                var caseModel = {};
 
                 // Validate Type
                 if ($("#ddlType").data("kendoDropDownList").value() == "") {
@@ -218,7 +206,6 @@
                     $('#addPartyModel').modal('toggle');
                     // Calling the save master data function
                     $m.settings.common.saveMasterData(null, $m.masterData);
-
                 }
             };
 
@@ -275,10 +262,16 @@
             ddlUsers.setDataSource(usersData);
             ddlUsers.refresh();
 
-
         },
         addToCaseItems: function (data) {
-            $("#caseSteps").data("kendoGrid").dataSource.add(data);
+            /// <summary>
+            /// Add next step data
+            /// </summary>
+            /// <param name="data" type="type"></param>
+            /// <returns type=""></returns>
+            $m.nextStepDataSource.push(data);
+            $("#caseSteps").data("kendoGrid").dataSource.read();
+            $("#caseSteps").data("kendoGrid").refresh();
             return true;
         },
         clearAddStepData: function () {
@@ -300,32 +293,7 @@
             $m.settings.common.ajaxFunction(url, type,null, model,true);
         },
         getCaseStepsData: function () {
-            var data = $("#caseSteps").data("kendoGrid").dataSource.data();
-            var dataList = [];
-            for (var i = 0, len = data.length; i < len; i++) {
-                var whomList = [];
-                for (var j = 0, jLen = data[i].ByWhom.length; j < jLen; j++) {
-                    var obj = {
-                        Id: data[i].ByWhom[j].Id,
-                        Name: data[i].ByWhom[j].Name
-                    };
-                    whomList.push(obj);
-                }
-
-                var nextStepModel = {
-                    StepId: data[i].StepId,
-                    NextStep: data[i].NextStep,
-                    Fee: data[i].Fee,
-                    DueDate: data[i].DueDate,
-                    ByWhom: whomList,
-                    Tasks: data[i].Tasks,
-                    Status: data[i].Status,
-                    SendNotifications: data[i].SendNotifications
-                };
-
-                dataList.push(nextStepModel);
-            }
-            return dataList;
+            return $m.nextStepDataSource;
         },
         searchCaseResponse:function(data){
             
