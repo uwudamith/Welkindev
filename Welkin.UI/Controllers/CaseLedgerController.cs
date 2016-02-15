@@ -10,7 +10,7 @@ namespace Welkin.UI.Controllers
         // GET: CaseLedger
         public async Task<ActionResult> Index()
         {
-            return await LoadMasterData();
+            return  await LoadMasterData();
         }
 
         /// <summary>
