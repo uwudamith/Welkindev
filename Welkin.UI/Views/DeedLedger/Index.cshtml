@@ -10,9 +10,9 @@
         </div><!-- /.col-lg-6 -->
         <div class="col-lg-4">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Deed No">
+                <input type="text" class="form-control" id="txt-search-deed-no" placeholder="Deed No">
                 <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">Go!</button>
+                        <button class="btn btn-default" type="button" id="btn-search-deed">Go!</button>
                     </span>
             </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
@@ -172,7 +172,7 @@
                     <div class="form-group">
                         <label for="input-2" class="col-lg-3 control-label">Availability</label>
                         <div class="col-lg-6">
-                            <input id="input-2" type="checkbox" checked>
+                            <input id="chkAvailability" type="checkbox" checked>
                         </div>
                     </div>
                 </div>
@@ -203,8 +203,8 @@
                         <button type="button" class="btn btn-primary col-lg-3" style="margin-left: 10px;">
                             Browse
                         </button>
-                        <button type="button" class="btn btn-success col-lg-3" style="margin-left: 10px;">
-                            Save
+                        <button type="button" class="btn btn-success col-lg-3 save-deed" style="margin-left: 10px;">
+                            Save Changes
                         </button>
                     </div>
                 </div>
@@ -340,63 +340,3 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-<script>
-    $(document).ready(function() {
-        var data = [
-            { text: "Gift", value: "1" },
-            { text: "Type1", value: "2" },
-            { text: "Type2", value: "3" }
-        ];
-
-        var granteeData = [
-            { text: "Anjana", value: "1" },
-            { text: "Pethum", value: "2" },
-            { text: "Sumudu", value: "3" }
-        ];
-
-        var ddlGrantorData = [
-            { text: "Damith", value: "1" },
-            { text: "Janith", value: "2" },
-            { text: "Nalin", value: "3" }
-        ];
-
-
-        var ddlDistrictData = [
-            { text: "Kurunegala", value: "1" },
-            { text: "Colombo", value: "2" },
-            { text: "Kandy", value: "3" }
-        ];
-
-        // create DropDownList from input HTML element
-        $("#ddlType").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel:"Select a Deed Type",
-            index: 0
-        });
-
-        $("#ddlGrantee").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel:"Select a Grantee",
-            index: 0
-        });
-
-        $("#ddlGrantor").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel:"Select a Grantor",
-            index: 0
-        });
-
-        $("#ddlDistrict").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel:"Select a District",
-            index: 0
-        });
-
-        $(":checkbox").checkboxpicker();
-
-    });
-</script>

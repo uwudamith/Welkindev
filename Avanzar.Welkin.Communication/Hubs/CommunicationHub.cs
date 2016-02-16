@@ -63,13 +63,19 @@ namespace Avanzar.Welkin.Communication.Hubs
         {
             if (!_isClientConnected && !_queue.ContainsKey(callback))
                 _queue.Add(callback, response);
-            //select user by user Id and push messages to connections
-            ConnectedUsers user = (from d in Users
-                                   where d.UserId == userId
-                                   select d).Single();
+            //select user by user Id and push messages to connections] 
+            if (Users.Count > 0)
+            {
+                ConnectedUsers user = (from d in Users
+                    where d.UserId == userId
+                    select d).Single();
 
-            IClientProxy proxy = Clients.Clients(user.ConnectionIds.ToArray());
-            proxy.Invoke(callback, response);
+                IClientProxy proxy = Clients.Clients(user.ConnectionIds.ToArray());
+                proxy.Invoke(callback, response);
+            }
+
+           
+
         }
 
         public Dictionary<string, string> Queue

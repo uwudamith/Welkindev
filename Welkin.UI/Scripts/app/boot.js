@@ -71,7 +71,14 @@
                             hub: {
                                 url: $scope.Configs.hubUrl
                             }
-                        })
+                        }),
+                        common: {
+                            ajaxFunction: $scope.ajaxFunction,
+                            createGUID:$scope.createGUID,
+                            saveMasterData:$scope.saveMasterData,
+                            showNotification: $scope.showNotification,
+                            setValidationMessages:$scope.setValidationMessages
+                        }
                     });
                 }
 

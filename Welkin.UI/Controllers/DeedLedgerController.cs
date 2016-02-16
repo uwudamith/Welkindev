@@ -72,14 +72,14 @@ namespace Welkin.UI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetDeeds(string query)
+        public async Task<ActionResult> GetDeeds(string model)
         {
             var rList = new List<Request>();
 
             var r = new Request
             {
-                Json = query,
-                JsCallback = "Notify",
+                Json = model,
+                JsCallback = "searchDeedResponse",
                 Targert = "GetDeeds",
                 UserId = 1,
                 Type = Enums.EntityType.Deed

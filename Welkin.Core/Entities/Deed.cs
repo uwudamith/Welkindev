@@ -9,11 +9,11 @@ namespace Welkin.Core.Entities
     [EntityType(new[] {"Deed"})]
     public class Deed : IEventEntity
     {
-        private readonly IDataRepository _dataRepo;
+        private readonly IDataRepository _dataRepository;
 
         public Deed(IDataRepository dataRepo)
         {
-            _dataRepo = dataRepo;
+            _dataRepository = dataRepo;
         }
 
         public Task<IOrderedQueryable<T>> GetAll<T>(T t, string collectionName = null)
@@ -35,7 +35,7 @@ namespace Welkin.Core.Entities
         {
             try
             {
-                await _dataRepo.UpsertDocument(document,collection);
+                await _dataRepository.UpsertDocument(document,collection);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace Welkin.Core.Entities
         {
             try
             {
-                await _dataRepo.ReplaceDocument(document, collection);
+                await _dataRepository.ReplaceDocument(document, collection);
             }
             catch (Exception ex)
             {
@@ -57,7 +57,7 @@ namespace Welkin.Core.Entities
 
         public List<object> ExecuteQuery(string cName, string query)
         {
-            throw new NotImplementedException();
+            return _dataRepository.ExecuteQuery(cName, query);
         }
     }
 }
