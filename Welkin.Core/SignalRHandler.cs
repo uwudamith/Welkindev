@@ -45,8 +45,9 @@ namespace Welkin.Core
         /// <returns></returns>
         public static async Task Send<T>(Response<T> response)
         {
+           
             await
-                _welkinHubProxy.Invoke(response.Destination, response.Serialize(), response.Request.JsCallback);
+                _welkinHubProxy.Invoke(response.Destination, response.Serialize(), response.Request.JsCallback, response.Request.UserId);
         }
 
         /// <summary>

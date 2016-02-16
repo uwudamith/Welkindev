@@ -16,6 +16,7 @@
         multipleSearchResult:{},
         init: function (options) {
             //alert("CaseHandler");
+      
             this.settings = $scope.$.extend(true, {
 
             }, options);
@@ -138,8 +139,10 @@
                 $m.caseModel.Description = $("#txtDescription").val();
                 $m.caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
                 $m.caseModel.CaseSteps = $m.getCaseStepsData();
-
-                $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel);
+                
+                $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel); 
+                                         
+                        
             });
 
             var clearPartyModel = function () {
@@ -430,7 +433,8 @@
             
         },
         notify: function (d) {
-            $m.settings.common.showNotification("Record Successfully Saves", "success");
+            $m.settings.common.showNotification("Record Successfully Saved", "success");
+             $m.clearCaseForm();  
             //var ss = JSON.parse(JSON.parse(d).JsonResult)
             // debugger;
         },
@@ -586,6 +590,36 @@
             dataSource.read();
             $("#grdCaseMultipleResult").data("kendoGrid").refresh();
             $("#displayMultipleCaseSearchResult").modal('toggle');
+        },
+        clearCaseForm:function () {
+            if($("#ddlType").data("kendoDropDownList"))
+            $("#ddlType").data("kendoDropDownList").select(0);
+            
+            if($("#ddlParty").data("kendoDropDownList"))
+            $("#ddlParty").data("kendoDropDownList").select(0);
+            
+             if($("#txtCaseNo"))
+            $("#txtCaseNo").val("");
+            
+            if($("#ddlCourt").data("kendoDropDownList"))
+            $("#ddlCourt").data("kendoDropDownList").select(0);
+            
+            if($("#dtStartDate").data("kendoDatePicker"))
+            $("#dtStartDate").data("kendoDatePicker").value("");
+            
+            if($("#txtDescription"))
+            $("#txtDescription").val("");
+                    
+            $("#chkSendReminders").prop('checked', true);
+
+            var newStepDataSource = new kendo.data.DataSource({
+                data: []
+                }); 
+            $("#caseSteps").data("kendoGrid").dataSource = newStepDataSource;
+            newStepDataSource.read();
+            $("#caseSteps").data("kendoGrid").refresh();
+            
+            
         }
         
     };

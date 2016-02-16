@@ -32,7 +32,10 @@ namespace Welkin.Core
 
                 if (req.Targert != null)
                     instance.GetType().GetMethod(req.Targert).Invoke(instance, new object[] {req});
+                  Console.WriteLine(string.Format("Target Method: {0}",req.Targert));
             }
+
+           
         }
 
         /// <summary>

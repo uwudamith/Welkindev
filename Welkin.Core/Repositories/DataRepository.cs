@@ -87,7 +87,7 @@ namespace Welkin.Core.Repositories
                 var res =
                     await
                         _client
-                            .CreateDocumentAsync("dbs/" + GetDatabase().Id + "/colls/" + collection, doc);
+                            .UpsertDocumentAsync("dbs/" + GetDatabase().Id + "/colls/" + collection, doc);
             }
             catch (Exception ex)
             {
