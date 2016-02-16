@@ -46,7 +46,7 @@
 
             });
 
-          
+
 
             $("#caseSteps").on("click", ".btn-task", function (e) {
                 e.preventDefault();
@@ -101,7 +101,7 @@
             // On save-case click function
             $(".save-case").click(function () {
 
-                
+
 
                 // Validate Type
                 if ($("#ddlType").data("kendoDropDownList").value() == "") {
@@ -139,7 +139,7 @@
                 $m.caseModel.Description = $("#txtDescription").val();
                 $m.caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
                 $m.caseModel.CaseSteps = $m.getCaseStepsData();
-                
+
                 $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel); 
                                          
                         
@@ -197,7 +197,15 @@
                 $m.settings.common.createGUID($m.createStepTaskObj);
             });
 
+            // Delete next step items
+            $("#caseSteps").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                var dataItem = $("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                $m.deleteNextStepItem(dataItem);
+            });
+
         },
+        // Initilize controlls
         initControlls: function () {
             $("#chkNotification").checkboxpicker();
             $("#chkSendReminders").checkboxpicker();
@@ -270,13 +278,15 @@
                    { field: "TaskId", hidden: true, },
                    { field: "Description", title: "Description", width: 200 },
                    { field: "DueDate", width: 130, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
-                   { field: "Status", title: "Status", template: "<input class='chkTaskStatus' type='checkbox' >" },
                    { field: "ByWhom", title: "By Whom", template: kendo.template($("#taskUsersTemplate").html()) },
                    { command: { text: "", template: "<button class='btn btn-primary btn-edit'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50 },
                    { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
-                ]
+                ],
+                dataBinding: function (e) {
+                  
+                }
             });
-             
+
             // create DropDownList from input HTML element
             $("#ddlType").kendoDropDownList({
                 dataTextField: "Name",
@@ -316,7 +326,7 @@
                 dataSource: {
                     data: $m.stepTaskItems,
                     pageSize: 5
-                },
+        },
                 pageable: {
                     input: false,
                     numeric: true
@@ -351,11 +361,6 @@
             var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
 
-            //var statusData = [
-            //    { Name: "Pending", Id: "1" },
-            //    { Name: "Completed", Id: "2" },
-            //];
-
             var usersData = new kendo.data.DataSource({
                 data: [
                     { Name: "Damith", Id: "1" },
@@ -376,15 +381,12 @@
             ddlParty.setDataSource(parties);
             ddlParty.refresh();
 
-            //var ddlStatus = $("#ddlStatus").data("kendoDropDownList");
-            //ddlStatus.setDataSource(statusData);
-            //ddlStatus.refresh();
-
             var ddlUsers = $("#ddlUsers").data("kendoMultiSelect");
             ddlUsers.setDataSource(usersData);
             ddlUsers.refresh();
 
         },
+        // Add next case next step item
         addToCaseItems: function (data) {
             /// <summary>
             /// Add next step data
@@ -393,10 +395,10 @@
             /// <returns type=""></returns>
             
             $m.nextStepDataSource.push(data);
-            $("#caseSteps").data("kendoGrid").dataSource.read();
-            $("#caseSteps").data("kendoGrid").refresh();
+            $m.refreshNextStepGrid();
             return true;
         },
+        // Clear add step modal variables
         clearAddStepData: function () {
             //Clear step name textbox
             $("#txtNextStep").val("");
@@ -412,9 +414,11 @@
             $("#chkNotification").prop('checked', true);
 
         },
+        // save case ledger
         saveCaseLedger: function (url, type, model) {
             $m.settings.common.ajaxFunction(url, type,null, model,true);
         },
+        // Rerieve case step data from data source
         getCaseStepsData: function () {
             return $m.nextStepDataSource;
         },
@@ -515,7 +519,6 @@
             }
         },
         setstepTaskDataSource: function () {
-
             var dataSource = new kendo.data.DataSource({
                 data: $m.stepTaskItems,
                 pageSize: 5

@@ -56,6 +56,29 @@
             $("#" + target).empty();
             $("#" + target).append("<div class='alert alert-" + type + "'><a class='close' data-dismiss='alert'>×</a>" + message + "</div>");
         },
+        showConfirmDialog: function (yesFucn, noFunc, message) {
+            /// <summary>
+            /// yesFucn and noFunc must be functions
+            /// </summary>
+            /// <param name="yesFucn" type="type">Function which should call when click Yes</param>
+            /// <param name="noFunc" type="type">Function which should call when click No</param>
+            /// <param name="message" type="type">Message to display</param>
+            // Set option not close when click out side of the popup
+            $('#confirmDialog').modal({ backdrop: 'static', keyboard: false });
+            // Append message into body
+            $("#confirmDialog").find("div#confirmationMessage").html(message);
+            // Bind no functions
+            $("#confirmDialog").find("button#no").off('click').on('click',function () {
+                $('#confirmDialog').modal('hide');
+                noFunc();
+            });
+            // Bind yes functions
+            $("#confirmDialog").find("button#yes").off('click').on('click',function () {
+                $('#confirmDialog').modal('hide');
+                yesFucn();
+            });
+            
+        },
         init: function () {
 
             var $scope = this;
@@ -97,7 +120,8 @@
                             createGUID:$scope.createGUID,
                             saveMasterData:$scope.saveMasterData,
                             showNotification: $scope.showNotification,
-                            setValidationMessages:$scope.setValidationMessages
+                            setValidationMessages: $scope.setValidationMessages,
+                            showConfirmDialog: $scope.showConfirmDialog
                         }
 
                     });
