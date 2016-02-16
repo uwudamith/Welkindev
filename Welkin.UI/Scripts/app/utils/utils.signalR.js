@@ -8,7 +8,7 @@
     var $sub = $module.SignalR = $module.SignalR || function (options) {
         this.settings = {
             config: {
-                id: "",
+                id: "1",
             },
             hub: {
                 $conn: $.connection, 
@@ -19,6 +19,7 @@
             callBack: {
                 online: null,
                 onConnect: function ($hub,o) {
+                   
                     $hub.server.connect(o.id);
                 },
                 onDisconnect: function ($hub, o) {
@@ -76,13 +77,13 @@
             this.settings.hub.$conn.hub.start().done(function () {
                 $this.settings.hub.isActive = true;
                 if ($this.settings.callBack.onConnect && typeof ($this.settings.callBack.onConnect) === "function")
-                    $this.settings.callBack.onConnect($hub,$this.settings.hub);
+                    $this.settings.callBack.onConnect($hub,$this.settings.config);
             });
 
             this.settings.hub.$conn.hub.disconnected(function () {
                 $this.settings.hub.isActive = false;
                 if ($this.settings.callBack.onDisconnect && typeof ($this.settings.callBack.onDisconnect) === "function")
-                    $this.settings.callBack.onDisconnect($hub,$this.settings.hub);
+                    $this.settings.callBack.onDisconnect($hub,$this.settings.config);
             });
         }
     };

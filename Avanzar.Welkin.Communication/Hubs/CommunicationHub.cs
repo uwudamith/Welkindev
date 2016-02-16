@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avanzar.Welkin.Common;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 
@@ -58,12 +59,16 @@ namespace Avanzar.Welkin.Communication.Hubs
         /// </summary>
         /// <param name="response">The response.</param>
         /// <param name="callback">The callback.</param>
-        public void Push(string response, string callback)
+        public void Push(string response, string callback,int userId)
         {
             if (!_isClientConnected && !_queue.ContainsKey(callback))
                 _queue.Add(callback, response);
+            //select user by user Id and push messages to connections
+            ConnectedUsers user = (from d in Users
+                                   where d.UserId == userId
+                                   select d).Single();
 
-            IClientProxy proxy = Clients.All;
+            IClientProxy proxy = Clients.Clients(user.ConnectionIds.ToArray());
             proxy.Invoke(callback, response);
         }
 
