@@ -66,6 +66,27 @@
             <div class="col-sm-10">
                 <div>
                     @RenderBody()
+
+                    <div class="modal fade" tabindex="-1" id="confirmDialog" role="dialog">
+                        <div class="modal-dialog party-model">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Confirm</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-11">
+                                            <div id="confirmationMessage"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-warning" id="no">No</button>
+                                    <button type="button" class="btn btn-success" id="yes">Yes</button>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
                     <hr />
                     <footer>
                         <p>&copy; @DateTime.Now.Year - Welkin&trade;</p>
