@@ -218,6 +218,12 @@
                 $m.setNextStepData(dataItem);
             });
 
+            // Delete next step items
+            $("#grdStepsTasks").on("click", ".btn-edit", function (e) {
+                e.preventDefault();
+                var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                $m.setStepTaskSelectedData(dataItem);
+            });
         },
         // Initilize controlls
         initControlls: function () {
@@ -290,6 +296,7 @@
                 },
                 columns: [
                    { field: "TaskId", hidden: true, },
+                   { field: "Status", hidden: true, },
                    { field: "Description", title: "Description", width: 200 },
                    { field: "DueDate", width: 130, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
                    { field: "ByWhom", title: "By Whom", template: kendo.template($("#taskUsersTemplate").html()) },
@@ -511,9 +518,9 @@
                 task.DueDate = $("#dtTaskDueOnDate").data("kendoDatePicker").value();
             }
 
-            task.Status = $("#chkStatus").prop('checked');
+            task.Status = $(".chkTaskStatus").prop('checked');
             task.ByWhom = $("#ddlTaskUsers").data("kendoMultiSelect").dataItems();
-           
+            debugger;
             $m.addToStepTasks(task);
         },
         addToStepTasks: function (data) {
@@ -533,6 +540,7 @@
             /// </summary>
             /// <param name="reset" type="type"></param>
             $("#txtTaskDescription").val("");
+            $("#val-message").empty();
             $("#dtTaskDueOnDate").data("kendoDatePicker").value("");
             $("#chkStatus").prop('checked', false);
             $("#ddlTaskUsers").data("kendoMultiSelect").value([]);
@@ -707,6 +715,25 @@
             $("#chkNotification").prop('checked', dataItem.SendNotifications);
             $('#addStepModel').modal('toggle');
             
+        },
+        setStepTaskSelectedData: function (dataItem) {
+            /// <summary>
+            /// Set controls data when click on step task edit button
+            /// on the grid
+            /// </summary>
+            /// <param name="dataItem" type="type"></param>
+            $("#hdnTaskId").val(dataItem.TaskId);
+            $("#txtTaskDescription").val(dataItem.Description);
+            $("#dtTaskDueOnDate").data("kendoDatePicker").value(dataItem.DueDate);
+            $("#chkTaskStatus").prop('checked', dataItem.Status);
+            var values = [];
+            if (dataItem.ByWhom.length > 0) {
+                for (var i = 0; i < dataItem.ByWhom.length; i++) {
+                    values.push(dataItem.ByWhom[i].Id);
+                }
+            }
+            $("#ddlTaskUsers").data("kendoMultiSelect").value(values);
+            debugger;
         }
     };
 
