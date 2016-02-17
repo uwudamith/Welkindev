@@ -19,7 +19,6 @@
             callBack: {
                 online: null,
                 onConnect: function ($hub,o) {
-                   
                     $hub.server.connect(o.id);
                 },
                 onDisconnect: function ($hub, o) {

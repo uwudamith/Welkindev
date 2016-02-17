@@ -46,8 +46,6 @@
 
             });
 
-
-
             $("#caseSteps").on("click", ".btn-task", function (e) {
                 e.preventDefault();
                 var dataItem = $("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
@@ -60,8 +58,13 @@
                 /// </summary>
                 /// <param name="guid" type="type"></param>
                 var nextStepModel = {};
-
+                if (guid) {
                 nextStepModel.StepId = guid;
+                    nextStepModel.Tasks = [];
+                }else{
+                    nextStepModel.StepId = $("#hdnStepId").val();
+                }
+               
                 if ($("#txtNextStep").val() == "") {
                     alert('Please enter step name');
                     return;
@@ -74,7 +77,6 @@
                 nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
                 nextStepModel.Fee = $("#txtFee").val();
                 nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
-                nextStepModel.Tasks = [];
                 if ($m.addToCaseItems(nextStepModel)) {
                     $('#addStepModel').modal('toggle');
                 }
@@ -82,7 +84,12 @@
 
             // Save next step click function
             $("#save-step").click(function () {
+                if ($("#hdnStepId").val() == "") {
                 $m.settings.common.createGUID(createNextStepData);
+                } else {
+                    createNextStepData();
+                }
+               
             });
 
             // After step model close function
@@ -202,6 +209,13 @@
                 e.preventDefault();
                 var dataItem = $("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.deleteNextStepItem(dataItem);
+            });
+
+            // Delete next step items
+            $("#caseSteps").on("click", ".btn-edit", function (e) {
+                e.preventDefault();
+                var dataItem = $("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                $m.setNextStepData(dataItem);
             });
 
         },
@@ -352,7 +366,6 @@
                 }
             });
         },
-        
         populateCaseDropdown: function (a) {
            
             $m.masterData = JSON.parse(JSON.parse(a).JsonResult)[0];
@@ -394,9 +407,29 @@
             /// <param name="data" type="type"></param>
             /// <returns type=""></returns>
             
+            // Check if record available
+            if ($m.isStepAvaiable(data) == false) {
             $m.nextStepDataSource.push(data);
+            }
             $m.refreshNextStepGrid();
             return true;
+        },
+        isStepAvaiable: function (data) {
+            var isAvailable = false;
+            for(var i =0,length = $m.nextStepDataSource.length;i<length;i++){
+                if ($m.nextStepDataSource[i].StepId == data.StepId) {
+                    $m.nextStepDataSource[i].NextStep = data.NextStep;
+                    $m.nextStepDataSource[i].DueDate = data.DueDate;
+                    $m.nextStepDataSource[i].ByWhom = data.ByWhom;
+                    $m.nextStepDataSource[i].Fee = data.Fee;
+                    $m.nextStepDataSource[i].SendNotifications = data.SendNotifications;
+
+                    isAvailable = true;
+                    break;
+                    
+                }
+            }
+            return isAvailable;
         },
         // Clear add step modal variables
         clearAddStepData: function () {
@@ -622,9 +655,60 @@
             $("#caseSteps").data("kendoGrid").dataSource = newStepDataSource;
             newStepDataSource.read();
             $("#caseSteps").data("kendoGrid").refresh();
-              
+            
+            
+        },
+        deleteNextStepItem: function (dataItem) {
+            // Delete from array and refresk kendo grid
+            var yesFunction = function () {
+                $m.removeFromNextStepDataSource(dataItem);
+            };
+            var noFunction = function () {};
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this step ?");
+        },
+        removeFromNextStepDataSource: function (dataItem) {
+            /// <summary>
+            /// Remove nextstep from array
+            /// </summary>
+            /// <param name="dataItem" type="type"></param>
+            $m.nextStepDataSource = $.grep($m.nextStepDataSource, function (value) {
+                return value.StepId != dataItem.StepId;
+            });
+
+            $m.refreshNextStepGrid();
+
+        },
+        refreshNextStepGrid: function () {
+            /// <summary>
+            /// Refresh kendo grid data source
+            /// </summary>
+            var dataSource = new kendo.data.DataSource({
+                data: $m.nextStepDataSource,
+                pageSize: 5
+            });
+
+            $("#caseSteps").data("kendoGrid").dataSource = dataSource;
+            dataSource.read();
+            $("#caseSteps").data("kendoGrid").refresh();
+        },
+        setNextStepData: function (dataItem) {
+
+            $("#hdnStepId").val(dataItem.StepId);
+            $("#txtNextStep").val(dataItem.NextStep);
+            $("#dtDueOnDate").data("kendoDatePicker").value(dataItem.DueDate);
+            var values = [];
+            if (dataItem.ByWhom.length > 0) {
+                for (var i = 0; i < dataItem.ByWhom.length; i++) {
+                    values.push(dataItem.ByWhom[i].Id);
+                }
         }
+            $("#ddlUsers").data("kendoMultiSelect").value(values);
+            $("#txtFee").val(dataItem.Fee);
+            $("#chkNotification").prop('checked', dataItem.SendNotifications);
+            $('#addStepModel').modal('toggle');
         
+        }
     };
 
     return $m;
