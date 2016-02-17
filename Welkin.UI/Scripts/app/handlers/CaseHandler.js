@@ -344,16 +344,16 @@
             });
             
               $("#grdCaseMultipleResult").kendoGrid({
-                dataSource: {
-                    data: $m.stepTaskItems,
-                    pageSize: 5
-        },
+                // dataSource: {
+                //     data: $m.multipleSearchResult,
+                //     pageSize: 5
+                //  },
                 pageable: {
                     input: false,
                     numeric: true
                 },
                 columns: [
-                   { field: "CaseId", hidden: true, },
+                   { field: "id", hidden: true, },
                    { field: "CaseNumber", title: "Case Number", width: 100 },
                    { field: "CaseTypeName", title: "Type", width: 100 },
                    { field: "CourtName", title: "Court", width: 100 },
@@ -600,6 +600,7 @@
             $("#chkSendReminders").prop('checked', false);  
             $m.setStepDataSource();
             
+            $("#txt-search-case-no").val("");
         },
         setStepDataSource:function () {
             /// <summary>
