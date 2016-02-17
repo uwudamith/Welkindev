@@ -230,9 +230,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtUserName" class="col-lg-4 control-label">Name</label>
+                                        <label for="txtGranteeUserName" class="col-lg-4 control-label">Name</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtUserName" type="text">
+                                            <input class="form-control" id="txtGranteeUserName" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -240,9 +240,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtAddress" class="col-lg-4 control-label">Address</label>
+                                        <label for="txtGranteeAddress" class="col-lg-4 control-label">Address</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtAddress" type="text">
+                                            <input class="form-control" id="txtGranteeAddress" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -250,9 +250,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtEmail" class="col-lg-4 control-label">Email</label>
+                                        <label for="txtGranteeEmail" class="col-lg-4 control-label">Email</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtEmail" type="text">
+                                            <input class="form-control" id="txtGranteeEmail" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -260,9 +260,19 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtTelephone" class="col-lg-4 control-label">Telephone</label>
+                                        <label for="txtGranteeTelephone" class="col-lg-4 control-label">Telephone</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtTelephone" type="text">
+                                            <input class="form-control" id="txtGranteeTelephone" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGranteeNIC" class="col-lg-4 control-label">NIC</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGranteeNIC" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -273,7 +283,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save-step">Save changes</button>
+                <button type="button" class="btn btn-primary" id="save-grantee">Save changes</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -292,9 +302,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtUserName" class="col-lg-4 control-label">Name</label>
+                                        <label for="txtGrantorUserName" class="col-lg-4 control-label">Name</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtUserName" type="text">
+                                            <input class="form-control" id="txtGrantorUserName" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -302,9 +312,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtAddress" class="col-lg-4 control-label">Address</label>
+                                        <label for="txtGrantorAddress" class="col-lg-4 control-label">Address</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtAddress" type="text">
+                                            <input class="form-control" id="txtGrantorAddress" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -312,9 +322,9 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtEmail" class="col-lg-4 control-label">Email</label>
+                                        <label for="txtGrantorEmail" class="col-lg-4 control-label">Email</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtEmail" type="text">
+                                            <input class="form-control" id="txtGrantorEmail" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -322,9 +332,19 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="txtTelephone" class="col-lg-4 control-label">Telephone</label>
+                                        <label for="txtGrantorContactNumber" class="col-lg-4 control-label">Contact Number</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtTelephone" type="text">
+                                            <input class="form-control" id="txtGrantorContactNumber" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGrantorNIC" class="col-lg-4 control-label">NIC</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGrantorNIC" type="text">
                                         </div>
                                     </div>
                                 </div>
@@ -335,7 +355,28 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save-step">Save changes</button>
+                <button type="button" class="btn btn-primary" id="save-grantor">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" id="displayMultipleDeedSearchResult" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Search Result</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="grdDeedMultipleResult"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
