@@ -78,6 +78,7 @@
                 nextStepModel.Fee = $("#txtFee").val();
                 nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
                 if ($m.addToCaseItems(nextStepModel)) {
+                    $("#hdnStepId").val("");
                     $('#addStepModel').modal('toggle');
                 }
             };
@@ -103,14 +104,12 @@
                 $m.addTasksToNextItemGrid($("#hdnNextItemId").val(), $m.stepTaskItems);
                 $m.stepTaskItems = [];
                 $m.setstepTaskDataSource();
+                $m.refreshNextStepGrid();
             })
 
             // On save-case click function
             $(".save-case").click(function () {
-
-
-
-                // Validate Type
+               // Validate Type
                 if ($("#ddlType").data("kendoDropDownList").value() == "") {
                     alert("Please select Type");
                     return;
@@ -201,7 +200,11 @@
             });
 
             $("#add-step-items").click(function () {
-                $m.settings.common.createGUID($m.createStepTaskObj);
+                if ($("#hdnTaskId").val() == "") {
+                    $m.settings.common.createGUID($m.createStepTaskObj);
+                } else {
+                    $m.createStepTaskObj();
+                }
             });
 
             // Delete next step items
@@ -218,11 +221,18 @@
                 $m.setNextStepData(dataItem);
             });
 
-            // Delete next step items
+            // Edit step task items
             $("#grdStepsTasks").on("click", ".btn-edit", function (e) {
                 e.preventDefault();
                 var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.setStepTaskSelectedData(dataItem);
+            });
+
+            // Delete step task items
+            $("#grdStepsTasks").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                $m.deleteStepTaskItem(dataItem);
             });
         },
         // Initilize controlls
@@ -371,7 +381,8 @@
                    $m.bindCaseData(this.dataItem(selectedRow));
                   $("#displayMultipleCaseSearchResult").modal('toggle');
                 }
-            });
+              });
+
         },
         populateCaseDropdown: function (a) {
            
@@ -479,8 +490,6 @@
         notify: function (d) {
             $m.settings.common.showNotification("Record Successfully Saved", "success");
              $m.clearCaseForm();  
-            //var ss = JSON.parse(JSON.parse(d).JsonResult)
-            // debugger;
         },
         setStepTaskModelData: function (data) {
             // Set task users from step items
@@ -501,8 +510,13 @@
         },
         createStepTaskObj: function (guid) {
             var task = {};
+            if (guid) {
+                task.TaskId = guid;
+            } else {
+                task.TaskId = $("#hdnTaskId").val();
+            }
             task.StepId = $("#hdnNextItemId").val();
-            task.TaskId = guid;
+
             if ($("#txtTaskDescription").val() == "") {
                 $m.settings.common.setValidationMessages("val-message", "warning", "Please enter description");
                 return;
@@ -520,7 +534,7 @@
 
             task.Status = $(".chkTaskStatus").prop('checked');
             task.ByWhom = $("#ddlTaskUsers").data("kendoMultiSelect").dataItems();
-            debugger;
+
             $m.addToStepTasks(task);
         },
         addToStepTasks: function (data) {
@@ -529,9 +543,29 @@
             /// </summary>
             /// <param name="data" type="type"></param>
             /// <returns type=""></returns>
-            $m.stepTaskItems.push(data);
+            if ($m.isTaskAvaiable(data) == false) {
+                $m.stepTaskItems.push(data);
+            }
             $m.setstepTaskDataSource();
             $m.clearStepsTaskModel();
+        },
+        isTaskAvaiable: function (data) {
+            var isAvailable = false;
+            for (var i = 0, length = $m.stepTaskItems.length; i < length; i++) {
+                if ($m.stepTaskItems[i].TaskId == data.TaskId) {
+
+                    $m.stepTaskItems[i].ByWhom = data.ByWhom;
+                    $m.stepTaskItems[i].Description = data.Description;
+                    $m.stepTaskItems[i].DueDate = data.DueDate;
+                    $m.stepTaskItems[i].Status = data.Status;
+                    $m.stepTaskItems[i].StepId = data.StepId;
+                    $m.stepTaskItems[i].TaskId = data.TaskId;
+                    
+                    isAvailable = true;
+                    break;
+                }
+            }
+            return isAvailable;
         },
         clearStepsTaskModel: function () {
             /// <summary>
@@ -726,7 +760,7 @@
             $("#hdnTaskId").val(dataItem.TaskId);
             $("#txtTaskDescription").val(dataItem.Description);
             $("#dtTaskDueOnDate").data("kendoDatePicker").value(dataItem.DueDate);
-            $("#chkTaskStatus").prop('checked', dataItem.Status);
+            $(".chkTaskStatus").prop('checked', dataItem.Status);
             var values = [];
             if (dataItem.ByWhom.length > 0) {
                 for (var i = 0; i < dataItem.ByWhom.length; i++) {
@@ -734,8 +768,27 @@
                 }
             }
             $("#ddlTaskUsers").data("kendoMultiSelect").value(values);
-            debugger;
-        }
+        },
+        deleteStepTaskItem: function (dataItem) {
+            // Delete from array and refresk kendo grid
+            var yesFunction = function () {
+                $m.removeFromStepTaskDataSource(dataItem);
+            };
+            var noFunction = function () { };
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this task ?");
+        },
+        removeFromStepTaskDataSource: function (dataItem) {
+            /// <summary>
+            /// Remove nextstep from array
+            /// </summary>
+            /// <param name="dataItem" type="type"></param>
+            $m.stepTaskItems = $.grep($m.stepTaskItems, function (value) {
+                return value.TaskId != dataItem.TaskId;
+            });
+
+            $m.setstepTaskDataSource();
+        },
     };
 
     return $m;
