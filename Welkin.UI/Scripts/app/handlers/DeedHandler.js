@@ -119,6 +119,15 @@
                     $m.settings.common.ajaxFunction('/DeedLedger/GetDeeds', 'POST', null, searchQuery,false);
                 }
             });
+            
+             $("#save-grantee").click(function () {
+                $m.settings.common.createGUID($m.saveGranteeData);
+            });
+            
+             $("#save-grantor").click(function () {
+                $m.settings.common.createGUID($m.saveGrantorData);
+            });
+            
         },
         initControlls:function () {
              /// <summary>
@@ -215,13 +224,18 @@
             ddlDistrict.refresh();
         },
         notify:function(d){
+          
             if(JSON.parse(d).Result){
-                $m.settings.common.showNotification("Record Successfully Saved", "success");
+                
+                $m.settings.common.showNotification("Successfully Saved", "success");
+                
+                if(JSON.parse(d).Request.Targert === "SaveDeed")
+                   $m.clearDeedForm();
             }
             else{
                  $m.settings.common.showNotification("Record Saving Failed", "error");
             }
-            $m.clearDeedForm();
+            
         },
           saveDeedLedger: function (url, type, model) {
             /// <summary>
@@ -305,11 +319,11 @@
            
            for (var i = 0, x = deedList.length; i < x; i++){
               // Refil the deed object using master data
+              
               deedList[i].DeedTypeName =  $.grep($m.masterData.DeedTypes,function (e) {return e.ID === deedList[i].DeedTypeId;})[0].Name;
               deedList[i].GranteeName =  $.grep($m.masterData.Grantees,function (e) {return e.ID === deedList[i].GranteeId;})[0].Name;
               deedList[i].GrantorName =  $.grep($m.masterData.Grantors,function (e) {return e.ID === deedList[i].GrantorId;})[0].Name;
               deedList[i].DistrictName =  $.grep($m.masterData.Districts,function (e) {return e.ID === deedList[i].DistrictId;})[0].Name;
-                          
            }
            $m.multipleSearchResult = deedList;
            
@@ -365,6 +379,82 @@
             
             $("#chkAvailability").prop('checked', true);
             
+        },
+        
+          saveGranteeData :function (guid) {
+                var granteeObj = {};
+                if ($("#txtGranteeUserName").val() == "") {
+                    $m.settings.common.showNotification("Name Required", "warning");
+                    return;
+                } else {
+                    granteeObj.ID = guid;
+                    granteeObj.Name = $("#txtGranteeUserName").val();
+                    granteeObj.Address = $("#txtGranteeAddress").val();
+                    granteeObj.Email = $("#txtGranteeEmail").val();
+                    granteeObj.ContactNumber = $("#txtGranteeContactNo").val();
+                    granteeObj.NIC = $("#txtGranteeNIC").val();
+                }
+                
+                // Push to master data global variable
+                if($m.masterData && $m.masterData.Grantees)
+                 $m.masterData.Grantees.push(granteeObj);
+
+                // Adding to grantee data source
+                $("#ddlGrantee").data("kendoDropDownList").dataSource.insert(granteeObj);
+                 
+                $("#ddlGrantee").data("kendoDropDownList").value(granteeObj.ID);
+                // Calling the save master data function  
+                $m.settings.common.saveMasterData(null, $m.masterData);
+                // Clear grantee model data
+                if ($m.clearGranteeModel()) 
+                    $('#addGranteeModel').modal('toggle');        
+               
+        },
+        saveGrantorData :function (guid) {
+                var grantorObj = {};
+                 //debugger;
+                if ($("#txtGrantorUserName").val() == "") {
+                    $m.settings.common.showNotification("Name Required", "warning");
+                    return;
+                } else {
+                    grantorObj.ID = guid;
+                    grantorObj.Name = $("#txtGrantorUserName").val();
+                    grantorObj.Address = $("#txtGrantorAddress").val();
+                    grantorObj.Email = $("#txtGrantorEmail").val();
+                    grantorObj.ContactNumber = $("#txtGrantorContactNo").val();
+                    grantorObj.NIC = $("#txtGrantorNIC").val();
+                }
+                
+                // Push to master data global variable
+                if($m.masterData && $m.masterData.Grantors)
+                 $m.masterData.Grantors.push(grantorObj);
+
+                // Adding to grantor data source
+                $("#ddlGrantor").data("kendoDropDownList").dataSource.insert(grantorObj);
+                $("#ddlGrantor").data("kendoDropDownList").value(grantorObj.ID);
+
+                // Calling the save master data function  
+               $m.settings.common.saveMasterData(null, $m.masterData);
+                // Clear grantor model data
+                if ($m.clearGrantorModel()) 
+                    $('#addGrantorModel').modal('toggle');        
+               
+        },
+        clearGranteeModel:function(){
+            $("#txtGranteeUserName").val("");
+            $("#txtGranteeAddress").val("");
+            $("#txtGranteeEmail").val("");
+            $("#txtGranteeContactNo").val("");
+            $("#txtGranteeNIC").val("");
+            return true;    
+        },
+        clearGrantorModel:function(){
+            $("#txtGrantorUserName").val("");
+            $("#txtGrantorAddress").val("");
+            $("#txtGrantorEmail").val("");
+            $("#txtGrantorContactNo").val("");
+            $("#txtGrantorNIC").val("");
+            return true;    
         }
         
     };

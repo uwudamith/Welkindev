@@ -30,10 +30,10 @@
             }
         },
         createGUID: function (callBackFunc) {
-            return this.ajaxFunction('/Base/createGUID', 'GET', callBackFunc,null,false);
+            return this.ajaxFunction('/Base/CreateGUID', 'GET', callBackFunc,null,false);
         },
         saveMasterData:function(callBackFunc,model){
-            return this.ajaxFunction('/Base/saveMasterData', 'POST', callBackFunc,model,true);
+            return this.ajaxFunction('/Base/SaveMasterData', 'POST', callBackFunc,model,true);
         },
         showNotification:function(message,nType){
             $.notify({

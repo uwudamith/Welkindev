@@ -26,9 +26,16 @@ namespace Welkin.Core.Entities
             throw new NotImplementedException();
         }
 
-        public Task UpsertDocument(string document, string collection)
+        public async Task UpsertDocument(string document, string collection)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _dataRepository.UpsertDocument(document, collection);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Invalid operation : " + ex.InnerException);
+            }
         }
 
         public async Task<IOrderedQueryable<T>> GetAll<T>(T t, string collectionName = null)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avanzar.Welkin.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,15 +12,27 @@ namespace Welkin.UI.Controllers
     {
         [HttpGet]
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
-        public string createGUID()
+        public string CreateGUID()
         {
             return Guid.NewGuid().ToString();
         }
 
         [HttpPost]
-        public async Task<string> saveMasterData(string model)
+        public async Task<string> SaveMasterData(string model)
         {
-            return "success";
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = model,
+                JsCallback = "notify",
+                Targert = "SaveMaster",
+                UserId = 1,
+                Type = Enums.EntityType.Master
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return null;
         }
             
     }
