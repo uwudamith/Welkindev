@@ -348,6 +348,7 @@
                                         <div class="col-lg-8">
                                             <input class="form-control" id="txtTaskDescription" type="text">
                                             <input id="hdnNextItemId" type="hidden">
+                                            <input id="hdnTaskId" type="hidden">
                                         </div>
                                     </div>
                                 </div>
@@ -390,7 +391,7 @@
                                         
                                     </div>
                                     <div class="col-lg-8 pull-right">
-                                        <button type="button" class="btn btn-primary pull-right" id="add-step-items">Add Task Item</button>
+                                        <button type="button" class="btn btn-primary pull-right" id="add-step-items">Add/Update Task Item</button>
                                     </div>
                                 </div>
                             </div>
@@ -405,7 +406,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal">Save & Close</button>
+                <button type="button" class="btn btn-success" data-dismiss="modal" id="btn-save-close-steps">Save & Close</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
