@@ -32,82 +32,8 @@
              
                 $(".save-deed").click(function () {
                    
-                    // Validate Type
-                if ($("#ddlType").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("Deed Type Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.DeedTypeId = $("#ddlType").data("kendoDropDownList").value();
-                }
-                
-                if ($("#ddlGrantee").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("Grantee Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.GranteeId = $("#ddlGrantee").data("kendoDropDownList").value();
-                }
-                
-                 if ($("#ddlGrantor").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("Grantor Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.GrantorId = $("#ddlGrantor").data("kendoDropDownList").value();
-                }
-                
-                 if ($("#ddlDistrict").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("District Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.DistrictId = $("#ddlDistrict").data("kendoDropDownList").value();
-                }
-                
-                 // Validate DeedNumber
-                if ($("#txtDeedNo").val() == "") {
-                    $m.settings.common.showNotification("Grantor Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.DeedNumber = $("#txtDeedNo").val();
-                }
-                
-                 if ($("#txtNameOfLand").val() == "") {
-                    $m.settings.common.showNotification("Name of Land Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.NameOfLand = $("#txtNameOfLand").val();
-                }
-                
-                  if ($("#txtConsideration").val() == "") {
-                    $m.settings.common.showNotification("Consideration Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.Consideration = $("#txtConsideration").val();
-                }
-                
-                 if ($("#txtStampDuty").val() == "") {
-                    $m.settings.common.showNotification("Stap Duty Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.StampDuty = $("#txtStampDuty").val();
-                }
-                
-                 if ($("#txtFee").val() == "") {
-                    $m.settings.common.showNotification("Fee Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.Fee = $("#txtFee").val();
-                }
-                    if ($("#txtRemarks").val() == "") {
-                    $m.settings.common.showNotification("Remarks Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.Remarks = $("#txtRemarks").val();
-                }
-                
-                 $m.deedModel.Date = $("#date").data("kendoDatePicker").value();
-                 $m.deedModel.Availability = $("#chkAvailability").prop('checked');
-                 $m.deedModel.RegisterOn = $("#dtRegisterOn").data("kendoDatePicker").value();
-                    
-                 $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
+                    $m.prepareDeedModel();
+              
                 });
                 
                 
@@ -121,18 +47,90 @@
             });
             
              $("#save-grantee").click(function () {
+              
+                if ($("#txtGranteeUserName").val() == "") {
+                   // Validate Grantee Data & invoke save method
+                   $m.settings.common.setValidationMessages("val-messageGrantee","warning","Name Required");
+                    return;
+                } 
+                else if($m.settings.common.validateEmail($("#txtGrantorEmail").val())){
+                    $m.settings.common.setValidationMessages("val-messageGrantee","warning","Invalid Email Address");
+                    return;
+                }
+                else {
                 $m.settings.common.createGUID($m.saveGranteeData);
+                }
             });
             
              $("#save-grantor").click(function () {
+                 // Validate Grantor Data & invoke save method
+                 if ($("#txtGrantorUserName").val() == "") {
+                   // $m.settings.common.showNotification("Name Required", "warning");
+                   $m.settings.common.setValidationMessages("val-messageGrantor","warning","Name Required");
+                    return;
+                } 
+                else if($m.settings.common.validateEmail($("#txtGrantorEmail").val())){
+                    $m.settings.common.setValidationMessages("val-messageGrantor","warning","Invalid Email Address");
+                    return;
+                }
+                else {
                 $m.settings.common.createGUID($m.saveGrantorData);
+                }
             });
+            
+            $('#addGranteeModel').on('hidden.bs.modal', function () {
+                $m.clearGranteeModel();
+                
+            })
+             $('#addGrantorModel').on('hidden.bs.modal', function () {
+                $m.clearGrantorModel();
+            })
+            // $('#fmGrantor').validator().on('submit', function (e) {
+            //     if (e.isDefaultPrevented()) {
+            //         
+            //        //$m.settings.common.showNotification("Invalid Information", "error");
+            //     } else {
+            //         $m.settings.common.createGUID($m.saveGrantorData);
+            //          return false;
+            //     }
+            //     });
+            //     
+            //  $('#fmGrantee').validator().on('submit', function (e) {
+            //     if (e.isDefaultPrevented()) {
+            //       // $m.settings.common.showNotification("Invalid Information", "error");
+            //     } else {
+            //         $m.settings.common.createGUID($m.saveGranteeData);
+            //          return false;
+            //     }
+            //     });
+            //     $('#fmDeed').validator().on('submit', function (e) {
+            //     if (e.isDefaultPrevented()) {
+            //         alert("1");
+            //       // $m.settings.common.showNotification("Invalid Information", "error");
+            //     } else {
+            //        // $m.prepareDeedModel();
+            //         alert("2");
+            //          return false;
+            //     }
+            //     });
             
         },
         initControlls:function () {
              /// <summary>
             /// Initialize the controls 
             /// </summary>
+            //   $('#fmDeed').validator({
+            //     custom: {
+            //         'odd': function() { 
+            //             return false;}
+            //     },
+            //     errors: {
+            // odd: 'Does not match',
+            // validateDeedType: 'Not long enough'
+            // }
+            // });
+        
+            
             $("#ddlType").kendoDropDownList({
             dataTextField: "Name",
             dataValueField: "ID",
@@ -383,18 +381,13 @@
         
           saveGranteeData :function (guid) {
                 var granteeObj = {};
-                if ($("#txtGranteeUserName").val() == "") {
-                    $m.settings.common.showNotification("Name Required", "warning");
-                    return;
-                } else {
                     granteeObj.ID = guid;
                     granteeObj.Name = $("#txtGranteeUserName").val();
                     granteeObj.Address = $("#txtGranteeAddress").val();
                     granteeObj.Email = $("#txtGranteeEmail").val();
                     granteeObj.ContactNumber = $("#txtGranteeContactNo").val();
                     granteeObj.NIC = $("#txtGranteeNIC").val();
-                }
-                
+                    
                 // Push to master data global variable
                 if($m.masterData && $m.masterData.Grantees)
                  $m.masterData.Grantees.push(granteeObj);
@@ -406,24 +399,19 @@
                 // Calling the save master data function  
                 $m.settings.common.saveMasterData(null, $m.masterData);
                 // Clear grantee model data
-                if ($m.clearGranteeModel()) 
-                    $('#addGranteeModel').modal('toggle');        
+          
+                $('#addGranteeModel').modal('toggle');        
                
         },
         saveGrantorData :function (guid) {
                 var grantorObj = {};
-                 //debugger;
-                if ($("#txtGrantorUserName").val() == "") {
-                    $m.settings.common.showNotification("Name Required", "warning");
-                    return;
-                } else {
                     grantorObj.ID = guid;
                     grantorObj.Name = $("#txtGrantorUserName").val();
                     grantorObj.Address = $("#txtGrantorAddress").val();
                     grantorObj.Email = $("#txtGrantorEmail").val();
                     grantorObj.ContactNumber = $("#txtGrantorContactNo").val();
                     grantorObj.NIC = $("#txtGrantorNIC").val();
-                }
+                
                 
                 // Push to master data global variable
                 if($m.masterData && $m.masterData.Grantors)
@@ -434,10 +422,12 @@
                 $("#ddlGrantor").data("kendoDropDownList").value(grantorObj.ID);
 
                 // Calling the save master data function  
+                //uncomment this later
                $m.settings.common.saveMasterData(null, $m.masterData);
                 // Clear grantor model data
-                if ($m.clearGrantorModel()) 
-                    $('#addGrantorModel').modal('toggle');        
+               
+                    $('#addGrantorModel').modal('toggle');   
+               
                
         },
         clearGranteeModel:function(){
@@ -446,15 +436,95 @@
             $("#txtGranteeEmail").val("");
             $("#txtGranteeContactNo").val("");
             $("#txtGranteeNIC").val("");
-            return true;    
+            $('#bsAlert').alert("close");
         },
         clearGrantorModel:function(){
             $("#txtGrantorUserName").val("");
             $("#txtGrantorAddress").val("");
             $("#txtGrantorEmail").val("");
             $("#txtGrantorContactNo").val("");
-            $("#txtGrantorNIC").val("");
-            return true;    
+            $("#txtGrantorNIC").val("");  
+            $('#bsAlert').alert("close");     
+        },
+        prepareDeedModel:function () {
+              if ($("#ddlType").data("kendoDropDownList").value() == "") {
+                    $m.settings.common.showNotification("Deed Type Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.DeedTypeId = $("#ddlType").data("kendoDropDownList").value();
+                }
+                
+                if ($("#ddlGrantee").data("kendoDropDownList").value() == "") {
+                    $m.settings.common.showNotification("Grantee Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.GranteeId = $("#ddlGrantee").data("kendoDropDownList").value();
+                }
+                
+                 if ($("#ddlGrantor").data("kendoDropDownList").value() == "") {
+                    $m.settings.common.showNotification("Grantor Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.GrantorId = $("#ddlGrantor").data("kendoDropDownList").value();
+                }
+                
+                 if ($("#ddlDistrict").data("kendoDropDownList").value() == "") {
+                    $m.settings.common.showNotification("District Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.DistrictId = $("#ddlDistrict").data("kendoDropDownList").value();
+                }
+                
+                 // Validate DeedNumber
+                if ($("#txtDeedNo").val() == "") {
+                    $m.settings.common.showNotification("Grantor Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.DeedNumber = $("#txtDeedNo").val();
+                }
+                
+                 if ($("#txtNameOfLand").val() == "") {
+                    $m.settings.common.showNotification("Name of Land Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.NameOfLand = $("#txtNameOfLand").val();
+                }
+                
+                  if ($("#txtConsideration").val() == "") {
+                    $m.settings.common.showNotification("Consideration Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.Consideration = $("#txtConsideration").val();
+                }
+                
+                 if ($("#txtStampDuty").val() == "") {
+                    $m.settings.common.showNotification("Stap Duty Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.StampDuty = $("#txtStampDuty").val();
+                }
+                
+                 if ($("#txtFee").val() == "") {
+                    $m.settings.common.showNotification("Fee Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.Fee = $("#txtFee").val();
+                }
+                    if ($("#txtRemarks").val() == "") {
+                    $m.settings.common.showNotification("Remarks Required", "warning");
+                    return;
+                } else {
+                    $m.deedModel.Remarks = $("#txtRemarks").val();
+                }
+                
+                 $m.deedModel.Date = $("#date").data("kendoDatePicker").value();
+                 $m.deedModel.Availability = $("#chkAvailability").prop('checked');
+                 $m.deedModel.RegisterOn = $("#dtRegisterOn").data("kendoDatePicker").value();
+                    
+                 $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
+        },
+        validateddl:function () {
+            return false;
         }
         
     };

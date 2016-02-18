@@ -54,7 +54,7 @@
             /// <param name="message" type="type">Message should display</param>
 
             $("#" + target).empty();
-            $("#" + target).append("<div class='alert alert-" + type + "'><a class='close' data-dismiss='alert'>×</a>" + message + "</div>");
+            $("#" + target).append("<div class='alert alert-" + type + " fade in' id='bsAlert'><a class='close' data-dismiss='alert'>×</a>" + message + "</div>");
         },
         showConfirmDialog: function (yesFucn, noFunc, message) {
             /// <summary>
@@ -79,6 +79,13 @@
             });
             
         },
+        validateEmail:function(value){
+             var email = value;
+            var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!filter.test(email)) {
+            return true;
+            }
+        },
         init: function () {
 
             var $scope = this;
@@ -100,7 +107,8 @@
                             createGUID:$scope.createGUID,
                             saveMasterData:$scope.saveMasterData,
                             showNotification: $scope.showNotification,
-                            setValidationMessages:$scope.setValidationMessages
+                            setValidationMessages:$scope.setValidationMessages,
+                            validateEmail:$scope.validateEmail
                         }
                     });
                 }
@@ -121,7 +129,8 @@
                             saveMasterData:$scope.saveMasterData,
                             showNotification: $scope.showNotification,
                             setValidationMessages: $scope.setValidationMessages,
-                            showConfirmDialog: $scope.showConfirmDialog
+                            showConfirmDialog: $scope.showConfirmDialog,
+                            validateEmail:$scope.validateEmail
                         }
 
                     });

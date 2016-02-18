@@ -21,13 +21,13 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <form class="form-horizontal" role="form">
+        <form class="form-horizontal" role="form"  id="fmDeed">
             <div class="row">
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="ddlType" class="col-lg-3 control-label">Type</label>
                         <div class="col-lg-7">
-                            <input id="ddlType" value="1" style="width: 100%;"/>
+                            <input id="ddlType" value="1" style="width: 100%;" />
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                     <div class="form-group">
                         <label for="txtConsideration" class="col-lg-3 control-label">Consideration</label>
                         <div class="col-lg-7">
-                            <input class="form-control" id="txtConsideration" type="text">
+                            <input class="form-control" id="txtConsideration" type="text" >
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                     <div class="form-group">
                         <label for="txtFee" class="col-lg-3 control-label">Fee</label>
                         <div class="col-lg-7">
-                            <input class="form-control" id="txtFee" type="text">
+                            <input class="form-control" id="txtFee" type="text" >
                         </div>
                     </div>
                 </div>
@@ -219,20 +219,26 @@
 <div class="modal fade" tabindex="-1" id="addGranteeModel" role="dialog">
     <div class="modal-dialog party-model">
         <div class="modal-content">
+            <form class="form-horizontal" role="form" id="fmGrantee">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Add Grantee</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageGrantee"></div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-11">
-                        <form class="form-horizontal" role="form">
+                        
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="txtGranteeUserName" class="col-lg-4 control-label">Name</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtGranteeUserName" type="text">
+                                            <input class="form-control" id="txtGranteeUserName" type="text" >
                                         </div>
                                     </div>
                                 </div>
@@ -252,7 +258,7 @@
                                     <div class="form-group">
                                         <label for="txtGranteeEmail" class="col-lg-4 control-label">Email</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtGranteeEmail" type="text">
+                                            <input class="form-control" id="txtGranteeEmail" type="email" >
                                         </div>
                                     </div>
                                 </div>
@@ -262,7 +268,7 @@
                                     <div class="form-group">
                                         <label for="txtGranteeContactNo" class="col-lg-4 control-label">Telephone</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtGranteeContactNo" type="text">
+                                            <input class="form-control" id="txtGranteeContactNo" type="tel" >
                                         </div>
                                     </div>
                                 </div>
@@ -277,7 +283,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                       
                     </div>
                 </div>
             </div>
@@ -285,20 +291,27 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-grantee">Save changes</button>
             </div>
+             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <div class="modal fade" tabindex="-1" id="addGrantorModel" role="dialog">
     <div class="modal-dialog party-model">
         <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmGrantor">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Add Grantor</h4>
             </div>
             <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageGrantor"></div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-11">
-                        <form class="form-horizontal" role="form">
+                        
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -324,7 +337,7 @@
                                     <div class="form-group">
                                         <label for="txtGrantorEmail" class="col-lg-4 control-label">Email</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtGrantorEmail" type="text">
+                                            <input type="email" class="form-control" id="txtGrantorEmail" >
                                         </div>
                                     </div>
                                 </div>
@@ -334,7 +347,7 @@
                                     <div class="form-group">
                                         <label for="txtGrantorContactNo" class="col-lg-4 control-label">Contact Number</label>
                                         <div class="col-lg-8">
-                                            <input class="form-control" id="txtGrantorContactNo" type="text">
+                                            <input type="tel" class="form-control" id="txtGrantorContactNo" type="text" >
                                         </div>
                                     </div>
                                 </div>
@@ -349,7 +362,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                       
                     </div>
                 </div>
             </div>
@@ -357,6 +370,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-grantor">Save changes</button>
             </div>
+             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -381,3 +395,5 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+

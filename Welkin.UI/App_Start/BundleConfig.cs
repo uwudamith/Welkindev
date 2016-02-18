@@ -24,6 +24,9 @@ namespace Welkin.UI
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                 "~/Scripts/jquery.validate*"));
 
+            //bundles.Add(new ScriptBundle("~/bundles/bootstrapval").Include(
+            //    "~/Scripts/validator.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/signalr").Include(
                 "~/Scripts/jquery.signalR-2.2.0.js"
                 ));
