@@ -200,7 +200,7 @@
                         <button type="button" class="btn btn-primary col-lg-3">
                             Borrow
                         </button>
-                        <button type="button" class="btn btn-primary col-lg-3" style="margin-left: 10px;">
+                        <button type="button" id="btnDeedBrowse" class="btn btn-primary col-lg-3" style="margin-left: 10px;">
                             Browse
                         </button>
                         <button type="button" class="btn btn-success col-lg-3 save-deed" style="margin-left: 10px;">
@@ -217,7 +217,7 @@
 </div>
 </div>
 <div class="modal fade" tabindex="-1" id="addGranteeModel" role="dialog">
-    <div class="modal-dialog party-model">
+    <div class="modal-dialog grantee-model">
         <div class="modal-content">
             <form class="form-horizontal" role="form" id="fmGrantee">
             <div class="modal-header">
@@ -296,7 +296,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <div class="modal fade" tabindex="-1" id="addGrantorModel" role="dialog">
-    <div class="modal-dialog party-model">
+    <div class="modal-dialog grantor-model">
         <div class="modal-content">
             <form class="form-horizontal" role="form"  id="fmGrantor">
             <div class="modal-header">
@@ -383,6 +383,7 @@
                 <h4 class="modal-title">Search Result</h4>
             </div>
             <div class="modal-body"> 
+                    
                 <div class="row">
                     <div class="col-lg-12">
                         <div id="grdDeedMultipleResult"></div>
@@ -392,6 +393,136 @@
             <div class="modal-footer">
                 
             </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" id="browseModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmGrantor">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Browse Deeds</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageBrowse"></div>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-lg-12">
+                         
+                            <div class="row"> 
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                     <label for="ddlBrowseType" class="col-lg-3 control-label">Type</label>
+                                                    <div class="col-lg-7">
+                                                        <input id="ddlBrowseType"  style="width: 100%;" />
+                                                    </div>                                                                                 
+                                            </div>
+                                        </div>                           
+                                    </div>       
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                             <div class="form-group">
+                                                <label for="ddlBrowseGrantee" class="col-lg-3 control-label">Grantee</label>
+                                                <div class="col-lg-7">
+                                                    <input id="ddlBrowseGrantee"  style="width: 100%;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                             <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label for="ddlBrowseGrantor" class="col-lg-3 control-label">Grantor</label>
+                                                <div class="col-lg-7">
+                                                    <input id="ddlBrowseGrantor"  style="width: 100%;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="row"> 
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                     <label for="txtBrowseDeedNo" class="col-lg-3 control-label">Deed No</label>
+                                                    <div class="col-lg-7">
+                                                        <input class="form-control" id="txtBrowseDeedNo" type="text" style="width: 100%;">
+                                                    </div>                                                                             
+                                            </div>
+                                        </div>                           
+                                    </div>       
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                             <div class="form-group">
+                                                <label for="ddlBrowseDistrict" class="col-lg-3 control-label">District</label>
+                                                <div class="col-lg-7">
+                                                    <input id="ddlBrowseDistrict"  style="width: 100%;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                             <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                 <label for="txtBrowseNameOfLand" class="col-lg-3 control-label">Name of Land</label>
+                                                    <div class="col-lg-7">
+                                                        <input class="form-control" id="txtBrowseNameOfLand" type="text" style="width: 100%;">
+                                                    </div>  
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="row"> 
+                             <div class="col-lg-4">
+                                       
+                            </div>
+                            <div class="col-lg-4">
+                                
+                            </div>
+                             <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                 <button type="button" class="btn btn-primary col-lg-3" id="btnBrowseSearch">
+                                                    Search
+                                                </button>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>  
+                        </div>
+                   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="grdBrowseMultipleResult"></div>
+                    </div>
+            </div>
+       
+            </div> <!-- modal-body-->
+            <div class="modal-footer">
+                
+            </div>
+            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

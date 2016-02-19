@@ -22,6 +22,10 @@
                      {
                         name:"searchDeedResponse",
                         fn:this.searchDeedResponse
+                    },
+                    {
+                        name:"browseDeedResponse",
+                        fn:this.browseDeedResponse
                     }                  
 
                 ]);
@@ -85,6 +89,23 @@
              $('#addGrantorModel').on('hidden.bs.modal', function () {
                 $m.clearGrantorModel();
             })
+            
+            $("#btnDeedBrowse").click(function(){
+                 var searchQuery = "SELECT * FROM Deed";
+                    $m.settings.common.ajaxFunction('/DeedLedger/BrowseDeeds', 'POST', null, searchQuery,false);
+                $('#browseModal').modal('toggle');   
+           
+            });
+            
+             $("#btnBrowseSearch").click(function(){
+                 var searchQuery = "SELECT * FROM Deed d";
+               var whereClause =  $m.buildBrowseQuery();
+                if(whereClause != "")
+                   searchQuery = searchQuery +" " + whereClause;
+                  $m.settings.common.ajaxFunction('/DeedLedger/BrowseDeeds', 'POST', null, searchQuery,false);
+                   
+           
+            });
             // $('#fmGrantor').validator().on('submit', function (e) {
             //     if (e.isDefaultPrevented()) {
             //         
@@ -158,8 +179,43 @@
             optionLabel:"Select a District",
             index: 0
         });
+        
+        
+         $("#ddlBrowseType").kendoComboBox({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            placeholder:"Select a Deed Type",
+            filter:"startswith",
+            index: 0
+        });
+
+        $("#ddlBrowseGrantee").kendoComboBox({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            placeholder:"Select a Grantee",
+            filter:"startswith",
+            index: 0
+        });
+
+        $("#ddlBrowseGrantor").kendoComboBox({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            placeholder:"Select a Grantor",
+            filter:"startswith",
+            index: 0
+        });
+        
+         $("#ddlBrowseDistrict").kendoComboBox({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            placeholder:"Select a District",
+            filter:"startswith",
+            index: 0
+        });
 
         $("#chkAvailability").checkboxpicker();
+        $('#chkAvailability').prop('checked', false);
+        
         
         $("#grdDeedMultipleResult").kendoGrid({
                 // dataSource: {
@@ -172,7 +228,7 @@
                 },
                 columns: [
                    { field: "id", hidden: true, },
-                   { field: "DeedNumber", title: "Case Number", width: 50 },
+                   { field: "DeedNumber", title: "Deed Number", width: 50 },
                    { field: "DeedTypeName", title: "Type", width: 70 },
                    { field: "GranteeName", title: "Grantee", width: 100 },
                    { field: "GrantorName", title: "Grantor", width: 200 },
@@ -191,6 +247,44 @@
                   $("#displayMultipleDeedSearchResult").modal('toggle');
                 }
             });
+            
+            
+            
+             $("#grdBrowseMultipleResult").kendoGrid({
+                // dataSource: {
+                //     data: [],
+                //     pageSize: 1
+                //  },
+                // pageable: {
+                // input: false,
+                // numeric: true,
+                // refresh: true,
+                // pageSizes: true,
+                // previousNext: true
+                //  },
+                pageable:true,
+                columns: [
+                   { field: "id", hidden: true, },
+                   { field: "DeedNumber", title: "Deed Number", width: 50 },
+                   { field: "DeedTypeName", title: "Type", width: 70 },
+                   { field: "GranteeName", title: "Grantee", width: 100 },
+                   { field: "GrantorName", title: "Grantor", width: 200 },
+                   { field: "DistrictName", title: "District", width: 100 },
+                   { field: "NameOfLand", title: "Land Name", width: 100 }
+                  ],
+                  selectable:"row",
+                   change: function (e) {
+                    /// <summary>
+                    /// Bind Selected data to form
+                    /// </summary>
+                    /// <param name="e" type="type"></param>
+                   var selectedRow = this.select();
+                   if(selectedRow)
+                   $m.bindDeedData(this.dataItem(selectedRow));
+                  $("#browseModal").modal('toggle');
+                }
+                  
+            });
         
         },
         populateDeedDropdown: function(a) {
@@ -204,22 +298,49 @@
             var grantees = JSON.parse(JSON.parse(a).JsonResult)[0].Grantees;
             var grantors = JSON.parse(JSON.parse(a).JsonResult)[0].Grantors;
             var districts = JSON.parse(JSON.parse(a).JsonResult)[0].Districts;
-
+         
+            var ddlBrowseDistrict = $("#ddlBrowseDistrict").data("kendoComboBox");
+            ddlBrowseDistrict.setDataSource(districts);
+            ddlBrowseDistrict.dataSource.sort({ field: "Name", dir: "asc" });
+            ddlBrowseDistrict.refresh();
+            
             var ddl = $("#ddlType").data("kendoDropDownList");
             ddl.setDataSource(deedTypes);
+            ddl.dataSource.sort({ field: "Name", dir: "asc" });
             ddl.refresh();
 
             var ddlGrantee = $("#ddlGrantee").data("kendoDropDownList");
             ddlGrantee.setDataSource(grantees);
+            ddlGrantee.dataSource.sort({ field: "Name", dir: "asc" });
             ddlGrantee.refresh();
 
             var ddlGrantor = $("#ddlGrantor").data("kendoDropDownList");
             ddlGrantor.setDataSource(grantors);
+            ddlGrantor.dataSource.sort({ field: "Name", dir: "asc" });
             ddlGrantor.refresh();
 
             var ddlDistrict = $("#ddlDistrict").data("kendoDropDownList");
             ddlDistrict.setDataSource(districts);
+            ddlDistrict.dataSource.sort({ field: "Name", dir: "asc" });
             ddlDistrict.refresh();
+            
+            
+            var ddlType = $("#ddlBrowseType").data("kendoComboBox");
+            ddlType.setDataSource(deedTypes);
+            ddlType.dataSource.sort({ field: "Name", dir: "asc" });
+            ddlType.refresh();
+
+            var ddlBrowseGrantee = $("#ddlBrowseGrantee").data("kendoComboBox");
+            ddlBrowseGrantee.setDataSource(grantees);
+            ddlBrowseGrantee.dataSource.sort({ field: "Name", dir: "asc" });
+            ddlBrowseGrantee.refresh();
+
+            var ddlBrowseGrantor = $("#ddlBrowseGrantor").data("kendoComboBox");
+            ddlBrowseGrantor.setDataSource(grantors);
+            ddlBrowseGrantor.dataSource.sort({ field: "Name", dir: "asc" });
+            ddlBrowseGrantor.refresh();
+            
+           
         },
         notify:function(d){
           
@@ -327,10 +448,12 @@
            
            //Set multiple search result grid data source
              var dataSource = new kendo.data.DataSource({
-                data: $m.multipleSearchResult,
-                pageSize: 10
+               data: $m.multipleSearchResult,
+                pageSize: 10,
+                page:1,
+                serverPaging: false
             });
-             $("#grdDeedMultipleResult").data("kendoGrid").dataSource = dataSource;
+             $("#grdDeedMultipleResult").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#grdDeedMultipleResult").data("kendoGrid").refresh();
             //Open Popup
@@ -368,14 +491,14 @@
             
             if($("#txtRemarks"))
             $("#txtRemarks").val("");
-            
+            var todayDate = kendo.toString(kendo.parseDate(new Date()), 'MM/dd/yyyy');
             if($("#date").data("kendoDatePicker"))
-            $("#date").data("kendoDatePicker").value("");
+            $("#date").data("kendoDatePicker").value(todayDate);
             
             if($("#dtRegisterOn").data("kendoDatePicker"))
-            $("#dtRegisterOn").data("kendoDatePicker").value("");
+            $("#dtRegisterOn").data("kendoDatePicker").value(todayDate);
             
-            $("#chkAvailability").prop('checked', true);
+            $("#chkAvailability").prop('checked', false);
             
         },
         
@@ -523,9 +646,95 @@
                     
                  $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
         },
-        validateddl:function () {
-            return false;
-        }
+       browseDeedResponse:function (data) {
+            /// <summary>
+            /// Callback function for deed search responseS
+            /// </summary>
+             /// <param name="data" type="type"> search response Json string</param>
+            var deeds = JSON.parse(JSON.parse(data).JsonResult);
+            var deedsLength = 0;
+               if(deeds)
+               deedsLength = deeds.length;
+        
+                if(deedsLength > 1){
+                    $m.setMultipleBrowseDataSource(deeds);
+                }
+                else if(deedsLength > 0){
+                    $m.bindDeedData(deeds[0]);
+                    $("#browseModal").modal('toggle');
+                }else{
+                     $m.setMultipleBrowseDataSource(deeds);
+                     $m.settings.common.setValidationMessages("val-messageBrowse","info","No Results Found");
+                }
+                
+            
+       },
+       setMultipleBrowseDataSource:function (deedList) {
+            /// <summary>
+            /// Set MultipleSearchResult datasource and refresh the grid
+            /// </summary>
+           
+           for (var i = 0, x = deedList.length; i < x; i++){
+              // Refil the deed object using master data
+              
+              deedList[i].DeedTypeName =  $.grep($m.masterData.DeedTypes,function (e) {return e.ID === deedList[i].DeedTypeId;})[0].Name;
+              deedList[i].GranteeName =  $.grep($m.masterData.Grantees,function (e) {return e.ID === deedList[i].GranteeId;})[0].Name;
+              deedList[i].GrantorName =  $.grep($m.masterData.Grantors,function (e) {return e.ID === deedList[i].GrantorId;})[0].Name;
+              deedList[i].DistrictName =  $.grep($m.masterData.Districts,function (e) {return e.ID === deedList[i].DistrictId;})[0].Name;
+           }
+           $m.multipleSearchResult = deedList;
+           
+           //Set multiple search result grid data source
+             var dataSource = new kendo.data.DataSource({
+            
+                data: $m.multipleSearchResult,
+                pageSize: 10,
+                page:1,
+                serverPaging: false
+            });
+             $("#grdBrowseMultipleResult").data("kendoGrid").setDataSource(dataSource);
+            dataSource.read();
+            $("#grdBrowseMultipleResult").data("kendoGrid").refresh();
+            
+       },
+       buildBrowseQuery:function(){
+           
+          var whereClause = "";
+           if($("#ddlBrowseType").val() !=""){
+                 whereClause = "WHERE d.DeedTypeId = '"+$("#ddlBrowseType").val() +"'";
+             }
+             if($("#ddlBrowseGrantee").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE d.GranteeId = '"+$("#ddlBrowseGrantee").val() +"'";
+                 else
+                   whereClause = whereClause + " OR d.GranteeId = '"+$("#ddlBrowseGrantee").val() +"'";
+             }
+             if($("#ddlBrowseGrantor").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE d.GrantorId = '"+$("#ddlBrowseGrantor").val() +"'";
+                 else
+                   whereClause = whereClause + " OR d.GrantorId = '"+$("#ddlBrowseGrantor").val() +"'";
+             }
+             if($("#ddlBrowseDistrict").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE d.DistrictId = '"+$("#ddlBrowseDistrict").val() +"'";
+                 else
+                   whereClause = whereClause + " OR d.DistrictId = '"+$("#ddlBrowseDistrict").val() +"'";
+             }
+              if($("#txtBrowseDeedNo").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE d.DeedNumber = '"+$("#txtBrowseDeedNo").val() +"'";
+                 else
+                   whereClause = whereClause + " OR d.DeedNumber = '"+$("#txtBrowseDeedNo").val() +"'";
+             }
+              if($("#txtBrowseNameOfLand").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE d.NameOfLand = '"+$("#txtBrowseNameOfLand").val() +"'";
+                 else
+                   whereClause = whereClause + " OR d.NameOfLand = '"+$("#txtBrowseNameOfLand").val() +"'";
+             }
+             return whereClause;
+       }
         
     };
 

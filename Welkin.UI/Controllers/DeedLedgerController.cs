@@ -88,5 +88,23 @@ namespace Welkin.UI.Controllers
             await QueueHandler.PushToServiceAsync(rList);
             return View("Index");
         }
+
+        [HttpPost]
+        public async Task<ActionResult> BrowseDeeds(string model)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = model,
+                JsCallback = "browseDeedResponse",
+                Targert = "GetDeeds",
+                UserId = 1,
+                Type = Enums.EntityType.Deed
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
     }
 }
