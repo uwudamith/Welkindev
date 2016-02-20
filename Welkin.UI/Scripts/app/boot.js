@@ -53,8 +53,14 @@
             /// <param name="type" type="type">Possible types are success,info,warning,danger</param>
             /// <param name="message" type="type">Message should display</param>
 
-            $("#" + target).empty();
             $("#" + target).append("<div class='alert alert-" + type + " fade in' id='bsAlert'><a class='close' data-dismiss='alert'>×</a>" + message + "</div>");
+            setTimeout(function () {
+                $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 2000);
+            
+
         },
         showConfirmDialog: function (yesFucn, noFunc, message) {
             /// <summary>

@@ -66,7 +66,7 @@
                 }
                
                 if ($("#txtNextStep").val() == "") {
-                    alert('Please enter step name');
+                    $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please enter step name");
                     return;
                 } else {
                     nextStepModel.NextStep = $("#txtNextStep").val();
@@ -111,7 +111,7 @@
             $(".save-case").click(function () {
                // Validate Type
                 if ($("#ddlType").data("kendoDropDownList").value() == "") {
-                    alert("Please select Type");
+                    $m.settings.common.showNotification("Please select Type", "warning");
                     return;
                 } else {
                     $m.caseModel.CaseTypeId = $("#ddlType").data("kendoDropDownList").value();
@@ -119,7 +119,7 @@
 
                 // Validate Party
                 if ($("#ddlParty").data("kendoDropDownList").value() == "") {
-                    alert("Please select Party");
+                    $m.settings.common.showNotification("Please select Party", "warning");
                     return;
                 } else {
                     $m.caseModel.PartyId = $("#ddlParty").data("kendoDropDownList").value();
@@ -127,7 +127,7 @@
 
                 // Validate CaseNumber
                 if ($("#txtCaseNo").val() == "") {
-                    alert("Please enter Case Number");
+                    $m.settings.common.showNotification("Please enter Case Number", "warning");
                     return;
                 } else {
                     $m.caseModel.CaseNumber = $("#txtCaseNo").val();
@@ -135,7 +135,7 @@
 
                 // Validate Court
                 if ($("#ddlCourt").data("kendoDropDownList").value() == "") {
-                    alert("Please select Court");
+                    $m.settings.common.showNotification("Please select Court", "warning");
                     return;
                 } else {
                     $m.caseModel.CourtId = $("#ddlCourt").data("kendoDropDownList").value();
@@ -161,7 +161,7 @@
             var savePartyData = function (guid) {
                 var partyObj = {};
                 if ($("#txtUserName").val() == "") {
-                    alert("Please enter party name");
+                    $m.settings.common.setValidationMessages("val-message-add-party", "warning", "Please enter party name");
                     return;
                 } else {
                     partyObj.Id = guid;
@@ -192,7 +192,7 @@
 
             $("#btn-search-case").click(function () {
                 if ($("#txt-search-case-no").val() == "") {
-                    alert("Search field should not be empty");
+                    $m.settings.common.showNotification("Search field should not be empty", "success");
                 } else {
                     var searchQuery = "SELECT * FROM c WHERE CONTAINS(c.CaseNumber,'" + $("#txt-search-case-no").val() + "')";
                     $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery,false);
@@ -521,14 +521,12 @@
                 $m.settings.common.setValidationMessages("val-message", "warning", "Please enter description");
                 return;
             } else {
-                $("#val-message").empty();
                 task.Description = $("#txtTaskDescription").val();
             }
             if (kendo.parseDate($("#dtTaskDueOnDate").data("kendoDatePicker").value())==null){
                 $m.settings.common.setValidationMessages("val-message", "warning", "Please enter valid date");
                 return;
             }else{
-                $("#val-message").empty();
                 task.DueDate = $("#dtTaskDueOnDate").data("kendoDatePicker").value();
             }
 
@@ -574,7 +572,6 @@
             /// </summary>
             /// <param name="reset" type="type"></param>
             $("#txtTaskDescription").val("");
-            $("#val-message").empty();
             $("#dtTaskDueOnDate").data("kendoDatePicker").value("");
             $("#chkStatus").prop('checked', false);
             $("#ddlTaskUsers").data("kendoMultiSelect").value([]);
