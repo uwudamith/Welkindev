@@ -160,7 +160,7 @@
                             </div>
                             <div class="col-lg-3">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-primary">
+                                    <button type="button" class="btn btn-primary" id="btnCaseBrowse">
                                         Browse
                                     </button>
                                     <button type="button" class="btn btn-success save-case" style="margin-left: 10px;">
@@ -439,6 +439,111 @@
             <div class="modal-footer">
                 
             </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" id="browseModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmBrowse">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Browse Cases</h4>
+            </div>
+            <div class="modal-body"> 
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageBrowse"></div>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col-lg-12">
+                         
+                            <div class="row"> 
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                     <label for="ddlBrowseType" class="col-lg-3 control-label">Type</label>
+                                                    <div class="col-lg-7">
+                                                        <input id="ddlBrowseType"  style="width: 100%;" />
+                                                    </div>                                                                                 
+                                            </div>
+                                        </div>                           
+                                    </div>       
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                             <div class="form-group">
+                                                <label for="ddlBrowseParty" class="col-lg-3 control-label">Party</label>
+                                                <div class="col-lg-7">
+                                                    <input id="ddlBrowseParty"  style="width: 100%;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                             <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                            
+                                        </div>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="row"> 
+                                <div class="col-lg-4">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                     <label for="txtBrowseCaseNo" class="col-lg-3 control-label">Case No</label>
+                                                    <div class="col-lg-7">
+                                                        <input class="form-control" id="txtBrowseCaseNo" type="text" style="width: 100%;">
+                                                    </div>                                                                             
+                                            </div>
+                                        </div>                           
+                                    </div>       
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                             <div class="form-group">
+                                                <label for="ddlBrowseCourt" class="col-lg-3 control-label">Court</label>
+                                                <div class="col-lg-7">
+                                                    <input id="ddlBrowseCourt"  style="width: 100%;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                             <div class="col-lg-4">
+                                <div class="row">
+                                        <div class="col-lg-12">
+                                              <div class="form-group">
+                                                 <button type="button" class="btn btn-primary col-lg-3" id="btnBrowseSearch">
+                                                    Search
+                                                </button>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>  
+                        </div>
+                   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="grdBrowseMultipleResult"></div>
+                    </div>
+            </div>
+       
+            </div> <!-- modal-body-->
+            <div class="modal-footer">
+                
+            </div>
+            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

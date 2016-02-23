@@ -34,6 +34,10 @@
                     {
                         name:"searchCaseResponse",
                         fn:this.searchCaseResponse
+                    },
+                    {
+                        name:"browseCaseResponse",
+                        fn:this.browseCaseResponse
                     }
                 ]);
                 this.settings.sAgent.start();
@@ -194,7 +198,7 @@
                 if ($("#txt-search-case-no").val() == "") {
                     $m.settings.common.showNotification("Search field should not be empty", "success");
                 } else {
-                    var searchQuery = "SELECT * FROM c WHERE CONTAINS(c.CaseNumber,'" + $("#txt-search-case-no").val() + "')";
+                    var searchQuery = "SELECT * FROM c WHERE CONTAINS(LOWER(c.CaseNumber),LOWER('" + $("#txt-search-case-no").val() + "'))";
                     $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery,false);
                 }
             });
@@ -233,6 +237,22 @@
                 e.preventDefault();
                 var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.deleteStepTaskItem(dataItem);
+            });
+            
+              $("#btnCaseBrowse").click(function(){
+                 var searchQuery = "SELECT * FROM Deed";
+                    $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery,false);
+                $('#browseModal').modal('toggle');   
+           
+            });
+             $("#btnBrowseSearch").click(function(){
+                 var searchQuery = "SELECT * FROM c";
+               var whereClause =  $m.buildBrowseQuery();
+                if(whereClause != "")
+                   searchQuery = searchQuery +" " + whereClause;
+                  $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery,false);
+                   
+           
             });
         },
         // Initilize controlls
@@ -339,7 +359,31 @@
                 optionLabel: "Select Court",
                 index: 0
             });
+            
+             $("#ddlBrowseType").kendoComboBox({
+                dataTextField: "Name",
+                dataValueField: "ID",
+                placeholder: "Select Case Type",
+                filter:"startswith",
+                index: 0
+            });
 
+            $("#ddlBrowseParty").kendoComboBox({
+                dataTextField: "Name",
+                dataValueField: "ID",
+                placeholder: "Select Party",
+                filter:"startswith",
+                index: 0
+            });
+
+            $("#ddlBrowseCourt").kendoComboBox({
+                dataTextField: "Name",
+                dataValueField: "ID",
+                placeholder: "Select Court",
+                filter:"startswith",
+                index: 0
+            });
+            
             $("#ddlUsers").kendoMultiSelect({
                 dataTextField: "Name",
                 dataValueField: "Id",
@@ -352,6 +396,7 @@
                 dataValueField: "Id",
                 index: 0
             });
+            
             
               $("#grdCaseMultipleResult").kendoGrid({
                 // dataSource: {
@@ -382,6 +427,31 @@
                   $("#displayMultipleCaseSearchResult").modal('toggle');
                 }
               });
+              
+               $("#grdBrowseMultipleResult").kendoGrid({
+               
+                pageable:true,
+                columns: [
+                   { field: "id", hidden: true, },
+                   { field: "CaseNumber", title: "Case Number", width: 100 },
+                   { field: "CaseTypeName", title: "Type", width: 100 },
+                   { field: "CourtName", title: "Court", width: 100 },
+                   { field: "PartyName", title: "Party", width: 200 },
+                   { field: "StartDate", width: 130, title: "Start Date", template: "#= kendo.toString(kendo.parseDate(StartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" }
+                  ],
+                  selectable:"row",
+                   change: function (e) {
+                    /// <summary>
+                    /// Bind Selected data to form
+                    /// </summary>
+                    /// <param name="e" type="type"></param>
+                   var selectedRow = this.select();
+                   if(selectedRow)
+                   $m.bindCaseData(this.dataItem(selectedRow));
+                  $("#browseModal").modal('toggle');
+                }
+                  
+            });
 
         },
         populateCaseDropdown: function (a) {
@@ -412,6 +482,18 @@
             ddlParty.setDataSource(parties);
             ddlParty.refresh();
 
+            var ddlBrowseType = $("#ddlBrowseType").data("kendoComboBox");
+            ddlBrowseType.setDataSource(caseTypes);
+            ddlBrowseType.refresh();
+
+            var ddlBrowseCourt = $("#ddlBrowseCourt").data("kendoComboBox");
+            ddlBrowseCourt.setDataSource(courts);
+            ddlBrowseCourt.refresh();
+
+            var ddlBrowseParty = $("#ddlBrowseParty").data("kendoComboBox");
+            ddlBrowseParty.setDataSource(parties);
+            ddlBrowseParty.refresh();
+            
             var ddlUsers = $("#ddlUsers").data("kendoMultiSelect");
             ddlUsers.setDataSource(usersData);
             ddlUsers.refresh();
@@ -786,6 +868,83 @@
 
             $m.setstepTaskDataSource();
         },
+         browseCaseResponse:function (data) {
+            /// <summary>
+            /// Callback function for deed search responseS
+            /// </summary>
+             /// <param name="data" type="type"> search response Json string</param>
+         
+            var cases = JSON.parse(JSON.parse(data).JsonResult);
+            var casesLength = 0;
+               if(cases)
+               casesLength = cases.length;
+        
+                if(casesLength > 1){
+                    $m.setMultipleBrowseDataSource(cases);
+                }
+                else if(casesLength > 0){
+                    $m.bindCaseData(cases[0]);
+                    $("#browseModal").modal('toggle');
+                }else{
+                     $m.setMultipleBrowseDataSource(cases);
+                     $m.settings.common.setValidationMessages("val-messageBrowse","info","No Results Found");
+                }
+                
+            
+       },
+        setMultipleBrowseDataSource:function (caseList) {
+            /// <summary>
+            /// Set MultipleSearchResult datasource and refresh the grid
+            /// </summary>
+           
+          for (var i = 0, x = caseList.length; i < x; i++){
+              caseList[i].CaseTypeName =  $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
+              caseList[i].CourtName =  $.grep($m.masterData.Courts,function (e) {return e.ID === caseList[i].CourtId;})[0].Name;
+              caseList[i].PartyName =  $.grep($m.masterData.Parties,function (e) {return e.ID === caseList[i].PartyId;})[0].Name;              
+           }
+           $m.multipleSearchResult = caseList;
+           
+           //Set multiple search result grid data source
+             var dataSource = new kendo.data.DataSource({
+            
+                data: $m.multipleSearchResult,
+                pageSize: 10,
+                page:1,
+                serverPaging: false
+            });
+            
+             $("#grdBrowseMultipleResult").data("kendoGrid").setDataSource(dataSource);
+            dataSource.read();
+            $("#grdBrowseMultipleResult").data("kendoGrid").refresh();
+            
+       },
+       buildBrowseQuery:function(){
+           
+          var whereClause = "";
+           if($("#ddlBrowseType").val() !=""){
+                 whereClause = "WHERE c.CaseTypeId = '"+$("#ddlBrowseType").val() +"'";
+             }
+             if($("#ddlBrowseParty").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE c.PartyId = '"+$("#ddlBrowseParty").val() +"'";
+                 else
+                   whereClause = whereClause + " OR c.PartyId = '"+$("#ddlBrowseParty").val() +"'";
+             }
+             if($("#ddlBrowseCourt").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE c.CourtId = '"+$("#ddlBrowseCourt").val() +"'";
+                 else
+                   whereClause = whereClause + " OR c.CourtId = '"+$("#ddlBrowseCourt").val() +"'";
+             }
+           
+              if($("#txtBrowseCaseNo").val() !=""){
+                 if(whereClause === "")
+                   whereClause = "WHERE LOWER(c.CaseNumber) = LOWER('"+$("#txtBrowseCaseNo").val() +"')";
+                 else
+                   whereClause = whereClause + " OR LOWER(c.CaseNumber) = LOWER('"+$("#txtBrowseCaseNo").val() +"')";
+             }
+             return whereClause;
+       }
     };
 
     return $m;

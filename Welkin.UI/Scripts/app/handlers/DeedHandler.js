@@ -45,7 +45,7 @@
                 if ($("#txt-search-deed-no").val() == "") {
                     alert("Search field should not be empty");
                 } else {
-                    var searchQuery = "SELECT * FROM Deed d WHERE CONTAINS(d.DeedNumber,'" + $("#txt-search-deed-no").val() + "')";
+                    var searchQuery = "SELECT * FROM Deed d WHERE CONTAINS(LOWER(d.DeedNumber),LOWER('" + $("#txt-search-deed-no").val() + "'))";
                     $m.settings.common.ajaxFunction('/DeedLedger/GetDeeds', 'POST', null, searchQuery,false);
                 }
             });
@@ -228,7 +228,7 @@
                 },
                 columns: [
                    { field: "id", hidden: true, },
-                   { field: "DeedNumber", title: "Deed Number", width: 50 },
+                   { field: "DeedNumber", title: "Deed Number", width: 80 },
                    { field: "DeedTypeName", title: "Type", width: 70 },
                    { field: "GranteeName", title: "Grantee", width: 100 },
                    { field: "GrantorName", title: "Grantor", width: 200 },
@@ -265,7 +265,7 @@
                 pageable:true,
                 columns: [
                    { field: "id", hidden: true, },
-                   { field: "DeedNumber", title: "Deed Number", width: 50 },
+                   { field: "DeedNumber", title: "Deed Number", width: 80 },
                    { field: "DeedTypeName", title: "Type", width: 70 },
                    { field: "GranteeName", title: "Grantee", width: 100 },
                    { field: "GrantorName", title: "Grantor", width: 200 },
@@ -651,6 +651,7 @@
             /// Callback function for deed search responseS
             /// </summary>
              /// <param name="data" type="type"> search response Json string</param>
+           
             var deeds = JSON.parse(JSON.parse(data).JsonResult);
             var deedsLength = 0;
                if(deeds)
@@ -723,15 +724,15 @@
              }
               if($("#txtBrowseDeedNo").val() !=""){
                  if(whereClause === "")
-                   whereClause = "WHERE d.DeedNumber = '"+$("#txtBrowseDeedNo").val() +"'";
+                   whereClause = "WHERE LOWER(d.DeedNumber) = LOWER('"+$("#txtBrowseDeedNo").val() +"')";
                  else
-                   whereClause = whereClause + " OR d.DeedNumber = '"+$("#txtBrowseDeedNo").val() +"'";
+                   whereClause = whereClause + " OR LOWER(d.DeedNumber) = LOWER('"+$("#txtBrowseDeedNo").val() +"')";
              }
               if($("#txtBrowseNameOfLand").val() !=""){
                  if(whereClause === "")
-                   whereClause = "WHERE d.NameOfLand = '"+$("#txtBrowseNameOfLand").val() +"'";
+                   whereClause = "WHERE LOWER(d.NameOfLand) = LOWER('"+$("#txtBrowseNameOfLand").val() +"')";
                  else
-                   whereClause = whereClause + " OR d.NameOfLand = '"+$("#txtBrowseNameOfLand").val() +"'";
+                   whereClause = whereClause + " OR LOWER(d.NameOfLand) = LOWER('"+$("#txtBrowseNameOfLand").val() +"')";
              }
              return whereClause;
        }
