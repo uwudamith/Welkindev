@@ -301,6 +301,7 @@
     <Content Include="Scripts\app\handlers\CaseHandler.js" />
     <Content Include="Scripts\app\handlers\DeedHandler.js" />
     <Content Include="Scripts\app\handlers\DraftHandler.js" />
+    <Content Include="Scripts\app\handlers\SchedulerHandler.js" />
     <Content Include="Scripts\bootstrap-checkbox.js" />
     <Content Include="Scripts\bootstrap-checkbox.min.js" />
     <Content Include="Scripts\bootstrap-notify.min.js" />

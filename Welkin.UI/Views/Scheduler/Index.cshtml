@@ -24,48 +24,15 @@
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-lg-9">
-                    <div id="team-schedule">
-                        @(Html.Kendo().Scheduler<SchedulerModel>()
-                              .Name("scheduler")
-                              .Date(DateTime.Today)
-                              .StartTime(new DateTime(2016, 6, 13, 7, 00, 00))
-                              .Height(600)
-                              .Views(views =>
-                                     {
-                                         views.DayView();
-                                         views.WorkWeekView(workWeekView => workWeekView.Selected(true));
-                                         views.WeekView();
-                                         views.MonthView();
-                                         views.AgendaView();
-                                         views.TimelineView();
-                                     })
-                              .Timezone("Etc/UTC")
-                              .Resources(resource =>
-                                         {
-                                             resource.Add(m => m.OwnerID)
-                                                 .Title("Owner")
-                                                 .DataTextField("Text")
-                                                 .DataValueField("Value")
-                                                 .DataColorField("Color")
-                                                 .BindTo(new[]
-                                                         {
-                                                             new {Text = "Alex", Value = 1, Color = "#f8a398"},
-                                                             new {Text = "Bob", Value = 2, Color = "#51a0ed"},
-                                                             new {Text = "Charlie", Value = 3, Color = "#56ca85"}
-                                                         });
-                                         })
-                              .DataSource(d => d
-                                  .Model(m =>
-                                         {
-                                             m.Id(f => f.TaskID);
-                                             m.Field(f => f.Title).DefaultValue("No title");
-                                             m.Field(f => f.OwnerID).DefaultValue(1);
-                                             m.Field(f => f.Title).DefaultValue("No title");
-                                             m.RecurrenceId(f => f.RecurrenceID);
-                                         })
-                              )
-                              )
+                   <div id="team-schedule">
+                    <div id="people">
+                        <input checked type="checkbox" id="alex" value="1">
+                        <input checked type="checkbox" id="bob" value="2">
+                        <input type="checkbox" id="charlie" value="3">
                     </div>
+                </div>
+                <div id="scheduler"></div>
+   
                 </div>
                 <div class="col-lg-3">
                     <div class="panel-group" id="accordion">
@@ -107,3 +74,113 @@
         </div>
     </div>
 </div>
+
+
+<!--<script>
+var datas = [];
+ $("#scheduler").kendoScheduler({
+      editable: {
+    template: $("#editor").html()
+  },
+  date: new Date("2016/2/23"),
+  dataSource: [],
+  save:save,
+  resources: [
+    {
+      field: "atendees",
+      multiple: true,
+      dataSource: [
+        { text: "Alex", value: 1 },
+        { text: "Bob", value: 2 },
+        { text: "Charlie", value: 3 }
+      ]
+    }
+  ]
+});
+
+
+function save(e){
+    debugger;
+    
+    var task = {};
+      
+    task.taskId = "";
+    task.title = e.event.title;
+    task.atendees = e.event.atendees;
+    task.start = e.event.start;
+    task.end = e.event.end;
+    datas.push(task);
+    
+      var dataSource = new kendo.data.SchedulerDataSource({
+                data: datas
+            });
+            
+        var scheduler = $("#scheduler").data("kendoScheduler");
+        scheduler.setDataSource(dataSource);
+
+}
+
+</script>-->
+
+
+
+
+
+
+
+
+
+
+<script id="editor" type="text/x-kendo-template">
+   <h3>Edit meeting</h3>
+   <p>
+       <label>Title: <input name="title" /></label>
+   </p>
+   <p>
+       <label>Start: <input data-role="datetimepicker" name="start" /></label>
+   </p>
+   <p>
+       <label>End: <input data-role="datetimepicker" name="end" /></label>
+   </p>
+</script>
+
+<style>
+
+.k-nav-current > .k-link span + span {
+    max-width: 200px;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+#team-schedule {
+    background: url('../content/web/scheduler/team-schedule.png') transparent no-repeat;
+    height: 115px;
+    position: relative;
+}
+
+#people {
+    background: url('../content/web/scheduler/scheduler-people.png') no-repeat;
+    width: 345px;
+    height: 115px;
+    position: absolute;
+    right: 0;
+}
+#alex {
+    position: absolute;
+    left: 4px;
+    top: 81px;
+}
+#bob {
+    position: absolute;
+    left: 119px;
+    top: 81px;
+}
+#charlie {
+    position: absolute;
+    left: 234px;
+    top: 81px;
+}
+</style>

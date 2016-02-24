@@ -10,13 +10,17 @@
             hubUrl: ""
         },
         ajaxFunction: function (url, type,callBackFunc, model,isStringfy) {
+            debugger;
             if (model) {
                 $.ajax({
                     url: url,
                     type: type,
                     data: { 'model': isStringfy==true?JSON.stringify(model):model },
                     success: function (data) {
+                        debugger;
                         if(callBackFunc) callBackFunc(data);
+                        else 
+                         return data;
                     }
                 });
             } else {
@@ -24,7 +28,10 @@
                     url: url,
                     type: type,
                     success: function (data) {
+                        debugger;
                         if(callBackFunc) callBackFunc(data);
+                        else 
+                         return data;
                     }
                 });
             }
@@ -152,6 +159,27 @@
                                 url: $scope.Configs.hubUrl
                             }
                         })
+                    });
+                }
+                
+                 if ($scope.PageMode.controller === "Scheduler" && $scope.PageMode.action === "Index") {
+                    $scope.SchedulerHandler.init({
+                        sAgent: new $scope.Utils.SignalR({
+                            config: {
+                                id: "1",
+                            },
+                            hub: {
+                                url: $scope.Configs.hubUrl
+                            }
+                        }),
+                        common: {
+                            ajaxFunction: $scope.ajaxFunction,
+                            createGUID:$scope.createGUID,
+                            saveMasterData:$scope.saveMasterData,
+                            showNotification: $scope.showNotification,
+                            setValidationMessages:$scope.setValidationMessages,
+                            validateEmail:$scope.validateEmail
+                        }
                     });
                 }
 

@@ -36,7 +36,8 @@ namespace Welkin.UI
                 "~/Scripts/app/utils/utils.signalR.js",
                 "~/Scripts/app/handlers/CaseHandler.js",
                 "~/Scripts/app/handlers/DeedHandler.js",
-               "~/Scripts/app/handlers/DraftHandler.js"
+               "~/Scripts/app/handlers/DraftHandler.js",
+               "~/Scripts/app/handlers/SchedulerHandler.js"
 
                 ));
 
@@ -57,8 +58,9 @@ namespace Welkin.UI
             bundles.Add(new ScriptBundle("~/bundles/kendo-web").Include(
                 "~/Scripts/kendo/kendo.web.min.js",
                 "~/Scripts/kendo/kendo.all.min.js",
-                "~/Scripts/kendo/kendo.aspnetmvc.min.js",
-                "~/Scripts/kendo/kendo.timezones.min.js"));
+                "~/Scripts/kendo/kendo.aspnetmvc.min.js"
+                //"~/Scripts/kendo/kendo.timezones.min.js"
+                ));
 
             bundles.Add(new ScriptBundle("~/bundles/notify").Include(
                "~/Scripts/bootstrap-notify.min.js"
