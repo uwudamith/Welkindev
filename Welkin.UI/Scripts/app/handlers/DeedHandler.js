@@ -372,7 +372,7 @@
              /// <param name="data" type="type"> search response Json string</param>
             var deeds = JSON.parse(JSON.parse(data).JsonResult);
             var deedsLength = deeds.length;
- 
+
             if(deedsLength > 1){
                 $m.setMultipleSearchDataSource(deeds);
             }
@@ -387,7 +387,9 @@
              /// <summary>
             /// Bind deed data to the form using object
             /// </summary>
+            $m.deedModel = {};
             $m.deedModel = deedObj;
+         
             if($("#ddlType").data("kendoDropDownList"))
             $("#ddlType").data("kendoDropDownList").value($m.deedModel.DeedTypeId);
             
@@ -643,15 +645,17 @@
                  $m.deedModel.Date = $("#date").data("kendoDatePicker").value();
                  $m.deedModel.Availability = $("#chkAvailability").prop('checked');
                  $m.deedModel.RegisterOn = $("#dtRegisterOn").data("kendoDatePicker").value();
-                    
+               
                  $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
+                 $m.deedModel = {};
+                 
         },
        browseDeedResponse:function (data) {
             /// <summary>
             /// Callback function for deed search responseS
             /// </summary>
              /// <param name="data" type="type"> search response Json string</param>
-           
+          
             var deeds = JSON.parse(JSON.parse(data).JsonResult);
             var deedsLength = 0;
                if(deeds)

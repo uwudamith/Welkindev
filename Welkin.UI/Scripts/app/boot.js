@@ -10,14 +10,14 @@
             hubUrl: ""
         },
         ajaxFunction: function (url, type,callBackFunc, model,isStringfy) {
-            debugger;
+            
             if (model) {
                 $.ajax({
                     url: url,
                     type: type,
                     data: { 'model': isStringfy==true?JSON.stringify(model):model },
                     success: function (data) {
-                        debugger;
+                        
                         if(callBackFunc) callBackFunc(data);
                         else 
                          return data;
@@ -28,7 +28,7 @@
                     url: url,
                     type: type,
                     success: function (data) {
-                        debugger;
+                       
                         if(callBackFunc) callBackFunc(data);
                         else 
                          return data;

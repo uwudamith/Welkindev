@@ -57,5 +57,15 @@ namespace Welkin.Core.Entities
         {
             throw new NotImplementedException();
         }
+
+        public Task DeleteDocument(string docSelectQuery, string cName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteDocument(string document)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

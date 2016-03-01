@@ -114,7 +114,35 @@ namespace Welkin.Core.Repositories
             }
         }
 
+        public async Task DeleteDocument(string docSelectQuery,string cName)
+        {
+            try
+            {
 
+           //       var collection =
+           //_client.CreateDocumentCollectionQuery("dbs/" + GetDatabase().Id)
+           //      .Where(c => c.Id == cName)
+           //      .ToArray()
+           //      .FirstOrDefault();
+
+           //     var q = _client.CreateDocumentQuery(collection.SelfLink, docSelectQuery);
+           //     var doc = q.ToList().FirstOrDefault();
+                //var ms = new MemoryStream(Encoding.UTF8.GetBytes(document));
+                //var doc = JsonSerializable.LoadFrom<Document>(ms);
+
+                var docLink = string.Format("dbs/{0}/colls/{1}/docs/{2}",
+                     "welkindb", cName, docSelectQuery);
+                var res =
+                    await
+                        _client
+                            .DeleteDocumentAsync(docLink);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Invalid Document : " + ex.InnerException);
+                throw ex;
+            }
+        }
         #endregion
 
         #region Private Methods

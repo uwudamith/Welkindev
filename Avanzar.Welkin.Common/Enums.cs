@@ -7,6 +7,7 @@
             Case,
             Master,
             Deed,
+            Scheduler,
             None
         }
 

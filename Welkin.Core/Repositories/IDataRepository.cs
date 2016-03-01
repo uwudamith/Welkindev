@@ -49,5 +49,7 @@ namespace Welkin.Core.Repositories
         Task<object> GetData(string cName, string query,string spName);
 
         List<object> ExecuteQuery(string cName, string query);
+
+        Task DeleteDocument(string docSelectQuery, string cName);
     }
 }

@@ -8,6 +8,7 @@
         $m = {
             schedulerData : [],
             masterData:{},
+            currentTask:{},
             init: function(options) {
              
                     this.settings = $scope.$.extend(true, {
@@ -17,26 +18,44 @@
                             {
                                 name: "masterDataResponse",
                                 fn: this.masterDataResponse
+                            },
+                            {
+                                name:"getSchedulerDataResponse",
+                                fn:this.getSchedulerDataResponse
+                            },
+                            {
+                                name:"notify",
+                                fn:this.notify
                             }
                         ]);
                         this.settings.sAgent.start();
                     }
                      $m.initControlls();
+                     
                     
-                    $("#people :checkbox").change(function(e) {
-                        var checked = $.map($("#people :checked"), function(checkbox) {
-                            return parseInt($(checkbox).val());
-                        });
-                        var scheduler = $("#scheduler").data("kendoScheduler");
+                    $('#people').on("click", 'input[type="checkbox"]', function (e) {
+                   
+                   
+                   var checked = [];
+                     var checkboxes =   $('#people input[type="checkbox"]');
+                     if(checkboxes){
+                          for (var i = 0, x = checkboxes.length; i < x; i++){
+                             if(checkboxes[i].checked)
+                             checked.push(checkboxes[i].value);                     
+                           }
+                            var scheduler = $("#scheduler").data("kendoScheduler");
                         scheduler.dataSource.filter({
                             operator: function(task) {
                               
-                                return $.inArray(task.ownerId, checked) >= 0;
+                                return $.inArray(task.attendees, checked) >= 0;
                             }
                         });
+                     }
+                    
                     });
                 },
                  initControlls: function () {
+                    
                      
                     
 
@@ -44,26 +63,29 @@
                  masterDataResponse:function(data){
                     $m.masterData = JSON.parse(JSON.parse(data).JsonResult)[0];
                     
-    
-                    var sData = [];
+                    var searchQuery = "SELECT * FROM Scheduler";
+                    $m.settings.common.ajaxFunction('/Scheduler/GetSchedulerData', 'POST', null, searchQuery,false);
                     
-                    var d1 = {};
-                    d1.id = "03528fc0-fb8e-20f8-02ef-eeeda83d8cba";
-                    d1.start =new Date("2016/2/24 11:00 AM");
-                    d1.end = new Date("2016/2/24 1:00 PM");
-                    d1.title = "Meeting 1"
-                    d1.attendees = "03528fc0-fb8e-20f8-02ef-eeeda83d8cba"
+ 
+                 },
+                 getSchedulerDataResponse:function (data) {
+                 
+                    var sDatasrc = {};
+                  
+                    var model = {};
+                         model = '{"id":"id","fields":{ "id":{ "type":"string"},"title":{"defaultValue":"No title","validation":{"required":"true"}},"start":{"type":"date"},"end":{"type":"date"},"description":{"type":"string"},"attendees":{ "defaultValue":1}}}';
+                        
                     
-                     var d2 = {};
-                    d2.id = "b1408d1c-e9d5-aa60-62ac-3a625f5a9465";
-                    d2.start =new Date("2016/2/24 11:00 AM");
-                    d2.end = new Date("2016/2/24 1:00 PM");
-                    d2.title = "Meeting 2"
-                    d2.attendees = "b1408d1c-e9d5-aa60-62ac-3a625f5a9465"
+                    $m.schedulerData = JSON.parse(JSON.parse(data).JsonResult);
+                    sDatasrc.data = JSON.parse(JSON.parse(data).JsonResult);
+                    var schema = {};
+                    schema.model = JSON.parse(model);
+                    var dataSource = new kendo.data.SchedulerDataSource({
+                                data: $m.schedulerData,
+                                schema:schema
+                            });
                     
-                    sData.push(d1);
-                    sData.push(d2);
-                    $m.populateScedulerData(sData);
+                    $m.populateScedulerData(dataSource);
                  },
                  
                  populateScedulerData:function(sdata){
@@ -72,14 +94,19 @@
                      var resourcesData = [];
                      var resources = {};
                      var resourceList = [];           
-                   
+                     $('#people').empty();
                     for (var i = 0, x = users.length; i < x; i++){
                       var data = {};
                       data.text = users[i].FirstName +" " + users[i].LastName;
                       data.value = users[i].id;
                       data.color = $m.makeRandomColor.toString();
                       resourcesData.push(data);
-                      
+                    
+                    var chk = $('<input checked type="checkbox" id="chk' + users[i].FirstName+ users[i].LastName + '"  value="' + users[i].id + '" > </input>');
+                    var label = $('<label for="chk' + users[i].FirstName+ users[i].LastName + '" class="css-label">' + users[i].FirstName +' '+ users[i].LastName + '</label>');
+                    $('#people').append(chk);
+                    $('#people').append(label);
+                    
                     }
                     
                     resources.field = "attendees";
@@ -90,27 +117,60 @@
 
                  },
                   save:function(e){            
-                    debugger;
-                    var task = {};
-                    
-                    task.taskId = "";
-                    task.title = e.event.title;
-                    task.atendees = e.event.atendees;
-                    task.start = e.event.start;
-                    task.end = e.event.end;
-                    $m.schedulerData.push(task);
-                    
-                    var dataSource = new kendo.data.SchedulerDataSource({
+               
+                   if(e.event.id != ""){
+                       
+                        for (var i = 0, x = $m.schedulerData.length; i < x; i++){
+                        
+                                    if($m.schedulerData[i].id && $m.schedulerData[i].id === e.event.id){
+                                       
+                                                $m.schedulerData[i].title = e.event.title;
+                                                $m.schedulerData[i].start = e.event.start;
+                                                $m.schedulerData[i].end = e.event.end;
+                                                $m.schedulerData[i].description = e.event.description;
+                                                $m.schedulerData[i].attendees = e.event.attendees;
+                                                $m.settings.common.ajaxFunction('/Scheduler/Save', 'POST', null, $m.schedulerData[i],true);
+                                     }
+                                 
+                                    
+                            }
+                        }
+                        else
+                        {
+                            $m.currentTask.title = e.event.title;
+                            $m.currentTask.start = e.event.start;
+                            $m.currentTask.end = e.event.end;
+                            $m.currentTask.description = e.event.description;
+                            $m.currentTask.attendees = e.event.attendees;
+                            $m.currentTask.id = e.event.uid;
+                            $m.schedulerData.push($m.currentTask);
+                            $m.settings.common.ajaxFunction('/Scheduler/Save', 'POST', null,$m.currentTask,true);
+                     
+                            $m.currentTask = {};
+                            //$m.settings.common.createGUID($m.saveNewSchedulerTask);
+                        }
+                   
+                  },
+//                   saveNewSchedulerTask:function(guid){
+//                   
+//                     
+//                     
+//                     $m.schedulerData.push($m.currentTask);
+//    
+//                     
+//                   },
+                  setSchedulerDatasource:function () {
+                      var dataSource = new kendo.data.SchedulerDataSource({
                                 data: $m.schedulerData
                             });
-                            
-                        var scheduler = $("#scheduler").data("kendoScheduler");
-                        scheduler.setDataSource(dataSource);
-
+                             $m.populateScedulerData(dataSource);
+                        // var scheduler = $("#scheduler").data("kendoScheduler");
+                        // scheduler.setDataSource(dataSource);
+                        // dataSource.read();
+                        // scheduler.refresh();
                   },
                   createScheduler:function(resources,datasource){
                       
-                      debugger;
                        if (!resources) {
                             resources = [];
                         }
@@ -141,15 +201,56 @@
                         height:600,
                         dataSource: datasource,
                         save:$m.save,
+                        remove:$m.delete,
                         resources:  resources
                         });
-                  }, makeRandomColor:function(){
+                  }, 
+                  makeRandomColor:function(){
                         var c = '';
                         while (c.length < 7) {
                             c += (Math.random()).toString(16).substr(-6).substr(-1)
                         }
                         return '#'+c;
-                    }
+                    },
+                   notify:function(d){
+          
+                        if(JSON.parse(d).Result){
+                            
+                            
+                            if(JSON.parse(d).Request.Targert === "DeleteTasks"){
+                             
+                              for (var i = 0, x = $m.schedulerData.length; i < x; i++){
+                                    if($m.schedulerData[i].id === $m.currentTask.id){
+                                                  $m.schedulerData.splice(i,1);      
+                                      }
+                                 }
+                                 $m.settings.common.showNotification("Successfully Deleted", "success");  
+                                 $m.currentTask = {};  
+                                 var searchQuery = "SELECT * FROM Scheduler";
+                               $m.settings.common.ajaxFunction('/Scheduler/GetSchedulerData', 'POST', null, searchQuery,false);
+                           
+                                //   $m.setSchedulerDatasource();
+                            }
+                            else{
+                                $m.settings.common.showNotification("Successfully Saved", "success"); 
+                               var searchQuery = "SELECT * FROM Scheduler";
+                               $m.settings.common.ajaxFunction('/Scheduler/GetSchedulerData', 'POST', null, searchQuery,false);
+                            
+                            // $m.setSchedulerDatasource();
+                            }
+                            
+                        }
+                        else{
+                            $m.settings.common.showNotification("Record Saving Failed", "error");
+                        }
+                   },
+                   delete:function (e) {
+                       //debugger;   
+                           $m.currentTask.id = e.event.id;
+                            var sQuery =  e.event.id;   //"SELECT  * FROM Scheduler s WHERE s.id = '"+ e.event.id +"'";
+                            $m.settings.common.ajaxFunction('/Scheduler/DeleteTask', 'POST', null,sQuery,false);
+                            
+                   }
 
         };
 
