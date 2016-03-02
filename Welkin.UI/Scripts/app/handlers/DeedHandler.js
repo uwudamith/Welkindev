@@ -52,13 +52,21 @@
             
              $("#save-grantee").click(function () {
               
-                if ($("#txtGranteeUserName").val() == "") {
+                if ($("#txtGranteeUserName").val() === "") {
                    // Validate Grantee Data & invoke save method
                    $m.settings.common.setValidationMessages("val-messageGrantee","warning","Name Required");
                     return;
                 } 
-                else if($m.settings.common.validateEmail($("#txtGrantorEmail").val())){
+                else if($m.settings.common.validateEmail($("#txtGranteeEmail").val())){
                     $m.settings.common.setValidationMessages("val-messageGrantee","warning","Invalid Email Address");
+                    return;
+                }
+                else if($("#txtGranteeContactNo").val()=== ""){
+                    $m.settings.common.setValidationMessages("val-messageGrantee","warning","Contact No Required");
+                    return;
+                }
+                else if($("#txtGranteeNIC").val()=== ""){
+                    $m.settings.common.setValidationMessages("val-messageGrantee","warning","NIC Required");
                     return;
                 }
                 else {
@@ -77,6 +85,14 @@
                     $m.settings.common.setValidationMessages("val-messageGrantor","warning","Invalid Email Address");
                     return;
                 }
+                else if($("#txtGrantorContactNo").val()=== ""){
+                    $m.settings.common.setValidationMessages("val-messageGrantor","warning","Contact No Required");
+                    return;
+                }
+                else if($("#txtGrantorNIC").val()=== ""){
+                    $m.settings.common.setValidationMessages("val-messageGrantor","warning","NIC Required");
+                    return;
+                }
                 else {
                 $m.settings.common.createGUID($m.saveGrantorData);
                 }
@@ -84,10 +100,13 @@
             
             $('#addGranteeModel').on('hidden.bs.modal', function () {
                 $m.clearGranteeModel();
+                 $('#btnGranteePopup').prop('disabled', true);
+          
                 
             })
              $('#addGrantorModel').on('hidden.bs.modal', function () {
                 $m.clearGrantorModel();
+                $('#btnGrantorPopup').prop('disabled', true);  
             })
             
             $("#btnDeedBrowse").click(function(){
@@ -104,6 +123,37 @@
                    searchQuery = searchQuery +" " + whereClause;
                   $m.settings.common.ajaxFunction('/DeedLedger/BrowseDeeds', 'POST', null, searchQuery,false);
                    
+           
+            });
+            
+             $("#btnBorrow").click(function(){
+                 
+                $('#borrowModel').modal('toggle');   
+           
+            });
+            
+           $('#chkAvailability').change(function() {
+            
+               if(this.checked){
+                    $('#btnBorrow').prop('disabled', false);
+               }else{
+                   $('#btnBorrow').prop('disabled', true);
+               }
+            });
+            
+            $("#save-borrow").click(function(){
+                 
+                if ($("#txtBorrowUserName").val() == "") {
+                   $m.settings.common.setValidationMessages("val-messageBorrow","warning","Name Required");
+                    return;
+                } 
+                else if($("#txtBorrowNIC").val() == ""){
+                    $m.settings.common.setValidationMessages("val-messageBorrow","warning","NIC Required");
+                    return;
+                }
+                else{
+                    $('#borrowModel').modal('toggle');   
+                } 
            
             });
             // $('#fmGrantor').validator().on('submit', function (e) {
@@ -137,46 +187,41 @@
             
         },
         initControlls:function () {
-             /// <summary>
-            /// Initialize the controls 
-            /// </summary>
-            //   $('#fmDeed').validator({
-            //     custom: {
-            //         'odd': function() { 
-            //             return false;}
-            //     },
-            //     errors: {
-            // odd: 'Does not match',
-            // validateDeedType: 'Not long enough'
-            // }
-            // });
+            
         
             
-            $("#ddlType").kendoDropDownList({
+            $("#ddlType").kendoComboBox({
             dataTextField: "Name",
             dataValueField: "ID",
-            optionLabel:"Select a Deed Type",
+            placeholder:"Select a Deed Type",
+            filter:"startswith",
             index: 0
         });
 
-        $("#ddlGrantee").kendoDropDownList({
+        $("#ddlGrantee").kendoComboBox({
             dataTextField: "Name",
             dataValueField: "ID",
-            optionLabel:"Select a Grantee",
-            index: 0
+            placeholder:"Select a Grantee",
+            filter:"startswith",
+            index: 0,
+            filtering:$m.onGranteeFiltering
+        });
+       
+
+        $("#ddlGrantor").kendoComboBox({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            placeholder:"Select a Grantor",
+            filter:"startswith",
+            index: 0,
+            filtering:$m.onGrantorFiltering
         });
 
-        $("#ddlGrantor").kendoDropDownList({
+        $("#ddlDistrict").kendoComboBox({
             dataTextField: "Name",
             dataValueField: "ID",
-            optionLabel:"Select a Grantor",
-            index: 0
-        });
-
-        $("#ddlDistrict").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel:"Select a District",
+            placeholder:"Select a District",
+            filter:"startswith",
             index: 0
         });
         
@@ -304,22 +349,23 @@
             ddlBrowseDistrict.dataSource.sort({ field: "Name", dir: "asc" });
             ddlBrowseDistrict.refresh();
             
-            var ddl = $("#ddlType").data("kendoDropDownList");
+            var ddl = $("#ddlType").data("kendoComboBox");
             ddl.setDataSource(deedTypes);
             ddl.dataSource.sort({ field: "Name", dir: "asc" });
             ddl.refresh();
 
-            var ddlGrantee = $("#ddlGrantee").data("kendoDropDownList");
+            var ddlGrantee = $("#ddlGrantee").data("kendoComboBox");
             ddlGrantee.setDataSource(grantees);
             ddlGrantee.dataSource.sort({ field: "Name", dir: "asc" });
             ddlGrantee.refresh();
+           
 
-            var ddlGrantor = $("#ddlGrantor").data("kendoDropDownList");
+            var ddlGrantor = $("#ddlGrantor").data("kendoComboBox");
             ddlGrantor.setDataSource(grantors);
             ddlGrantor.dataSource.sort({ field: "Name", dir: "asc" });
             ddlGrantor.refresh();
 
-            var ddlDistrict = $("#ddlDistrict").data("kendoDropDownList");
+            var ddlDistrict = $("#ddlDistrict").data("kendoComboBox");
             ddlDistrict.setDataSource(districts);
             ddlDistrict.dataSource.sort({ field: "Name", dir: "asc" });
             ddlDistrict.refresh();
@@ -390,17 +436,17 @@
             $m.deedModel = {};
             $m.deedModel = deedObj;
          
-            if($("#ddlType").data("kendoDropDownList"))
-            $("#ddlType").data("kendoDropDownList").value($m.deedModel.DeedTypeId);
+            if($("#ddlType").data("kendoComboBox"))
+            $("#ddlType").data("kendoComboBox").value($m.deedModel.DeedTypeId);
             
-            if($("#ddlGrantee").data("kendoDropDownList"))
-            $("#ddlGrantee").data("kendoDropDownList").value($m.deedModel.GranteeId);
+            if($("#ddlGrantee").data("kendoComboBox"))
+            $("#ddlGrantee").data("kendoComboBox").value($m.deedModel.GranteeId);
             
-            if($("#ddlGrantor").data("kendoDropDownList"))
-            $("#ddlGrantor").data("kendoDropDownList").value($m.deedModel.GrantorId);
+            if($("#ddlGrantor").data("kendoComboBox"))
+            $("#ddlGrantor").data("kendoComboBox").value($m.deedModel.GrantorId);
             
-            if($("#ddlDistrict").data("kendoDropDownList"))
-             $("#ddlDistrict").data("kendoDropDownList").value($m.deedModel.DistrictId);
+            if($("#ddlDistrict").data("kendoComboBox"))
+             $("#ddlDistrict").data("kendoComboBox").value($m.deedModel.DistrictId);
            
             if($("#txtDeedNo"))
             $("#txtDeedNo").val($m.deedModel.DeedNumber);
@@ -426,12 +472,19 @@
             if($("#dtRegisterOn").data("kendoDatePicker"))
             $("#dtRegisterOn").data("kendoDatePicker").value($m.deedModel.RegisterOn);
             
-             if($m.deedModel.Availability)
-            $("#chkAvailability").prop('checked', true);
-           else
-            $("#chkAvailability").prop('checked', false);   
-              
+             if($m.deedModel.Availability){
+                  $("#chkAvailability").prop('checked', true);
+                   $('#btnBorrow').prop('disabled', false);
+             }
+             else{
+                 $("#chkAvailability").prop('checked', false);   
+                  $('#btnBorrow').prop('disabled', true);
+             }
              $("#txt-search-deed-no").val(""); 
+                 
+             $("#txtBorrowNIC").val($m.deedModel.BorrowerNIC);
+             $("#txtBorrowPIN").val($m.deedModel.BorrowerPIN);
+             $("#txtBorrowUserName").val($m.deedModel.BorrowerName);
         },
         setMultipleSearchDataSource:function(deedList){
              /// <summary>
@@ -464,17 +517,17 @@
         clearDeedForm:function () {
             
             //Clear Deed Form Data
-             if($("#ddlType").data("kendoDropDownList"))
-            $("#ddlType").data("kendoDropDownList").select(0);
+             if($("#ddlType").data("kendoComboBox"))
+            $("#ddlType").data("kendoComboBox").text('');
             
-             if($("#ddlGrantee").data("kendoDropDownList"))
-            $("#ddlGrantee").data("kendoDropDownList").select(0);
+             if($("#ddlGrantee").data("kendoComboBox"))
+            $("#ddlGrantee").data("kendoComboBox").text('');
             
-            if($("#ddlGrantor").data("kendoDropDownList"))
-            $("#ddlGrantor").data("kendoDropDownList").select(0);
+            if($("#ddlGrantor").data("kendoComboBox"))
+            $("#ddlGrantor").data("kendoComboBox").text('');
             
-            if($("#ddlDistrict").data("kendoDropDownList"))
-             $("#ddlDistrict").data("kendoDropDownList").select(0);
+            if($("#ddlDistrict").data("kendoComboBox"))
+             $("#ddlDistrict").data("kendoComboBox").text('');
            
             if($("#txtDeedNo"))
             $("#txtDeedNo").val("");
@@ -501,7 +554,15 @@
             $("#dtRegisterOn").data("kendoDatePicker").value(todayDate);
             
             $("#chkAvailability").prop('checked', false);
-            
+          
+            $('#btnGranteePopup').prop('disabled', true);
+            $('#btnGrantorPopup').prop('disabled', true);  
+          
+            $("#txtBorrowNIC").val("");
+            $("#txtBorrowPIN").val("");
+            $("#txtBorrowUserName").val("");
+            $('#btnBorrow').prop('disabled', true);
+                 
         },
         
           saveGranteeData :function (guid) {
@@ -518,9 +579,9 @@
                  $m.masterData.Grantees.push(granteeObj);
 
                 // Adding to grantee data source
-                $("#ddlGrantee").data("kendoDropDownList").dataSource.insert(granteeObj);
+                $("#ddlGrantee").data("kendoComboBox").dataSource.insert(granteeObj);
                  
-                $("#ddlGrantee").data("kendoDropDownList").value(granteeObj.ID);
+                $("#ddlGrantee").data("kendoComboBox").value(granteeObj.ID);
                 // Calling the save master data function  
                 $m.settings.common.saveMasterData(null, $m.masterData);
                 // Clear grantee model data
@@ -543,15 +604,14 @@
                  $m.masterData.Grantors.push(grantorObj);
 
                 // Adding to grantor data source
-                $("#ddlGrantor").data("kendoDropDownList").dataSource.insert(grantorObj);
-                $("#ddlGrantor").data("kendoDropDownList").value(grantorObj.ID);
+                $("#ddlGrantor").data("kendoComboBox").dataSource.insert(grantorObj);
+                $("#ddlGrantor").data("kendoComboBox").value(grantorObj.ID);
 
                 // Calling the save master data function  
                 //uncomment this later
-               $m.settings.common.saveMasterData(null, $m.masterData);
+                $m.settings.common.saveMasterData(null, $m.masterData);
                 // Clear grantor model data
-               
-                    $('#addGrantorModel').modal('toggle');   
+                $('#addGrantorModel').modal('toggle');   
                
                
         },
@@ -572,32 +632,32 @@
             $('#bsAlert').alert("close");     
         },
         prepareDeedModel:function () {
-              if ($("#ddlType").data("kendoDropDownList").value() == "") {
+              if ($("#ddlType").data("kendoComboBox").value() == "") {
                     $m.settings.common.showNotification("Deed Type Required", "warning");
                     return;
                 } else {
-                    $m.deedModel.DeedTypeId = $("#ddlType").data("kendoDropDownList").value();
+                    $m.deedModel.DeedTypeId = $("#ddlType").data("kendoComboBox").value();
                 }
                 
-                if ($("#ddlGrantee").data("kendoDropDownList").value() == "") {
+                if ($("#ddlGrantee").data("kendoComboBox").value() == "") {
                     $m.settings.common.showNotification("Grantee Required", "warning");
                     return;
                 } else {
-                    $m.deedModel.GranteeId = $("#ddlGrantee").data("kendoDropDownList").value();
+                    $m.deedModel.GranteeId = $("#ddlGrantee").data("kendoComboBox").value();
                 }
                 
-                 if ($("#ddlGrantor").data("kendoDropDownList").value() == "") {
+                 if ($("#ddlGrantor").data("kendoComboBox").value() == "") {
                     $m.settings.common.showNotification("Grantor Required", "warning");
                     return;
                 } else {
-                    $m.deedModel.GrantorId = $("#ddlGrantor").data("kendoDropDownList").value();
+                    $m.deedModel.GrantorId = $("#ddlGrantor").data("kendoComboBox").value();
                 }
                 
-                 if ($("#ddlDistrict").data("kendoDropDownList").value() == "") {
+                 if ($("#ddlDistrict").data("kendoComboBox").value() == "") {
                     $m.settings.common.showNotification("District Required", "warning");
                     return;
                 } else {
-                    $m.deedModel.DistrictId = $("#ddlDistrict").data("kendoDropDownList").value();
+                    $m.deedModel.DistrictId = $("#ddlDistrict").data("kendoComboBox").value();
                 }
                 
                  // Validate DeedNumber
@@ -635,19 +695,19 @@
                 } else {
                     $m.deedModel.Fee = $("#txtFee").val();
                 }
-                    if ($("#txtRemarks").val() == "") {
-                    $m.settings.common.showNotification("Remarks Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.Remarks = $("#txtRemarks").val();
-                }
+                  
+                  $m.deedModel.Remarks = $("#txtRemarks").val();
                 
-                 $m.deedModel.Date = $("#date").data("kendoDatePicker").value();
-                 $m.deedModel.Availability = $("#chkAvailability").prop('checked');
-                 $m.deedModel.RegisterOn = $("#dtRegisterOn").data("kendoDatePicker").value();
-               
-                 $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
-                 $m.deedModel = {};
+                
+                  $m.deedModel.Date = $("#date").data("kendoDatePicker").value();
+                  $m.deedModel.Availability = $("#chkAvailability").prop('checked');
+                  $m.deedModel.RegisterOn = $("#dtRegisterOn").data("kendoDatePicker").value();
+                  $m.deedModel.BorrowerName = $("#txtBorrowUserName").val();
+                  $m.deedModel.BorrowerNIC = $("#txtBorrowNIC").val();
+                  $m.deedModel.BorrowerPIN = $("#txtBorrowPIN").val();
+                 
+                  $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
+                  $m.deedModel = {};
                  
         },
        browseDeedResponse:function (data) {
@@ -739,7 +799,36 @@
                    whereClause = whereClause + " OR LOWER(d.NameOfLand) = LOWER('"+$("#txtBrowseNameOfLand").val() +"')";
              }
              return whereClause;
-       }
+       },
+       onGranteeFiltering:function (data) {
+           //debugger;
+         var  dts = $.grep($m.masterData.Grantees,function (e) {return (e.Name.toLowerCase().indexOf(data.filter.value.toLowerCase()) >= 0)|| (e.NIC.toLowerCase().indexOf(data.filter.value.toLowerCase()) >=0) || (e.ContactNumber.toLowerCase().indexOf(data.filter.value.toLowerCase()) >=0) });
+           
+            var ddlGrantee = $("#ddlGrantee").data("kendoComboBox");
+            ddlGrantee.setDataSource(dts);
+            ddlGrantee.dataSource.sort({ field: "Name", dir: "asc" });
+            ddlGrantee.refresh();
+            
+           
+            if(dts.length >0)
+            $('#btnGranteePopup').prop('disabled', true);
+            else
+             $('#btnGranteePopup').prop('disabled', false);
+       },
+       onGrantorFiltering:function (data) {
+           //debugger;
+         var  dts = $.grep($m.masterData.Grantors,function (e) {return (e.Name.toLowerCase().indexOf(data.filter.value.toLowerCase()) >= 0)|| (e.NIC.toLowerCase().indexOf(data.filter.value.toLowerCase()) >=0) || (e.ContactNumber.toLowerCase().indexOf(data.filter.value.toLowerCase()) >=0) });
+      
+            var ddlGrantor = $("#ddlGrantor").data("kendoComboBox");
+            ddlGrantor.setDataSource(dts);
+            ddlGrantor.dataSource.sort({ field: "Name", dir: "asc" });
+            ddlGrantor.refresh();
+            
+             if(dts.length >0)
+            $('#btnGrantorPopup').prop('disabled', true);
+            else
+             $('#btnGrantorPopup').prop('disabled', false);
+       },
         
     };
 

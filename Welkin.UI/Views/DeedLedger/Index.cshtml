@@ -27,7 +27,7 @@
                     <div class="form-group">
                         <label for="ddlType" class="col-lg-3 control-label">Type</label>
                         <div class="col-lg-7">
-                            <input id="ddlType" value="1" style="width: 100%;" />
+                            <input id="ddlType"  style="width: 100%;" />
                         </div>
                     </div>
                 </div>
@@ -35,9 +35,9 @@
                     <div class="form-group">
                         <label for="ddlGrantee" class="col-lg-3 control-label">Grantee</label>
                         <div class="col-lg-7">
-                            <input id="ddlGrantee" value="1" style="width: 100%;"/>
+                            <input id="ddlGrantee"  style="width: 100%;"/>
                         </div>
-                        <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addGranteeModel">
+                        <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addGranteeModel" id="btnGranteePopup" disabled>
                             <i class="glyphicon glyphicon-edit"></i>
                         </button>
                     </div>
@@ -57,9 +57,9 @@
                     <div class="form-group">
                         <label for="ddlGrantor" class="col-lg-3 control-label">Grantor</label>
                         <div class="col-lg-7">
-                            <input id="ddlGrantor" value="1" style="width: 100%;"/>
+                            <input id="ddlGrantor"  style="width: 100%;"/>
                         </div>
-                        <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addGrantorModel">
+                        <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addGrantorModel" id="btnGrantorPopup" disabled>
                             <i class="glyphicon glyphicon-edit"></i>
                         </button>
                     </div>
@@ -78,7 +78,7 @@
                     <div class="form-group">
                         <label for="ddlDistrict" class="col-lg-3 control-label">District</label>
                         <div class="col-lg-7">
-                            <input id="ddlDistrict" value="1" style="width: 100%;"/>
+                            <input id="ddlDistrict"  style="width: 100%;"/>
                         </div>
                     </div>
                 </div>
@@ -197,7 +197,7 @@
                 </div>
                 <div class="col-lg-5">
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary col-lg-3">
+                        <button type="button" class="btn btn-primary col-lg-3" id="btnBorrow" disabled>
                             Borrow
                         </button>
                         <button type="button" id="btnDeedBrowse" class="btn btn-primary col-lg-3" style="margin-left: 10px;">
@@ -527,4 +527,61 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
+<div class="modal fade" tabindex="-1" id="borrowModel" role="dialog">
+    <div class="modal-dialog borrow-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmBorrow">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Borrow Deeds</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageBorrow"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtBorrowUserName" class="col-lg-4 control-label">Name</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtBorrowUserName" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtBorrowNIC" class="col-lg-4 control-label">NIC</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtBorrowNIC" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                         <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtBorrowPIN" class="col-lg-4 control-label">PIN</label>
+                                        <div class="col-lg-8">
+                                            <input type="tel" class="form-control" id="txtBorrowPIN" type="text" maxlength="4">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>
+            </div>
+             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
