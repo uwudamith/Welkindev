@@ -2,8 +2,11 @@
 
     $m = {
         deedModel : {},
+        uploadedFiles:[],
+        attachmentsToDelete:[],
         multipleSearchResult:{},
         masterData:{},
+        blobEndPoint:{},
         init: function(options) {
            // alert("DeedHandler");
             this.settings = $scope.$.extend(true, {
@@ -26,12 +29,16 @@
                     {
                         name:"browseDeedResponse",
                         fn:this.browseDeedResponse
-                    }                  
+                    },
+                       {
+                        name:"nextDeedNumberReponse",
+                        fn:this.nextDeedNumberReponse
+                    }               
 
                 ]);
                 this.settings.sAgent.start();
             }
-            
+            $m.blobEndPoint = $scope.Configs.blobEndPoint;
              $m.initControlls();
              
                 $(".save-deed").click(function () {
@@ -156,47 +163,133 @@
                 } 
            
             });
-            // $('#fmGrantor').validator().on('submit', function (e) {
-            //     if (e.isDefaultPrevented()) {
-            //         
-            //        //$m.settings.common.showNotification("Invalid Information", "error");
-            //     } else {
-            //         $m.settings.common.createGUID($m.saveGrantorData);
-            //          return false;
-            //     }
-            //     });
-            //     
-            //  $('#fmGrantee').validator().on('submit', function (e) {
-            //     if (e.isDefaultPrevented()) {
-            //       // $m.settings.common.showNotification("Invalid Information", "error");
-            //     } else {
-            //         $m.settings.common.createGUID($m.saveGranteeData);
-            //          return false;
-            //     }
-            //     });
-            //     $('#fmDeed').validator().on('submit', function (e) {
-            //     if (e.isDefaultPrevented()) {
-            //         alert("1");
-            //       // $m.settings.common.showNotification("Invalid Information", "error");
-            //     } else {
-            //        // $m.prepareDeedModel();
-            //         alert("2");
-            //          return false;
-            //     }
-            //     });
+            
+             $("#btnUploadPopup").click(function(){   
+                $('#uploadModel').modal('toggle');   
+                return false;
+            });
+            
+             $("#liPhotos").click(function(){   
+                var length =  $m.setAttachmentDataSource("photos");
+                 if(length > 0)
+                    $('#viewAttachmentModel').modal('toggle'); 
+                 else
+                    $m.settings.common.showNotification("No Attachments to Show", "info");
+            
+                  
+                return false;
+            });
+            
+              $("#liDocuments").click(function(){ 
+                var length = $m.setAttachmentDataSource("documents");  
+                if(length > 0)
+                     $('#viewAttachmentModel').modal('toggle');   
+               else
+                    $m.settings.common.showNotification("No Attachments to Show", "info");
+                
+                return false;
+            });
+            
+             $("#grdViewAttachments").on("click", ".btn-delete", function (e) {
+                e.preventDefault();       
+                var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                if(dataItem){
+                     var data = $.grep($m.attachmentsToDelete,function (d) {return d.Name === dataItem.Name;});
+                     if(data.length < 1)
+                     {
+                          if($m.deedModel.id)
+                          $m.attachmentsToDelete.push(dataItem);
+                          
+                          debugger;
+                     }
+                     $m.uploadedFiles = $.grep($m.uploadedFiles, function(e){ 
+                        return e.Name != dataItem.Name; 
+                    });
+                    $m.showUploadedFiles();              
+                    if(dataItem.Type.toLowerCase().indexOf("image") < 0)
+                     $m.setAttachmentDataSource("documents");
+                    else
+                    $m.setAttachmentDataSource("photos");
+                     
+                } 
+            });
+            
+             $("#grdViewAttachments").on("click", ".btn-download", function (e) {
+                e.preventDefault();       
+                var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+             
+                var params = {};
+                params.client = "client1";
+                params.file = JSON.stringify(dataItem);
+                $m.settings.common.ajaxFunctionMultiParam('/DeedLedger/DownloadFiles', 'POST', $m.downloadFile, params);   
+                
+            });
+            
+             $('#uploadModel').on('hidden.bs.modal', function () {
+                $(".k-upload-files.k-reset").find("li").remove();
+            })
+            
+             $("#txtStampDuty").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+            
+            $("#txtFee").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
             
         },
         initControlls:function () {
             
-        
+         $("#deedFileUpload").kendoUpload({
+                        async: {
+                           saveUrl: "/DeedLedger/SaveUploadFiles",
+                            //removeUrl: "remove",
+                            autoUpload: true
+                        },
+                        upload: $m.onFileUpload,
+                        success: $m.onUploadSuccess
+                    });
             
-            $("#ddlType").kendoComboBox({
+           
+        $("#ddlType").kendoComboBox({
             dataTextField: "Name",
             dataValueField: "ID",
             placeholder:"Select a Deed Type",
             filter:"startswith",
             index: 0
-        });
+            });
 
         $("#ddlGrantee").kendoComboBox({
             dataTextField: "Name",
@@ -330,6 +423,22 @@
                 }
                   
             });
+            
+             $("#grdViewAttachments").kendoGrid({
+                pageable: {
+                    input: false,
+                    numeric: true
+                },
+                columns: [         
+                   { field: "Name", title: "Name", width: 100 },
+                    { command: { text: "", template: "<button class='btn btn-primary btn-download'> <i class='glyphicon glyphicon glyphicon-download-alt'></i></button>" }, title: " ", width: 13 },
+                   { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 13 }
+               
+                   
+                  ],
+                  selectable:"row",
+                  
+            });
         
         },
         populateDeedDropdown: function(a) {
@@ -386,7 +495,11 @@
             ddlBrowseGrantor.dataSource.sort({ field: "Name", dir: "asc" });
             ddlBrowseGrantor.refresh();
             
-           
+          $m.getCurrentDeedNo();
+        },
+        getCurrentDeedNo:function () {
+            var query ='SELECT TOP 1 d.DeedNumber FROM Deed d ORDER BY d.CreatedDate DESC';
+           $m.settings.common.ajaxFunction('/DeedLedger/GetCurrentDeedNumber', 'POST', null, query,false);
         },
         notify:function(d){
           
@@ -434,6 +547,7 @@
             /// Bind deed data to the form using object
             /// </summary>
             $m.deedModel = {};
+            $m.attachmentsToDelete = [];
             $m.deedModel = deedObj;
          
             if($("#ddlType").data("kendoComboBox"))
@@ -485,6 +599,10 @@
              $("#txtBorrowNIC").val($m.deedModel.BorrowerNIC);
              $("#txtBorrowPIN").val($m.deedModel.BorrowerPIN);
              $("#txtBorrowUserName").val($m.deedModel.BorrowerName);
+             
+              $m.uploadedFiles = $m.deedModel.Attachments;
+              $m.showUploadedFiles();
+                  
         },
         setMultipleSearchDataSource:function(deedList){
              /// <summary>
@@ -563,6 +681,10 @@
             $("#txtBorrowUserName").val("");
             $('#btnBorrow').prop('disabled', true);
                  
+            $m.getCurrentDeedNo();  
+            $m.showUploadedFiles(); 
+            $m.deleteAttachments();
+           
         },
         
           saveGranteeData :function (guid) {
@@ -675,12 +797,9 @@
                     $m.deedModel.NameOfLand = $("#txtNameOfLand").val();
                 }
                 
-                  if ($("#txtConsideration").val() == "") {
-                    $m.settings.common.showNotification("Consideration Required", "warning");
-                    return;
-                } else {
-                    $m.deedModel.Consideration = $("#txtConsideration").val();
-                }
+                
+                 $m.deedModel.Consideration = $("#txtConsideration").val();
+                
                 
                  if ($("#txtStampDuty").val() == "") {
                     $m.settings.common.showNotification("Stap Duty Required", "warning");
@@ -705,9 +824,17 @@
                   $m.deedModel.BorrowerName = $("#txtBorrowUserName").val();
                   $m.deedModel.BorrowerNIC = $("#txtBorrowNIC").val();
                   $m.deedModel.BorrowerPIN = $("#txtBorrowPIN").val();
+          
+                  if(!$m.deedModel.CreatedDate)
+                    $m.deedModel.CreatedDate = new Date();
                  
+                  $m.deedModel.UpdatedDate = new Date();
+                   $m.deedModel.Attachments = $m.uploadedFiles;
+                  
                   $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
                   $m.deedModel = {};
+                  $m.uploadedFiles = [];  
+                  
                  
         },
        browseDeedResponse:function (data) {
@@ -829,7 +956,139 @@
             else
              $('#btnGrantorPopup').prop('disabled', false);
        },
+        onFileUpload:function(e) {
+            
+            if($("#txtDeedNo").val() !=""){
+                e.data = { 
+            client : "client1" , 
+            deedNumber:"Deed/"+$("#txtDeedNo").val()
+            };  
+            }else{
+                $m.settings.common.showNotification("Deed Number Required", "warning");
+                return false;
+            }   
+       },
+       onUploadSuccess:function (e) {
+           
+           if(e.files){
+                for (var i = 0, x = e.files.length; i < x; i++){
+                   var data = $.grep($m.uploadedFiles,function (d) {return d.Name === e.files[i].name;});
+                 if(data.length <1){
+                       var url = $m.blobEndPoint+"client1"+"/"+$("#txtDeedNo").val()+"/"+e.files[i].name;
+                    var file = {};
+                    file.Name = e.files[i].name;
+                    file.Extension = e.files[i].extension;
+                    file.Type = e.files[i].rawFile.type;
+                    file.Url = url;
+                    file.BlobDir = "Deed/"+$("#txtDeedNo").val();
+                    $m.uploadedFiles.push(file);
+                   }
+                    
+                }
+               
+           }
+               $m.showUploadedFiles(); 
+               
+                   
+       },
+    
+       nextDeedNumberReponse:function (data) {
         
+           if(data){
+               var newDeedNumber = 1;
+               if(JSON.parse(JSON.parse(data).JsonResult).length >0 ){
+                 var currentDeedNumber = JSON.parse(JSON.parse(data).JsonResult)[0].DeedNumber;
+                  var numberPattern = /\d+/g;
+                   var num = currentDeedNumber.match( numberPattern)[0];
+                   var newDeedNumber = parseInt(num) + 1;
+               }
+               var num2 = $m.paddingNumber(newDeedNumber);
+                var formattedNum = $m.masterData.DeedNumberPrefix + num2;
+                $("#txtDeedNo").val(formattedNum);  
+           }
+       },
+        paddingNumber:function(n) {
+            if(n<10){
+                return ("000"+n);
+            }
+            else if(n<100){
+                return ("00"+n);
+            }
+            else if(n<1000){
+                return ("000"+n);
+            }
+            else{
+                return n;
+            }
+            
+        },
+        showUploadedFiles:function () {
+          
+          var imageCnt = 0;
+          var docCnt = 0;
+          if($m.uploadedFiles.length > 0){
+             for (var i = 0, x = $m.uploadedFiles.length; i < x; i++){
+                if($m.uploadedFiles[i].Type.indexOf("image") > -1){
+                    imageCnt++
+                }
+                else{
+                    docCnt++;
+                }
+                $("#spnPhotos").text(imageCnt.toString());
+                $("#spnDocuments").text(docCnt.toString());
+                
+              //  debugger;
+            }  
+          }
+          else{
+               $("#spnPhotos").text(0);
+                $("#spnDocuments").text(0);
+          }
+           
+            
+        },
+        setAttachmentDataSource:function (type) {
+            var data = [];
+            if(type ==="photos"){
+                data = $.grep($m.uploadedFiles,function (e) {return (e.Type.toLowerCase().indexOf("image") >= 0)});
+            }
+            else{
+                data = $.grep($m.uploadedFiles,function (e) {return (e.Type.toLowerCase().indexOf("image") < 0)});
+            }
+           
+            var dataLength = data.length;
+            
+                 var dataSource = new kendo.data.DataSource({  
+                data: data,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             $("#grdViewAttachments").data("kendoGrid").setDataSource(dataSource);
+            dataSource.read();
+            $("#grdViewAttachments").data("kendoGrid").refresh();
+            
+           // $('#viewAttachmentModel').modal('toggle');   
+            return dataLength;
+               
+        },
+        deleteAttachments:function(){
+            
+            if($m.attachmentsToDelete.length >0){
+                var params = {};
+                params.client = "client1";
+                params.files = JSON.stringify($m.attachmentsToDelete);
+                $m.settings.common.ajaxFunctionMultiParam('/DeedLedger/DeleteFiles', 'POST', null, params);     
+            }
+           $m.attachmentsToDelete = [];
+        },
+        downloadFile:function (file) {
+           // window.location = file;
+            window.open(
+  file,
+  '_blank' // <- This is what makes it open in a new window.
+);
+        }
     };
 
     return $m;

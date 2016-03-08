@@ -49,7 +49,7 @@
                     <div class="form-group">
                         <label for="txtDeedNo" class="col-lg-3 control-label">Deed No</label>
                         <div class="col-lg-7">
-                            <input class="form-control" id="txtDeedNo" type="text">
+                            <input class="form-control" id="txtDeedNo" type="text" disabled>
                         </div>
                     </div>
                 </div>
@@ -151,15 +151,15 @@
                                         Attachments
                                     </h3>
 
-                                    <button class="btn btn-default pull-right">
+                                    <button class="btn btn-default pull-right" id="btnUploadPopup">
                                         <i class="glyphicon glyphicon-plus-sign"></i>
                                     </button>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="panel-body">
                                     <ul class="list-group">
-                                        <li class="list-group-item"><span class="badge">12</span> Photos</li>
-                                        <li class="list-group-item"><span class="badge">5</span> Documents</li>
+                                        <li class="list-group-item" id="liPhotos"><span class="badge" id="spnPhotos">0</span> Photos</li>
+                                        <li class="list-group-item" id="liDocuments"><span class="badge" id="spnDocuments">0</span> Documents</li>
                                     </ul>
                                 </div>
                             </div>
@@ -580,6 +580,71 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>
+            </div>
+             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" tabindex="-1" id="uploadModel" role="dialog">
+    <div class="modal-dialog upload-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmUpload">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Files</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageUpload"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        
+                                        <div class="col-lg-8 k-content">
+                                           <input name="deedFileUpload" id="deedFileUpload" type="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>-->
+            </div>
+             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" tabindex="-1" id="viewAttachmentModel" role="dialog">
+    <div class="modal-dialog viewAttachment-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmViewAttachment">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Attachments</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-12">
+                    <div id="grdViewAttachments"></div>
+                </div>
+             </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>-->
             </div>
              </form>
         </div><!-- /.modal-content -->

@@ -36,6 +36,32 @@
                 });
             }
         },
+        ajaxFunctionMultiParam:function(url,type,callBackFunc,params){
+             if (params) {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: params,
+                    success: function (data) {
+                        
+                        if(callBackFunc) callBackFunc(data);
+                        else 
+                         return data;
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    success: function (data) {
+                       
+                        if(callBackFunc) callBackFunc(data);
+                        else 
+                         return data;
+                    }
+                });
+            }
+        },
         createGUID: function (callBackFunc) {
             return this.ajaxFunction('/Base/CreateGUID', 'GET', callBackFunc,null,false);
         },
@@ -121,7 +147,8 @@
                             saveMasterData:$scope.saveMasterData,
                             showNotification: $scope.showNotification,
                             setValidationMessages:$scope.setValidationMessages,
-                            validateEmail:$scope.validateEmail
+                            validateEmail:$scope.validateEmail,
+                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam
                         }
                     });
                 }
@@ -143,7 +170,8 @@
                             showNotification: $scope.showNotification,
                             setValidationMessages: $scope.setValidationMessages,
                             showConfirmDialog: $scope.showConfirmDialog,
-                            validateEmail:$scope.validateEmail
+                            validateEmail:$scope.validateEmail,
+                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam
                         }
 
                     });
