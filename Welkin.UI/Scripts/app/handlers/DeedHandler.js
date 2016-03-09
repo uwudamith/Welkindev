@@ -164,7 +164,7 @@
            
             });
             
-             $("#btnUploadPopup").click(function(){   
+           $("#btnUploadPopup").click(function(){   
                 $('#uploadModel').modal('toggle');   
                 return false;
             });
@@ -1000,7 +1000,7 @@
                  var currentDeedNumber = JSON.parse(JSON.parse(data).JsonResult)[0].DeedNumber;
                   var numberPattern = /\d+/g;
                    var num = currentDeedNumber.match( numberPattern)[0];
-                   var newDeedNumber = parseInt(num) + 1;
+                   newDeedNumber = parseInt(num) + 1;
                }
                var num2 = $m.paddingNumber(newDeedNumber);
                 var formattedNum = $m.masterData.DeedNumberPrefix + num2;

@@ -27,15 +27,15 @@
                         <div class="form-group">
                             <label for="ddlType" class="col-lg-3 control-label">Type</label>
                             <div class="col-lg-7">
-                                <input id="ddlType" value="1" style="width: 100%;" />
+                                <input id="ddlType"  style="width: 100%;" />
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="form-group">
                             <label for="ddlParty" class="col-lg-4 control-label">Party</label>
-                            <div class="col-lg-6">
-                                <input id="ddlParty" value="1" style="width: 100%;" />
+                            <div class="col-lg-7">
+                                <input id="ddlParty"  style="width: 100%;" />
                             </div>
                             <button type="button" class="btn btn-default col-lg-1" data-toggle="modal" data-target="#addPartyModel">
                                 <i class="glyphicon glyphicon-edit"></i>
@@ -48,15 +48,15 @@
                         <div class="form-group">
                             <label for="txtCaseNo" class="col-lg-3 control-label">Case No</label>
                             <div class="col-lg-7">
-                                <input class="form-control" id="txtCaseNo" type="text">
+                                <input class="form-control" id="txtCaseNo" type="text" disabled>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="form-group">
                             <label for="ddlCourt" class="col-lg-4 control-label">Court</label>
-                            <div class="col-lg-6">
-                                <input id="ddlCourt" value="1" style="width: 100%;" />
+                            <div class="col-lg-7">
+                                <input id="ddlCourt"  style="width: 100%;" />
                             </div>
                         </div>
                     </div>
@@ -74,36 +74,42 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="form-group">
                             <label for="txtTotalFee" class="col-lg-4 control-label">Total Fee</label>
-                            <div class="col-lg-6">
+                            <div class="col-lg-7">
                                 <input class="form-control" id="txtTotalFee" type="text" disabled>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-5">
-                        <div class="form-group">
-                            <label for="txtDescription" class="col-lg-3 control-label">Description</label>
-                            <div class="col-lg-7">
-                                <textarea class="form-control" rows="5" id="txtDescription"></textarea>
+                        <div class="col-lg-5">
+                            <div class="form-group">
+                                <label for="txtDescription" class="col-lg-3 control-label">Description</label>
+                                <div class="col-lg-7">
+                                    <textarea class="form-control" rows="5" id="txtDescription"></textarea>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-6">
+                        <div class="col-lg-5">
                         <div class="form-group">
                             <div class="col-lg-4"></div>
-                            <div class="col-lg-6">
-                                <div class="demo-section k-content">
-                                    <input name="files" id="files" type="file" />
-                                </div>
+                            <div class="col-lg-7">
                                 <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title pull-left">
+                                            Attachments
+                                        </h3>
+                                        <button class="btn btn-default pull-right" id="btnUploadPopup">
+                                            <i class="glyphicon glyphicon-plus-sign"></i>
+                                        </button>
+                                        <div class="clearfix"></div>
+                                    </div>
                                     <div class="panel-body">
                                         <ul class="list-group">
-                                            <li class="list-group-item"><span class="badge">12</span> Photos</li>
-                                            <li class="list-group-item"><span class="badge">5</span> Documents</li>
+                                            <li class="list-group-item" id="liPhotos"><span class="badge" id="spnPhotos">0</span> Photos</li>
+                                            <li class="list-group-item" id="liDocuments"><span class="badge" id="spnDocuments">0</span> Documents</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -129,7 +135,7 @@
                                         <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#addStepModel" style="margin-left:10px;margin-right:10px;">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
-                                        <label for="txtFee" class="control-label pull-right">Add new step</label>
+                                        <label  class="control-label pull-right">Add new step</label>
                                     </div>
                                     
                                 </div>
@@ -544,6 +550,70 @@
                 
             </div>
             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" id="uploadModel" role="dialog">
+    <div class="modal-dialog upload-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmUpload">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Files</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageUpload"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        
+                                        <div class="col-lg-8 k-content">
+                                           <input name="caseFileUpload" id="caseFileUpload" type="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>-->
+            </div>
+             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" tabindex="-1" id="viewAttachmentModel" role="dialog">
+    <div class="modal-dialog viewAttachment-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmViewAttachment">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Attachments</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-12">
+                    <div id="grdViewAttachments"></div>
+                </div>
+             </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>-->
+            </div>
+             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

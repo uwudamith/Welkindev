@@ -14,6 +14,10 @@
         caseModel : {},
         masterData : {},
         multipleSearchResult:{},
+        uploadedFiles:[],
+        attachmentsToDelete:[],
+          blobEndPoint:{},
+        
         init: function (options) {
             //alert("CaseHandler");
       
@@ -38,7 +42,11 @@
                     {
                         name:"browseCaseResponse",
                         fn:this.browseCaseResponse
-                    }
+                    },
+                        {
+                        name:"nextCaseNumberReponse",
+                        fn:this.nextCaseNumberReponse
+                    }       
                 ]);
                 this.settings.sAgent.start();
             }
@@ -56,43 +64,14 @@
                 $m.setStepTaskModelData(dataItem);
             });
           
-            var createNextStepData = function (guid) {
-                /// <summary>
-                /// Create next step data with passing guid
-                /// </summary>
-                /// <param name="guid" type="type"></param>
-                var nextStepModel = {};
-                if (guid) {
-                    nextStepModel.StepId = guid;
-                    nextStepModel.Tasks = [];
-                }else{
-                    nextStepModel.StepId = $("#hdnStepId").val();
-                }
-               
-                if ($("#txtNextStep").val() == "") {
-                    $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please enter step name");
-                    return;
-                } else {
-                    nextStepModel.NextStep = $("#txtNextStep").val();
-                }
-
-                nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
-                // nextStepModel.Status = '1';
-                nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
-                nextStepModel.Fee = $("#txtFee").val();
-                nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
-                if ($m.addToCaseItems(nextStepModel)) {
-                    $("#hdnStepId").val("");
-                    $('#addStepModel').modal('toggle');
-                }
-            };
+           
 
             // Save next step click function
             $("#save-step").click(function () {
                 if ($("#hdnStepId").val() == "") {
-                    $m.settings.common.createGUID(createNextStepData);
+                    $m.settings.common.createGUID($m.createNextStepData);
                 } else {
-                    createNextStepData();
+                    $m.createNextStepData();
                 }
                
             });
@@ -113,46 +92,7 @@
 
             // On save-case click function
             $(".save-case").click(function () {
-               // Validate Type
-                if ($("#ddlType").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("Please select Type", "warning");
-                    return;
-                } else {
-                    $m.caseModel.CaseTypeId = $("#ddlType").data("kendoDropDownList").value();
-                }
-
-                // Validate Party
-                if ($("#ddlParty").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("Please select Party", "warning");
-                    return;
-                } else {
-                    $m.caseModel.PartyId = $("#ddlParty").data("kendoDropDownList").value();
-                }
-
-                // Validate CaseNumber
-                if ($("#txtCaseNo").val() == "") {
-                    $m.settings.common.showNotification("Please enter Case Number", "warning");
-                    return;
-                } else {
-                    $m.caseModel.CaseNumber = $("#txtCaseNo").val();
-                }
-
-                // Validate Court
-                if ($("#ddlCourt").data("kendoDropDownList").value() == "") {
-                    $m.settings.common.showNotification("Please select Court", "warning");
-                    return;
-                } else {
-                    $m.caseModel.CourtId = $("#ddlCourt").data("kendoDropDownList").value();
-                }
-
-                $m.caseModel.StartDate = $("#dtStartDate").data("kendoDatePicker").value();
-                $m.caseModel.Description = $("#txtDescription").val();
-                $m.caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
-                $m.caseModel.CaseSteps = $m.getCaseStepsData();
-
-                $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel); 
-                                         
-                        
+                   $m.prepareCaseModel();     
             });
 
             var clearPartyModel = function () {
@@ -240,7 +180,7 @@
             });
             
               $("#btnCaseBrowse").click(function(){
-                 var searchQuery = "SELECT * FROM Deed";
+                 var searchQuery = "SELECT * FROM c";
                     $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery,false);
                 $('#browseModal').modal('toggle');   
            
@@ -254,9 +194,106 @@
                    
            
             });
+            
+              $("#btnUploadPopup").click(function(){   
+                $('#uploadModel').modal('toggle');   
+                return false;
+            });
+            
+             $("#liPhotos").click(function(){   
+                var length =  $m.setAttachmentDataSource("photos");
+                 if(length > 0)
+                    $('#viewAttachmentModel').modal('toggle'); 
+                 else
+                    $m.settings.common.showNotification("No Attachments to Show", "info");
+    
+                return false;
+            });
+            
+              $("#liDocuments").click(function(){ 
+                var length = $m.setAttachmentDataSource("documents");  
+                if(length > 0)
+                     $('#viewAttachmentModel').modal('toggle');   
+               else
+                    $m.settings.common.showNotification("No Attachments to Show", "info");
+                
+                return false;
+            });
+            
+             $("#grdViewAttachments").on("click", ".btn-delete", function (e) {
+                e.preventDefault();       
+                var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                if(dataItem){
+                     var data = $.grep($m.attachmentsToDelete,function (d) {return d.Name === dataItem.Name;});
+                     if(data.length < 1)
+                     {
+                          if($m.caseModel.id)
+                          $m.attachmentsToDelete.push(dataItem);
+                          
+                          debugger;
+                     }
+                     $m.uploadedFiles = $.grep($m.uploadedFiles, function(e){ 
+                        return e.Name != dataItem.Name; 
+                    });
+                    $m.showUploadedFiles();              
+                    if(dataItem.Type.toLowerCase().indexOf("image") < 0)
+                     $m.setAttachmentDataSource("documents");
+                    else
+                    $m.setAttachmentDataSource("photos");
+                     
+                } 
+            });
+            
+             $("#grdViewAttachments").on("click", ".btn-download", function (e) {
+                e.preventDefault();       
+                var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+             
+                var params = {};
+                params.client = "client1";
+                params.file = JSON.stringify(dataItem);
+                $m.settings.common.ajaxFunctionMultiParam('/CaseLedger/DownloadFiles', 'POST', $m.downloadFile, params);   
+                
+            });
+            
+             $('#uploadModel').on('hidden.bs.modal', function () {
+                $(".k-upload-files.k-reset").find("li").remove();
+            });
+            
+             $("#txtFee").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+            
+            $("#addStepModel").draggable({ handle: ".modal-header" });
+            
         },
         // Initilize controlls
         initControlls: function () {
+            
+             $("#caseFileUpload").kendoUpload({
+                        async: {
+                           saveUrl: "/CaseLedger/SaveUploadFiles",
+                            //removeUrl: "remove",
+                            autoUpload: true
+                        },
+                        upload: $m.onFileUpload,
+                        success: $m.onUploadSuccess
+                    });
             $("#chkNotification").checkboxpicker();
             $("#chkSendReminders").checkboxpicker();
 
@@ -308,7 +345,9 @@
                     var data = this.dataSource.data();
                     var total = 0;
                     $(data).each(function (index, item) {
-                        total = total + parseInt(item.Fee);
+                      
+                        if(item.Fee !="")
+                         total = total + parseInt(item.Fee);
                     });
 
                     $("#txtTotalFee").val(total);
@@ -339,24 +378,27 @@
             });
 
             // create DropDownList from input HTML element
-            $("#ddlType").kendoDropDownList({
+            $("#ddlType").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
-                optionLabel: "Select Case Type",
+                placeholder:"Select Case Type",
+                filter:"startswith",
                 index: 0
             });
 
-            $("#ddlParty").kendoDropDownList({
+            $("#ddlParty").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
-                optionLabel: "Select Party",
+                placeholder:"Select Party",
+                filter:"startswith",
                 index: 0
             });
 
-            $("#ddlCourt").kendoDropDownList({
+            $("#ddlCourt").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
-                optionLabel: "Select Court",
+                placeholder:"Select Court",
+                filter:"startswith",
                 index: 0
             });
             
@@ -452,6 +494,22 @@
                 }
                   
             });
+            
+             $("#grdViewAttachments").kendoGrid({
+                pageable: {
+                    input: false,
+                    numeric: true
+                },
+                columns: [         
+                   { field: "Name", title: "Name", width: 100 },
+                    { command: { text: "", template: "<button class='btn btn-primary btn-download'> <i class='glyphicon glyphicon glyphicon-download-alt'></i></button>" }, title: " ", width: 13 },
+                   { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 13 }
+               
+                   
+                  ],
+                  selectable:"row",
+                  
+            });
 
         },
         populateCaseDropdown: function (a) {
@@ -470,15 +528,15 @@
                 ]
             });
 
-            var ddl = $("#ddlType").data("kendoDropDownList");
+            var ddl = $("#ddlType").data("kendoComboBox");
             ddl.setDataSource(caseTypes);
             ddl.refresh();
 
-            var ddlCourt = $("#ddlCourt").data("kendoDropDownList");
+            var ddlCourt = $("#ddlCourt").data("kendoComboBox");
             ddlCourt.setDataSource(courts);
             ddlCourt.refresh();
 
-            var ddlParty = $("#ddlParty").data("kendoDropDownList");
+            var ddlParty = $("#ddlParty").data("kendoComboBox");
             ddlParty.setDataSource(parties);
             ddlParty.refresh();
 
@@ -497,7 +555,11 @@
             var ddlUsers = $("#ddlUsers").data("kendoMultiSelect");
             ddlUsers.setDataSource(usersData);
             ddlUsers.refresh();
-
+            $m.getCurrentCaseNo();
+        },
+         getCurrentCaseNo:function () {
+            var query ='SELECT TOP 1 c.CaseNumber FROM c ORDER BY c.CreatedDate DESC';
+           $m.settings.common.ajaxFunction('/CaseLedger/GetCurrentCaseNumber', 'POST', null, query,false);
         },
         // Add next case next step item
         addToCaseItems: function (data) {
@@ -515,6 +577,11 @@
             return true;
         },
         isStepAvaiable: function (data) {
+            /// <summary>
+            /// Check Step data and update
+            /// </summary>
+            /// <param name="data" type="type"></param>
+            /// <returns type=""></returns>
             var isAvailable = false;
             for(var i =0,length = $m.nextStepDataSource.length;i<length;i++){
                 if ($m.nextStepDataSource[i].StepId == data.StepId) {
@@ -523,10 +590,9 @@
                     $m.nextStepDataSource[i].ByWhom = data.ByWhom;
                     $m.nextStepDataSource[i].Fee = data.Fee;
                     $m.nextStepDataSource[i].SendNotifications = data.SendNotifications;
-
+                    $m.nextStepDataSource[i].UpdatedDate = data.UpdatedDate;
                     isAvailable = true;
                     break;
-                    
                 }
             }
             return isAvailable;
@@ -570,8 +636,19 @@
             
         },
         notify: function (d) {
-            $m.settings.common.showNotification("Record Successfully Saved", "success");
-             $m.clearCaseForm();  
+            
+            if(JSON.parse(d).Result){
+                
+                $m.settings.common.showNotification("Successfully Saved", "success");
+                
+                if(JSON.parse(d).Request.Targert === "SaveCase")
+                   $m.clearCaseForm();
+            }
+            else{
+                 $m.settings.common.showNotification("Record Saving Failed", "error");
+            }
+            // $m.settings.common.showNotification("Record Successfully Saved", "success");
+            //  $m.clearCaseForm();  
         },
         setStepTaskModelData: function (data) {
             // Set task users from step items
@@ -613,7 +690,12 @@
             }
 
             task.Status = $(".chkTaskStatus").prop('checked');
+            
             task.ByWhom = $("#ddlTaskUsers").data("kendoMultiSelect").dataItems();
+            if(!task.CreatedDate)
+                    task.CreatedDate = new Date();
+                 
+                  task.UpdatedDate = new Date();
 
             $m.addToStepTasks(task);
         },
@@ -640,7 +722,7 @@
                     $m.stepTaskItems[i].Status = data.Status;
                     $m.stepTaskItems[i].StepId = data.StepId;
                     $m.stepTaskItems[i].TaskId = data.TaskId;
-                    
+                    $m.stepTaskItems[i].UpdatedDate = data.UpdatedDate;
                     isAvailable = true;
                     break;
                 }
@@ -678,7 +760,7 @@
                 pageSize: 5
             });
 
-            $("#grdStepsTasks").data("kendoGrid").dataSource = dataSource;
+            $("#grdStepsTasks").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#grdStepsTasks").data("kendoGrid").refresh();
         },
@@ -687,19 +769,22 @@
             /// Bind case data to the form
             /// </summary>
             /// <param name="caseObj" type="CaseList"></param>
+            $m.caseModel = {};
              $m.caseModel = caseObj;
-             $m.nextStepDataSource = $m.caseModel.CaseSteps
-             if($("#ddlType").data("kendoDropDownList"))
-            $("#ddlType").data("kendoDropDownList").value($m.caseModel.CaseTypeId);
+             $m.nextStepDataSource = $m.caseModel.CaseSteps;
+              $m.attachmentsToDelete = [];
+             
+             if($("#ddlType").data("kendoComboBox"))
+            $("#ddlType").data("kendoComboBox").value($m.caseModel.CaseTypeId);
             
-            if($("#ddlParty").data("kendoDropDownList"))
-            $("#ddlParty").data("kendoDropDownList").value($m.caseModel.PartyId);
+            if($("#ddlParty").data("kendoComboBox"))
+            $("#ddlParty").data("kendoComboBox").value($m.caseModel.PartyId);
             
             if($("#txtCaseNo"))
             $("#txtCaseNo").val($m.caseModel.CaseNumber);
             
-            if($("#ddlCourt").data("kendoDropDownList"))
-            $("#ddlCourt").data("kendoDropDownList").value($m.caseModel.CourtId);
+            if($("#ddlCourt").data("kendoComboBox"))
+            $("#ddlCourt").data("kendoComboBox").value($m.caseModel.CourtId);
             
             if($("#dtStartDate").data("kendoDatePicker"))
             $("#dtStartDate").data("kendoDatePicker").value($m.caseModel.StartDate);
@@ -711,22 +796,28 @@
             $("#chkSendReminders").prop('checked', true);
            else
             $("#chkSendReminders").prop('checked', false);  
-            $m.setStepDataSource();
-            
+            //$m.setStepDataSource();
+             $m.refreshNextStepGrid();
             $("#txt-search-case-no").val("");
+            
+             $m.uploadedFiles = $m.caseModel.Attachments;
+              $m.showUploadedFiles();
         },
-        setStepDataSource:function () {
-            /// <summary>
-            /// Set NextStep datasource and refresh the grid
-            /// </summary>
-             var dataSource = new kendo.data.DataSource({
-                data: $m.nextStepDataSource,
-                pageSize: 10
-            });
-            $("#caseSteps").data("kendoGrid").dataSource = dataSource;
-            dataSource.read();
-            $("#caseSteps").data("kendoGrid").refresh();
-        },
+        // setStepDataSource:function () {
+        //     /// <summary>
+        //     /// Set NextStep datasource and refresh the grid
+        //     /// </summary>
+        //      var dataSource = new kendo.data.DataSource({
+        //         data: $m.nextStepDataSource,
+        //         pageSize: 10
+        //     });
+        //     
+        //     
+        //     $("#caseSteps").data("kendoGrid").setDataSource(dataSource);
+        //     dataSource.read();
+        //     $("#caseSteps").data("kendoGrid").refresh();
+        //     
+        // },
         setMultipleSearchDataSource:function(caseList){
              /// <summary>
             /// Set MultipleSearchResult datasource and refresh the grid
@@ -744,23 +835,23 @@
                 data: $m.multipleSearchResult,
                 pageSize: 10
             });
-             $("#grdCaseMultipleResult").data("kendoGrid").dataSource = dataSource;
+             $("#grdCaseMultipleResult").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#grdCaseMultipleResult").data("kendoGrid").refresh();
             $("#displayMultipleCaseSearchResult").modal('toggle');
         },
         clearCaseForm:function () {
-            if($("#ddlType").data("kendoDropDownList"))
-            $("#ddlType").data("kendoDropDownList").select(0);
+            if($("#ddlType").data("kendoComboBox"))
+            $("#ddlType").data("kendoComboBox").text('');
             
-            if($("#ddlParty").data("kendoDropDownList"))
-            $("#ddlParty").data("kendoDropDownList").select(0);
+            if($("#ddlParty").data("kendoComboBox"))
+            $("#ddlParty").data("kendoComboBox").text('');
             
              if($("#txtCaseNo"))
             $("#txtCaseNo").val("");
             
-            if($("#ddlCourt").data("kendoDropDownList"))
-            $("#ddlCourt").data("kendoDropDownList").select(0);
+            if($("#ddlCourt").data("kendoComboBox"))
+            $("#ddlCourt").data("kendoComboBox").text('');
             
             if($("#dtStartDate").data("kendoDatePicker"))
             $("#dtStartDate").data("kendoDatePicker").value("");
@@ -773,9 +864,13 @@
             var newStepDataSource = new kendo.data.DataSource({
                 data: []
                 }); 
-            $("#caseSteps").data("kendoGrid").dataSource = newStepDataSource;
+            $("#caseSteps").data("kendoGrid").setDataSource(newStepDataSource);
             newStepDataSource.read();
             $("#caseSteps").data("kendoGrid").refresh();
+            
+            $m.getCurrentCaseNo();  
+            $m.showUploadedFiles(); 
+            $m.deleteAttachments();
             
             
         },
@@ -808,10 +903,11 @@
                 data: $m.nextStepDataSource,
                 pageSize: 5
             });
-
-            $("#caseSteps").data("kendoGrid").dataSource = dataSource;
+            dataSource.sort({field:"CreatedDate",dir:"desc"});
+            $("#caseSteps").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#caseSteps").data("kendoGrid").refresh();
+            
         },
         setNextStepData: function (dataItem) {
 
@@ -944,7 +1040,235 @@
                    whereClause = whereClause + " OR LOWER(c.CaseNumber) = LOWER('"+$("#txtBrowseCaseNo").val() +"')";
              }
              return whereClause;
-       }
+       },
+       onFileUpload:function(e) {
+            
+            if($("#txtCaseNo").val() !=""){
+                e.data = { 
+            client : "client1" , 
+            caseNumber:"Case/"+$("#txtCaseNo").val()
+            };  
+            }else{
+                $m.settings.common.showNotification("Case Number Required", "warning");
+                return false;
+            }   
+       },
+       onUploadSuccess:function (e) {
+           
+           if(e.files){
+                for (var i = 0, x = e.files.length; i < x; i++){
+                   var data = $.grep($m.uploadedFiles,function (d) {return d.Name === e.files[i].name;});
+                 if(data.length <1){
+                       var url = $m.blobEndPoint+"client1"+"/"+$("#txtCaseNo").val()+"/"+e.files[i].name;
+                    var file = {};
+                    file.Name = e.files[i].name;
+                    file.Extension = e.files[i].extension;
+                    file.Type = e.files[i].rawFile.type;
+                    file.Url = url;
+                    file.BlobDir = "Case/"+$("#txtCaseNo").val();
+                    $m.uploadedFiles.push(file);
+                   }
+                    
+                } 
+           }
+               $m.showUploadedFiles();                  
+       },
+    
+       nextCaseNumberReponse:function (data) {
+        
+           if(data){
+               var newCaseNumber = 1;
+               if(JSON.parse(JSON.parse(data).JsonResult).length >0 ){
+                 var currentCaseNumber = JSON.parse(JSON.parse(data).JsonResult)[0].CaseNumber;
+                  var numberPattern = /\d+/g;
+                   var num = currentCaseNumber.match( numberPattern)[0];
+                    newCaseNumber = parseInt(num) + 1;
+               }
+               var num2 = $m.paddingNumber(newCaseNumber);
+                var formattedNum = $m.masterData.CaseNumberPrefix + num2;
+                $("#txtCaseNo").val(formattedNum);  
+           }
+       },
+        paddingNumber:function(n) {
+            if(n<10){
+                return ("000"+n);
+            }
+            else if(n<100){
+                return ("00"+n);
+            }
+            else if(n<1000){
+                return ("000"+n);
+            }
+            else{
+                return n;
+            }
+            
+        },
+        showUploadedFiles:function () {
+          
+          var imageCnt = 0;
+          var docCnt = 0;
+          if($m.uploadedFiles.length > 0){
+             for (var i = 0, x = $m.uploadedFiles.length; i < x; i++){
+                if($m.uploadedFiles[i].Type.indexOf("image") > -1){
+                    imageCnt++
+                }
+                else{
+                    docCnt++;
+                }
+                $("#spnPhotos").text(imageCnt.toString());
+                $("#spnDocuments").text(docCnt.toString());
+                
+              //  debugger;
+            }  
+          }
+          else{
+               $("#spnPhotos").text(0);
+                $("#spnDocuments").text(0);
+          }
+           
+            
+        },
+        setAttachmentDataSource:function (type) {
+            var data = [];
+            if(type ==="photos"){
+                data = $.grep($m.uploadedFiles,function (e) {return (e.Type.toLowerCase().indexOf("image") >= 0)});
+            }
+            else{
+                data = $.grep($m.uploadedFiles,function (e) {return (e.Type.toLowerCase().indexOf("image") < 0)});
+            }
+           
+            var dataLength = data.length;
+            
+                 var dataSource = new kendo.data.DataSource({  
+                data: data,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             $("#grdViewAttachments").data("kendoGrid").setDataSource(dataSource);
+            dataSource.read();
+            $("#grdViewAttachments").data("kendoGrid").refresh();
+            
+           // $('#viewAttachmentModel').modal('toggle');   
+            return dataLength;
+               
+        },
+        deleteAttachments:function(){
+            
+            if($m.attachmentsToDelete.length >0){
+                var params = {};
+                params.client = "client1";
+                params.files = JSON.stringify($m.attachmentsToDelete);
+                $m.settings.common.ajaxFunctionMultiParam('/CaseLedger/DeleteFiles', 'POST', null, params);     
+            }
+           $m.attachmentsToDelete = [];
+        },
+        downloadFile:function (file) {
+           // window.location = file;
+            window.open(
+            file,
+            '_blank' // <- This is what makes it open in a new window.
+            );
+        },
+        prepareCaseModel:function () {
+              // Validate Type
+                if ($("#ddlType").data("kendoComboBox").value() == "") {
+                    $m.settings.common.showNotification("Please select Type", "warning");
+                    return;
+                } else {
+                    $m.caseModel.CaseTypeId = $("#ddlType").data("kendoComboBox").value();
+                }
+
+                // Validate Party
+                if ($("#ddlParty").data("kendoComboBox").value() == "") {
+                    $m.settings.common.showNotification("Please select Party", "warning");
+                    return;
+                } else {
+                    $m.caseModel.PartyId = $("#ddlParty").data("kendoComboBox").value();
+                }
+
+                // Validate CaseNumber
+                if ($("#txtCaseNo").val() == "") {
+                    $m.settings.common.showNotification("Please enter Case Number", "warning");
+                    return;
+                } else {
+                    $m.caseModel.CaseNumber = $("#txtCaseNo").val();
+                }
+
+                // Validate Court
+                if ($("#ddlCourt").data("kendoComboBox").value() == "") {
+                    $m.settings.common.showNotification("Please select Court", "warning");
+                    return;
+                } else {
+                    $m.caseModel.CourtId = $("#ddlCourt").data("kendoComboBox").value();
+                }
+
+                $m.caseModel.StartDate = $("#dtStartDate").data("kendoDatePicker").value();
+                $m.caseModel.Description = $("#txtDescription").val();
+                $m.caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
+                $m.caseModel.CaseSteps = $m.getCaseStepsData();
+                if(!$m.caseModel.CreatedDate)
+                    $m.caseModel.CreatedDate = new Date();
+                 
+                  $m.caseModel.UpdatedDate = new Date();
+                  $m.caseModel.Attachments = $m.uploadedFiles;
+                  $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel); 
+                  $m.caseModel = {};
+                  $m.uploadedFiles = [];              
+             
+        },
+        createNextStepData:function (guid) {
+                /// <summary>
+                /// Create next step data with passing guid
+                /// </summary>
+                /// <param name="guid" type="type"></param>
+                var nextStepModel = {};
+                if (guid) {
+                    nextStepModel.StepId = guid;
+                    nextStepModel.Tasks = [];
+                }else{
+                    nextStepModel.StepId = $("#hdnStepId").val();
+                }
+               
+                if ($("#txtNextStep").val() == "") {
+                    $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please enter step name");
+                    return;
+                } else {
+                    nextStepModel.NextStep = $("#txtNextStep").val();
+                }
+
+                nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
+                // nextStepModel.Status = '1';
+            
+                if($("#ddlUsers").data("kendoMultiSelect").dataItems().length < 1){
+                     $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please select a owner");
+                    return;
+                }
+                else{
+                     nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
+                }
+               
+                nextStepModel.Fee = $("#txtFee").val();
+                nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
+                
+                if(!nextStepModel.CreatedDate)
+                    nextStepModel.CreatedDate = new Date();
+                 
+                    nextStepModel.UpdatedDate = new Date();
+                    
+                if ($m.addToCaseItems(nextStepModel)) {
+                    $("#hdnStepId").val("");
+                    $('#addStepModel').modal('toggle');
+                }
+                
+                $("#collapse1").collapse('show');
+                
+            }
+       
+       
+       
+       
     };
 
     return $m;
