@@ -62,8 +62,38 @@
                 });
             }
         },
+        ajaxFunctionWithCallBackParam:function(url,type,callBackFunc,params,callBackParams){
+             if (params) {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: params,
+                    //async:false,
+                    success: function (data) {
+                        
+                        if(callBackFunc) callBackFunc(data,callBackParams);
+                        else 
+                         return data;
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: url,
+                    type: type,
+                    success: function (data) {
+                       
+                        if(callBackFunc) callBackFunc(data,callBackParams);
+                        else 
+                         return data;
+                    }
+                });
+            }
+        },
         createGUID: function (callBackFunc) {
             return this.ajaxFunction('/Base/CreateGUID', 'GET', callBackFunc,null,false);
+        },
+        createGUIDWithParams: function (callBackFunc,callBackParams) {
+            return this.ajaxFunctionWithCallBackParam('/Base/CreateGUID', 'GET', callBackFunc,null,callBackParams);
         },
         saveMasterData:function(callBackFunc,model){
             return this.ajaxFunction('/Base/SaveMasterData', 'POST', callBackFunc,model,true);
@@ -171,7 +201,10 @@
                             setValidationMessages: $scope.setValidationMessages,
                             showConfirmDialog: $scope.showConfirmDialog,
                             validateEmail:$scope.validateEmail,
-                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam
+                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam,
+                            ajaxFunctionWithCallBackParam:$scope.ajaxFunctionWithCallBackParam,
+                            createGUIDWithParams:$scope.createGUIDWithParams
+                            
                         }
 
                     });

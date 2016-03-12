@@ -190,5 +190,68 @@ namespace Welkin.UI.Controllers
                 return Content("error");
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteEvent(string model)
+        {
+            var rList = new List<Request>();
+            var list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(model);
+            foreach (var id in list)
+            {
+                var r = new Request
+                {
+                    Json = id,
+                    JsCallback = "eventNotify",
+                    Targert = "DeleteTasks",
+                    UserId = 1,
+                    Type = Enums.EntityType.Scheduler
+                };
+                rList.Add(r);
+            }
+          
+
+           
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SaveEvent(string model)
+        {
+
+            var rList = new List<Request>();
+          
+                var r = new Request
+                {
+                    Json = model,
+                    JsCallback = "eventNotify",
+                    Targert = "SaveSchedulerTask",
+                    UserId = 1,
+                    Type = Enums.EntityType.Scheduler
+                };
+                rList.Add(r);
+            
+           
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetEvents(string model)
+        {
+            var rList = new List<Request>();
+
+            var r = new Request
+            {
+                Json = model,
+                JsCallback = "getEventsByUserResponse",
+                Targert = "GetSchedulerTasks",
+                UserId = 1,
+                Type = Enums.EntityType.Scheduler
+            };
+            rList.Add(r);
+            await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
+        }
     }
 }

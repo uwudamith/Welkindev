@@ -16,7 +16,10 @@
         multipleSearchResult:{},
         uploadedFiles:[],
         attachmentsToDelete:[],
-          blobEndPoint:{},
+        blobEndPoint:{},
+       // eventsToSave:[],
+        eventsToDelete:[],
+          
         
         init: function (options) {
             //alert("CaseHandler");
@@ -46,11 +49,19 @@
                         {
                         name:"nextCaseNumberReponse",
                         fn:this.nextCaseNumberReponse
+                    },
+                    {
+                        name:"eventNotify",
+                        fn:this.eventNotify
+                    },
+                    {
+                        name:"getEventsByUserResponse",
+                        fn:this.getEventsByUserResponse
                     }       
                 ]);
                 this.settings.sAgent.start();
             }
-
+            $m.blobEndPoint = $scope.Configs.blobEndPoint;
             // Initialize controlls
             $m.initControlls();
 
@@ -171,6 +182,13 @@
                 var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.setStepTaskSelectedData(dataItem);
             });
+            
+            // Add/Edit Event
+           $("#caseSteps").on("click", ".btn-event", function (e) {
+                e.preventDefault();
+                var dataItem =$("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                $m.setEventModelControls(dataItem);
+            });
 
             // Delete step task items
             $("#grdStepsTasks").on("click", ".btn-delete", function (e) {
@@ -278,8 +296,19 @@
                     e.preventDefault();
                 }
             });
+            $("#save-event").click(function(){
+              $m.saveEvent();  
+              return false;
+            });
             
-            $("#addStepModel").draggable({ handle: ".modal-header" });
+            $('#addEventModel').on('hidden.bs.modal', function () {
+               $("#txtEventTitle").val("");
+               $("#dtStartDateTime").data("kendoDateTimePicker").value("");
+               $("#dtEndDateTime").data("kendoDateTimePicker").value("");
+               $("#txtEventDescription").val("");
+               $("#ddlEventAttendees").data("kendoMultiSelect").value([]);
+            })
+            $(".modal").draggable({ handle: ".modal-header" });
             
         },
         // Initilize controlls
@@ -333,6 +362,7 @@
                     { field: "Fee", title: "Fee", width: 100 },
                     { field: "DueDate", width: 130, title: "Due on", template: "#= kendo.toString(kendo.parseDate(DueDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" },
                     { field: "ByWhom", title: "By Whom", template: kendo.template($("#usersTemplate").html()) },
+                    { command: { text: "", template: "<button class='btn btn-primary btn-event'> <i class='glyphicon glyphicon glyphicon-calendar'></i></button>" }, width: 70 },
                     { command: { text: "", template: "<button class='btn btn-primary btn-task'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: "Task(s)", width: 70 },
                     { command: { text: "", template: "<button class='btn btn-primary btn-edit'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50 },
                     { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
@@ -428,14 +458,20 @@
             
             $("#ddlUsers").kendoMultiSelect({
                 dataTextField: "Name",
-                dataValueField: "Id",
+                dataValueField: "ID",
                 index: 0
             });
 
             // create DropDownList from input HTML element
             $("#ddlTaskUsers").kendoMultiSelect({
                 dataTextField: "Name",
-                dataValueField: "Id",
+                dataValueField: "ID",
+                index: 0
+            });
+            
+               $("#ddlEventAttendees").kendoMultiSelect({
+                dataTextField: "Name",
+                dataValueField: "ID",
                 index: 0
             });
             
@@ -510,6 +546,14 @@
                   selectable:"row",
                   
             });
+            
+             $("#dtStartDateTime").kendoDateTimePicker({
+                       // value:new Date()
+                    });
+                    
+                $("#dtEndDateTime").kendoDateTimePicker({
+               // value:new Date()
+            });
 
         },
         populateCaseDropdown: function (a) {
@@ -520,13 +564,18 @@
             var courts = JSON.parse(JSON.parse(a).JsonResult)[0].Courts;
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
 
-            var usersData = new kendo.data.DataSource({
-                data: [
-                    { Name: "Damith", Id: "1" },
-                    { Name: "Janith", Id: "2" },
-                    { Name: "Dimuthu", Id: "3" }
-                ]
-            });
+            var usersData = $m.masterData.Users;
+             for(var i =0,length = usersData.length;i<length;i++){
+                 usersData[i].Name = usersData[i].FirstName +" "+ usersData[i].LastName;
+             }
+            
+            // new kendo.data.DataSource({
+            //     data: [
+            //         { Name: "Damith", Id: "1" },
+            //         { Name: "Janith", Id: "2" },
+            //         { Name: "Dimuthu", Id: "3" }
+            //     ]
+            // });
 
             var ddl = $("#ddlType").data("kendoComboBox");
             ddl.setDataSource(caseTypes);
@@ -682,7 +731,7 @@
             } else {
                 task.Description = $("#txtTaskDescription").val();
             }
-            if (kendo.parseDate($("#dtTaskDueOnDate").data("kendoDatePicker").value())==null){
+             if (kendo.parseDate($("#dtTaskDueOnDate").data("kendoDatePicker").value())==null){
                 $m.settings.common.setValidationMessages("val-message", "warning", "Please enter valid date");
                 return;
             }else{
@@ -690,8 +739,14 @@
             }
 
             task.Status = $(".chkTaskStatus").prop('checked');
+            if($("#ddlTaskUsers").data("kendoMultiSelect").dataItems().length < 1){
+                 $m.settings.common.setValidationMessages("val-message", "warning", "Please select Owners");
+                return;
+            }else{
+                task.ByWhom = $("#ddlTaskUsers").data("kendoMultiSelect").dataItems();
+            }
             
-            task.ByWhom = $("#ddlTaskUsers").data("kendoMultiSelect").dataItems();
+            
             if(!task.CreatedDate)
                     task.CreatedDate = new Date();
                  
@@ -773,7 +828,8 @@
              $m.caseModel = caseObj;
              $m.nextStepDataSource = $m.caseModel.CaseSteps;
               $m.attachmentsToDelete = [];
-             
+             // $m.eventsToSave = [];
+              $m.eventsToDelete = [];
              if($("#ddlType").data("kendoComboBox"))
             $("#ddlType").data("kendoComboBox").value($m.caseModel.CaseTypeId);
             
@@ -868,10 +924,12 @@
             newStepDataSource.read();
             $("#caseSteps").data("kendoGrid").refresh();
             
-            $m.getCurrentCaseNo();  
+            $m.getCurrentCaseNo(); 
+            
+            // $m.saveEvents();
             $m.showUploadedFiles(); 
             $m.deleteAttachments();
-            
+            $("#collapse1").collapse('hide');
             
         },
         deleteNextStepItem: function (dataItem) {
@@ -888,6 +946,14 @@
             /// Remove nextstep from array
             /// </summary>
             /// <param name="dataItem" type="type"></param>
+            debugger;
+            if(dataItem.events && dataItem.events.length > 0){
+                for (var i = 0,x= dataItem.events.length; i < x; i++) {
+                    $m.eventsToDelete.push(dataItem.events[i].eventId);
+                }
+                 $m.deleteEvents();
+            }
+            
             $m.nextStepDataSource = $.grep($m.nextStepDataSource, function (value) {
                 return value.StepId != dataItem.StepId;
             });
@@ -903,6 +969,9 @@
                 data: $m.nextStepDataSource,
                 pageSize: 5
             });
+            if($m.nextStepDataSource.length <1)
+             $("#collapse1").collapse('hide');
+            
             dataSource.sort({field:"CreatedDate",dir:"desc"});
             $("#caseSteps").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
@@ -961,6 +1030,7 @@
             $m.stepTaskItems = $.grep($m.stepTaskItems, function (value) {
                 return value.TaskId != dataItem.TaskId;
             });
+            
 
             $m.setstepTaskDataSource();
         },
@@ -1086,7 +1156,9 @@
                }
                var num2 = $m.paddingNumber(newCaseNumber);
                 var formattedNum = $m.masterData.CaseNumberPrefix + num2;
-                $("#txtCaseNo").val(formattedNum);  
+                
+                if($("#txtCaseNo").val() === "")
+                   $("#txtCaseNo").val(formattedNum);  
            }
        },
         paddingNumber:function(n) {
@@ -1140,7 +1212,7 @@
            
             var dataLength = data.length;
             
-                 var dataSource = new kendo.data.DataSource({  
+                var dataSource = new kendo.data.DataSource({  
                 data: data,
                 pageSize: 3,
                 page:1,
@@ -1264,7 +1336,177 @@
                 
                 $("#collapse1").collapse('show');
                 
+            },
+            setEventModelControls:function (data) {
+                
+                // Set task users from step items
+                var ddlEventAttendees = $("#ddlEventAttendees").data("kendoMultiSelect");
+                ddlEventAttendees.setDataSource(data.ByWhom);
+                ddlEventAttendees.refresh();
+
+                // Set max date from step item
+                var dtStartDateTime = $("#dtStartDateTime").data("kendoDateTimePicker");
+                dtStartDateTime.setOptions({
+                    max: new Date(data.DueDate)
+                });
+                
+                var dtEndDateTime = $("#dtEndDateTime").data("kendoDateTimePicker");
+                dtEndDateTime.setOptions({
+                    max: new Date(data.DueDate)
+                });
+                $("#hdnNextItemId").val(data.StepId);
+                
+                var stepData = $.grep($m.nextStepDataSource,function (e) {return e.StepId === data.StepId});
+                
+               if(stepData[0].events && stepData[0].events.length > 0)
+                   $m.getEventsByUser(stepData[0]);
+               else
+                 $("#addEventModel").modal('toggle');
+                  
+            },
+            getEventsByUser:function(data){
+            
+                var query = "SELECT  * FROM Scheduler s WHERE "
+                 for (var i = 0, x = data.events.length; i < x; i++){
+                     if(i=== 0)
+                      query = query +"s.id ='"+data.events[i].eventId +"'";
+                      else
+                       query = query +" OR s.id ='"+data.events[i].eventId+"'";
+                 }
+                 
+                 $m.settings.common.ajaxFunction('/CaseLedger/GetEvents', 'POST', null, query,false);
+                 
+            },
+            getEventsByUserResponse:function (data) {
+           
+                var events = JSON.parse(JSON.parse(data).JsonResult);
+                if(events.length > 0){
+                    
+                    $("#txtEventTitle").val(events[0].title);
+               $("#dtStartDateTime").data("kendoDateTimePicker").value(events[0].start);
+               $("#dtEndDateTime").data("kendoDateTimePicker").value(events[0].end);
+               $("#txtEventDescription").val(events[0].description);
+               
+               
+                var values = [];
+              
+                for (var i = 0, x = events.length; i < x; i++){
+                    values.push(events[i].attendees);
+                }
+                $("#ddlEventAttendees").data("kendoMultiSelect").value(values);
+                
+                $("#addEventModel").modal('show');
+                }
+                else{
+                    $("#txtEventTitle").val("");
+               $("#dtStartDateTime").data("kendoDateTimePicker").value("");
+               $("#dtEndDateTime").data("kendoDateTimePicker").value("");
+               $("#txtEventDescription").val("");
+               $("#ddlEventAttendees").data("kendoMultiSelect").value([]);
+                $("#addEventModel").modal('show');
+                }
+            },
+            saveEvent:function(){
+                var startdt = $("#dtStartDateTime").data("kendoDateTimePicker").value();
+                var enddt = $("#dtEndDateTime").data("kendoDateTimePicker").value();
+                
+                   if ($("#txtEventTitle").val() == "") {
+                    $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Title Required");
+                    return;
+                    } 
+                     else if (kendo.parseDate($("#dtStartDateTime").data("kendoDateTimePicker").value())==null){
+                        $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Valid Start Date Required");
+                        return;
+                    }
+                     else if (kendo.parseDate($("#dtEndDateTime").data("kendoDateTimePicker").value())==null){
+                        $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Valid End Date Required");
+                        return;
+                    }
+                    else if(startdt >= enddt)
+                    {
+                         $m.settings.common.setValidationMessages("val-messageEvent", "warning", "End Date and Time Must be Greater than Start Date and Time");
+                         return;
+                    }
+                    else  if($("#ddlEventAttendees").data("kendoMultiSelect").dataItems().length < 1){
+                     $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Attendees Required");
+                        return;
+                    }
+                    else{
+                        //Loop through nextStepDataSource
+                         for (var i = 0, x = $m.nextStepDataSource.length; i < x; i++){  
+                              // find the current step 
+                                if($m.nextStepDataSource[i].StepId === $("#hdnNextItemId").val()){
+                                    // if step has events 
+                                    if($m.nextStepDataSource[i].events && $m.nextStepDataSource[i].events.length >0){
+                                        //add events to delete list
+                                         for (var j = 0, x = $m.nextStepDataSource[i].events.length; j < x; j++){
+                                             //add old event id to delete list 
+                                                  $m.eventsToDelete.push($m.nextStepDataSource[i].events[j].eventId);
+                                                   
+                                             }
+                                    }
+                                    $m.nextStepDataSource[i].events = [];
+                                  }
+                          }
+                        var attendees = $("#ddlEventAttendees").data("kendoMultiSelect").dataItems();
+                        for (var i = 0, x = attendees.length; i < x; i++){
+                           
+                            $m.settings.common.createGUIDWithParams($m.saveEventCallBack,attendees[i]);
+                        }
+                        
+                        
+                    }      
+            },
+            saveEventCallBack:function (guid,attendee) {
+                var event = {};
+                event.id = guid;
+                event.title = $("#txtEventTitle").val();
+                event.start = $("#dtStartDateTime").data("kendoDateTimePicker").value();
+                event.end =$("#dtEndDateTime").data("kendoDateTimePicker").value();
+                event.description = $("#txtEventDescription").val();
+                event.attendees = attendee.ID;    
+               $m.deleteEvents();
+                
+                
+                 for (var i = 0, x = $m.nextStepDataSource.length; i < x; i++){   
+                        if($m.nextStepDataSource[i].StepId === $("#hdnNextItemId").val()){
+                             var eve = {};
+                             eve.eventId = guid;
+                             eve.attendee = attendee.ID;
+                            if(!$m.nextStepDataSource[i].events){
+                                 $m.nextStepDataSource[i].events = [];
+                                 $m.nextStepDataSource[i].events.push(eve);
+                            }
+                            else{
+                                $m.nextStepDataSource[i].events.push(eve);
+                            }
+                        }
+                 }
+                  $m.saveEvents(event);
+                  $("#addEventModel").modal('hide');
+                // $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
+  
+            },
+            deleteEvents:function(){
+                
+                 var sQuery = $m.eventsToDelete;   //"SELECT  * FROM Scheduler s WHERE s.id = '"+ e.event.id +"'";
+                            $m.settings.common.ajaxFunction('/CaseLedger/DeleteEvent', 'POST', null,sQuery,true);
+            },
+            saveEvents:function(event){
+                $m.settings.common.ajaxFunction('/CaseLedger/SaveEvent', 'POST', null,event,true);
+                 
+            },
+            eventNotify:function (d) {
+                 if(JSON.parse(d).Result){
+
+                    // if(JSON.parse(d).Request.Targert === "SaveSchedulerTask")
+                    //     $m.eventsToSave = [];
+                    if(JSON.parse(d).Request.Targert === "DeleteTasks")
+                        $m.eventsToDelete = [];
+                 }
             }
+           
+            
        
        
        

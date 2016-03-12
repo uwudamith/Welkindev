@@ -98,11 +98,11 @@
                     for (var i = 0, x = users.length; i < x; i++){
                       var data = {};
                       data.text = users[i].FirstName +" " + users[i].LastName;
-                      data.value = users[i].id;
+                      data.value = users[i].ID;
                       data.color = $m.makeRandomColor.toString();
                       resourcesData.push(data);
                     
-                    var chk = $('<input checked type="checkbox" id="chk' + users[i].FirstName+ users[i].LastName + '"  value="' + users[i].id + '" > </input>');
+                    var chk = $('<input checked type="checkbox" id="chk' + users[i].FirstName+ users[i].LastName + '"  value="' + users[i].ID + '" > </input>');
                     var label = $('<label for="chk' + users[i].FirstName+ users[i].LastName + '" class="css-label">' + users[i].FirstName +' '+ users[i].LastName + '</label>');
                     $('#people').append(chk);
                     $('#people').append(label);
