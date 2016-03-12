@@ -4,26 +4,26 @@
     /// </summary>
     /// <param name="$scope">Application Scope </param>
     /// <param name="$">jQuery</param> 
-    
-   
+
+
     $m = {
 
         // Data source for nextsteps
         nextStepDataSource: [],
-        stepTaskItems:[],
-        caseModel : {},
-        masterData : {},
-        multipleSearchResult:{},
-        uploadedFiles:[],
-        attachmentsToDelete:[],
-        blobEndPoint:{},
-       // eventsToSave:[],
-        eventsToDelete:[],
-          
-        
+        stepTaskItems: [],
+        caseModel: {},
+        masterData: {},
+        multipleSearchResult: {},
+        uploadedFiles: [],
+        attachmentsToDelete: [],
+        blobEndPoint: {},
+        // eventsToSave:[],
+        eventsToDelete: [],
+
+
         init: function (options) {
             //alert("CaseHandler");
-      
+
             this.settings = $scope.$.extend(true, {
 
             }, options);
@@ -39,25 +39,25 @@
                         fn: this.notify
                     },
                     {
-                        name:"searchCaseResponse",
-                        fn:this.searchCaseResponse
+                        name: "searchCaseResponse",
+                        fn: this.searchCaseResponse
                     },
                     {
-                        name:"browseCaseResponse",
-                        fn:this.browseCaseResponse
+                        name: "browseCaseResponse",
+                        fn: this.browseCaseResponse
                     },
                         {
-                        name:"nextCaseNumberReponse",
-                        fn:this.nextCaseNumberReponse
+                            name: "nextCaseNumberReponse",
+                            fn: this.nextCaseNumberReponse
+                        },
+                    {
+                        name: "eventNotify",
+                        fn: this.eventNotify
                     },
                     {
-                        name:"eventNotify",
-                        fn:this.eventNotify
-                    },
-                    {
-                        name:"getEventsByUserResponse",
-                        fn:this.getEventsByUserResponse
-                    }       
+                        name: "getEventsByUserResponse",
+                        fn: this.getEventsByUserResponse
+                    }
                 ]);
                 this.settings.sAgent.start();
             }
@@ -74,8 +74,8 @@
                 var dataItem = $("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.setStepTaskModelData(dataItem);
             });
-          
-           
+
+
 
             // Save next step click function
             $("#save-step").click(function () {
@@ -84,7 +84,7 @@
                 } else {
                     $m.createNextStepData();
                 }
-               
+
             });
 
             // After step model close function
@@ -103,7 +103,7 @@
 
             // On save-case click function
             $(".save-case").click(function () {
-                   $m.prepareCaseModel();     
+                $m.prepareCaseModel();
             });
 
             var clearPartyModel = function () {
@@ -125,7 +125,7 @@
                     partyObj.Email = $("#txtEmail").val();
                     partyObj.ContactNumber = $("#txtContactNumber").val();
                 }
-                
+
                 // Push to master data global variable
                 var party = $m.masterData.Parties;
                 party.push(partyObj);
@@ -150,7 +150,7 @@
                     $m.settings.common.showNotification("Search field should not be empty", "success");
                 } else {
                     var searchQuery = "SELECT * FROM c WHERE CONTAINS(LOWER(c.CaseNumber),LOWER('" + $("#txt-search-case-no").val() + "'))";
-                    $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery,false);
+                    $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery, false);
                 }
             });
 
@@ -182,11 +182,11 @@
                 var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.setStepTaskSelectedData(dataItem);
             });
-            
+
             // Add/Edit Event
-           $("#caseSteps").on("click", ".btn-event", function (e) {
+            $("#caseSteps").on("click", ".btn-event", function (e) {
                 e.preventDefault();
-                var dataItem =$("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                var dataItem = $("#caseSteps").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.setEventModelControls(dataItem);
             });
 
@@ -196,88 +196,87 @@
                 var dataItem = $("#grdStepsTasks").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                 $m.deleteStepTaskItem(dataItem);
             });
-            
-              $("#btnCaseBrowse").click(function(){
-                 var searchQuery = "SELECT * FROM c";
-                    $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery,false);
-                $('#browseModal').modal('toggle');   
-           
+
+            $("#btnCaseBrowse").click(function () {
+                var searchQuery = "SELECT * FROM c";
+                $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery, false);
+                $('#browseModal').modal('toggle');
+
             });
-             $("#btnBrowseSearch").click(function(){
-                 var searchQuery = "SELECT * FROM c";
-               var whereClause =  $m.buildBrowseQuery();
-                if(whereClause != "")
-                   searchQuery = searchQuery +" " + whereClause;
-                  $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery,false);
-                   
-           
+            $("#btnBrowseSearch").click(function () {
+                var searchQuery = "SELECT * FROM c";
+                var whereClause = $m.buildBrowseQuery();
+                if (whereClause != "")
+                    searchQuery = searchQuery + " " + whereClause;
+                $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery, false);
+
+
             });
-            
-              $("#btnUploadPopup").click(function(){   
-                $('#uploadModel').modal('toggle');   
+
+            $("#btnUploadPopup").click(function () {
+                $('#uploadModel').modal('toggle');
                 return false;
             });
-            
-             $("#liPhotos").click(function(){   
-                var length =  $m.setAttachmentDataSource("photos");
-                 if(length > 0)
-                    $('#viewAttachmentModel').modal('toggle'); 
-                 else
+
+            $("#liPhotos").click(function () {
+                var length = $m.setAttachmentDataSource("photos");
+                if (length > 0)
+                    $('#viewAttachmentModel').modal('toggle');
+                else
                     $m.settings.common.showNotification("No Attachments to Show", "info");
-    
+
                 return false;
             });
-            
-              $("#liDocuments").click(function(){ 
-                var length = $m.setAttachmentDataSource("documents");  
-                if(length > 0)
-                     $('#viewAttachmentModel').modal('toggle');   
-               else
+
+            $("#liDocuments").click(function () {
+                var length = $m.setAttachmentDataSource("documents");
+                if (length > 0)
+                    $('#viewAttachmentModel').modal('toggle');
+                else
                     $m.settings.common.showNotification("No Attachments to Show", "info");
-                
+
                 return false;
             });
-            
-             $("#grdViewAttachments").on("click", ".btn-delete", function (e) {
-                e.preventDefault();       
+
+            $("#grdViewAttachments").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
                 var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
-                if(dataItem){
-                     var data = $.grep($m.attachmentsToDelete,function (d) {return d.Name === dataItem.Name;});
-                     if(data.length < 1)
-                     {
-                          if($m.caseModel.id)
-                          $m.attachmentsToDelete.push(dataItem);
-                          
-                          debugger;
-                     }
-                     $m.uploadedFiles = $.grep($m.uploadedFiles, function(e){ 
-                        return e.Name != dataItem.Name; 
+                if (dataItem) {
+                    var data = $.grep($m.attachmentsToDelete, function (d) { return d.Name === dataItem.Name; });
+                    if (data.length < 1) {
+                        if ($m.caseModel.id)
+                            $m.attachmentsToDelete.push(dataItem);
+
+                        debugger;
+                    }
+                    $m.uploadedFiles = $.grep($m.uploadedFiles, function (e) {
+                        return e.Name != dataItem.Name;
                     });
-                    $m.showUploadedFiles();              
-                    if(dataItem.Type.toLowerCase().indexOf("image") < 0)
-                     $m.setAttachmentDataSource("documents");
+                    $m.showUploadedFiles();
+                    if (dataItem.Type.toLowerCase().indexOf("image") < 0)
+                        $m.setAttachmentDataSource("documents");
                     else
-                    $m.setAttachmentDataSource("photos");
-                     
-                } 
+                        $m.setAttachmentDataSource("photos");
+
+                }
             });
-            
-             $("#grdViewAttachments").on("click", ".btn-download", function (e) {
-                e.preventDefault();       
+
+            $("#grdViewAttachments").on("click", ".btn-download", function (e) {
+                e.preventDefault();
                 var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
-             
+
                 var params = {};
                 params.client = "client1";
                 params.file = JSON.stringify(dataItem);
-                $m.settings.common.ajaxFunctionMultiParam('/CaseLedger/DownloadFiles', 'POST', $m.downloadFile, params);   
-                
+                $m.settings.common.ajaxFunctionMultiParam('/CaseLedger/DownloadFiles', 'POST', $m.downloadFile, params);
+
             });
-            
-             $('#uploadModel').on('hidden.bs.modal', function () {
+
+            $('#uploadModel').on('hidden.bs.modal', function () {
                 $(".k-upload-files.k-reset").find("li").remove();
             });
-            
-             $("#txtFee").keydown(function (e) {
+
+            $("#txtFee").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
                     // Allow: Ctrl+A
@@ -288,41 +287,41 @@
                     (e.keyCode == 88 && e.ctrlKey === true) ||
                     // Allow: home, end, left, right
                     (e.keyCode >= 35 && e.keyCode <= 39)) {
-                        // let it happen, don't do anything
-                        return;
+                    // let it happen, don't do anything
+                    return;
                 }
                 // Ensure that it is a number and stop the keypress
                 if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                     e.preventDefault();
                 }
             });
-            $("#save-event").click(function(){
-              $m.saveEvent();  
-              return false;
+            $("#save-event").click(function () {
+                $m.saveEvent();
+                return false;
             });
-            
+
             $('#addEventModel').on('hidden.bs.modal', function () {
-               $("#txtEventTitle").val("");
-               $("#dtStartDateTime").data("kendoDateTimePicker").value("");
-               $("#dtEndDateTime").data("kendoDateTimePicker").value("");
-               $("#txtEventDescription").val("");
-               $("#ddlEventAttendees").data("kendoMultiSelect").value([]);
+                $("#txtEventTitle").val("");
+                $("#dtStartDateTime").data("kendoDateTimePicker").value("");
+                $("#dtEndDateTime").data("kendoDateTimePicker").value("");
+                $("#txtEventDescription").val("");
+                $("#ddlEventAttendees").data("kendoMultiSelect").value([]);
             })
             $(".modal").draggable({ handle: ".modal-header" });
-            
+
         },
         // Initilize controlls
         initControlls: function () {
-            
-             $("#caseFileUpload").kendoUpload({
-                        async: {
-                           saveUrl: "/CaseLedger/SaveUploadFiles",
-                            //removeUrl: "remove",
-                            autoUpload: true
-                        },
-                        upload: $m.onFileUpload,
-                        success: $m.onUploadSuccess
-                    });
+
+            $("#caseFileUpload").kendoUpload({
+                async: {
+                    saveUrl: "/CaseLedger/SaveUploadFiles",
+                    //removeUrl: "remove",
+                    autoUpload: true
+                },
+                upload: $m.onFileUpload,
+                success: $m.onUploadSuccess
+            });
             $("#chkNotification").checkboxpicker();
             $("#chkSendReminders").checkboxpicker();
 
@@ -375,9 +374,9 @@
                     var data = this.dataSource.data();
                     var total = 0;
                     $(data).each(function (index, item) {
-                      
-                        if(item.Fee !="")
-                         total = total + parseInt(item.Fee);
+
+                        if (item.Fee != "")
+                            total = total + parseInt(item.Fee);
                     });
 
                     $("#txtTotalFee").val(total);
@@ -403,7 +402,7 @@
                    { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
                 ],
                 dataBinding: function (e) {
-                  
+
                 }
             });
 
@@ -411,32 +410,32 @@
             $("#ddlType").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
-                placeholder:"Select Case Type",
-                filter:"startswith",
+                placeholder: "Select Case Type",
+                filter: "startswith",
                 index: 0
             });
 
             $("#ddlParty").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
-                placeholder:"Select Party",
-                filter:"startswith",
+                placeholder: "Select Party",
+                filter: "startswith",
                 index: 0
             });
 
             $("#ddlCourt").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
-                placeholder:"Select Court",
-                filter:"startswith",
+                placeholder: "Select Court",
+                filter: "startswith",
                 index: 0
             });
-            
-             $("#ddlBrowseType").kendoComboBox({
+
+            $("#ddlBrowseType").kendoComboBox({
                 dataTextField: "Name",
                 dataValueField: "ID",
                 placeholder: "Select Case Type",
-                filter:"startswith",
+                filter: "startswith",
                 index: 0
             });
 
@@ -444,7 +443,7 @@
                 dataTextField: "Name",
                 dataValueField: "ID",
                 placeholder: "Select Party",
-                filter:"startswith",
+                filter: "startswith",
                 index: 0
             });
 
@@ -452,10 +451,10 @@
                 dataTextField: "Name",
                 dataValueField: "ID",
                 placeholder: "Select Court",
-                filter:"startswith",
+                filter: "startswith",
                 index: 0
             });
-            
+
             $("#ddlUsers").kendoMultiSelect({
                 dataTextField: "Name",
                 dataValueField: "ID",
@@ -468,15 +467,15 @@
                 dataValueField: "ID",
                 index: 0
             });
-            
-               $("#ddlEventAttendees").kendoMultiSelect({
+
+            $("#ddlEventAttendees").kendoMultiSelect({
                 dataTextField: "Name",
                 dataValueField: "ID",
                 index: 0
             });
-            
-            
-              $("#grdCaseMultipleResult").kendoGrid({
+
+
+            $("#grdCaseMultipleResult").kendoGrid({
                 // dataSource: {
                 //     data: $m.multipleSearchResult,
                 //     pageSize: 5
@@ -492,23 +491,23 @@
                    { field: "CourtName", title: "Court", width: 100 },
                    { field: "PartyName", title: "Party", width: 200 },
                    { field: "StartDate", width: 130, title: "Start Date", template: "#= kendo.toString(kendo.parseDate(StartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" }
-                  ],
-                  selectable:"row",
-                   change: function (e) {
+                ],
+                selectable: "row",
+                change: function (e) {
                     /// <summary>
                     /// Bind Selected data to form
                     /// </summary>
                     /// <param name="e" type="type"></param>
-                   var selectedRow = this.select();
-                   if(selectedRow)
-                   $m.bindCaseData(this.dataItem(selectedRow));
-                  $("#displayMultipleCaseSearchResult").modal('toggle');
+                    var selectedRow = this.select();
+                    if (selectedRow)
+                        $m.bindCaseData(this.dataItem(selectedRow));
+                    $("#displayMultipleCaseSearchResult").modal('toggle');
                 }
-              });
-              
-               $("#grdBrowseMultipleResult").kendoGrid({
-               
-                pageable:true,
+            });
+
+            $("#grdBrowseMultipleResult").kendoGrid({
+
+                pageable: true,
                 columns: [
                    { field: "id", hidden: true, },
                    { field: "CaseNumber", title: "Case Number", width: 100 },
@@ -516,48 +515,48 @@
                    { field: "CourtName", title: "Court", width: 100 },
                    { field: "PartyName", title: "Party", width: 200 },
                    { field: "StartDate", width: 130, title: "Start Date", template: "#= kendo.toString(kendo.parseDate(StartDate, 'yyyy-MM-dd'), 'MM/dd/yyyy') #" }
-                  ],
-                  selectable:"row",
-                   change: function (e) {
+                ],
+                selectable: "row",
+                change: function (e) {
                     /// <summary>
                     /// Bind Selected data to form
                     /// </summary>
                     /// <param name="e" type="type"></param>
-                   var selectedRow = this.select();
-                   if(selectedRow)
-                   $m.bindCaseData(this.dataItem(selectedRow));
-                  $("#browseModal").modal('toggle');
+                    var selectedRow = this.select();
+                    if (selectedRow)
+                        $m.bindCaseData(this.dataItem(selectedRow));
+                    $("#browseModal").modal('toggle');
                 }
-                  
+
             });
-            
-             $("#grdViewAttachments").kendoGrid({
+
+            $("#grdViewAttachments").kendoGrid({
                 pageable: {
                     input: false,
                     numeric: true
                 },
-                columns: [         
+                columns: [
                    { field: "Name", title: "Name", width: 100 },
                     { command: { text: "", template: "<button class='btn btn-primary btn-download'> <i class='glyphicon glyphicon glyphicon-download-alt'></i></button>" }, title: " ", width: 13 },
                    { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 13 }
-               
-                   
-                  ],
-                  selectable:"row",
-                  
+
+
+                ],
+                selectable: "row",
+
             });
-            
-             $("#dtStartDateTime").kendoDateTimePicker({
-                       // value:new Date()
-                    });
-                    
-                $("#dtEndDateTime").kendoDateTimePicker({
-               // value:new Date()
+
+            $("#dtStartDateTime").kendoDateTimePicker({
+                // value:new Date()
+            });
+
+            $("#dtEndDateTime").kendoDateTimePicker({
+                // value:new Date()
             });
 
         },
         populateCaseDropdown: function (a) {
-           
+
             $m.masterData = JSON.parse(JSON.parse(a).JsonResult)[0];
 
             var caseTypes = JSON.parse(JSON.parse(a).JsonResult)[0].CaseTypes;
@@ -565,10 +564,10 @@
             var parties = JSON.parse(JSON.parse(a).JsonResult)[0].Parties;
 
             var usersData = $m.masterData.Users;
-             for(var i =0,length = usersData.length;i<length;i++){
-                 usersData[i].Name = usersData[i].FirstName +" "+ usersData[i].LastName;
-             }
-            
+            for (var i = 0, length = usersData.length; i < length; i++) {
+                usersData[i].Name = usersData[i].FirstName + " " + usersData[i].LastName;
+            }
+
             // new kendo.data.DataSource({
             //     data: [
             //         { Name: "Damith", Id: "1" },
@@ -600,15 +599,15 @@
             var ddlBrowseParty = $("#ddlBrowseParty").data("kendoComboBox");
             ddlBrowseParty.setDataSource(parties);
             ddlBrowseParty.refresh();
-            
+
             var ddlUsers = $("#ddlUsers").data("kendoMultiSelect");
             ddlUsers.setDataSource(usersData);
             ddlUsers.refresh();
             $m.getCurrentCaseNo();
         },
-         getCurrentCaseNo:function () {
-            var query ='SELECT TOP 1 c.CaseNumber FROM c ORDER BY c.CreatedDate DESC';
-           $m.settings.common.ajaxFunction('/CaseLedger/GetCurrentCaseNumber', 'POST', null, query,false);
+        getCurrentCaseNo: function () {
+            var query = 'SELECT TOP 1 c.CaseNumber FROM c ORDER BY c.CreatedDate DESC';
+            $m.settings.common.ajaxFunction('/CaseLedger/GetCurrentCaseNumber', 'POST', null, query, false);
         },
         // Add next case next step item
         addToCaseItems: function (data) {
@@ -617,7 +616,7 @@
             /// </summary>
             /// <param name="data" type="type"></param>
             /// <returns type=""></returns>
-            
+
             // Check if record available
             if ($m.isStepAvaiable(data) == false) {
                 $m.nextStepDataSource.push(data);
@@ -632,7 +631,7 @@
             /// <param name="data" type="type"></param>
             /// <returns type=""></returns>
             var isAvailable = false;
-            for(var i =0,length = $m.nextStepDataSource.length;i<length;i++){
+            for (var i = 0, length = $m.nextStepDataSource.length; i < length; i++) {
                 if ($m.nextStepDataSource[i].StepId == data.StepId) {
                     $m.nextStepDataSource[i].NextStep = data.NextStep;
                     $m.nextStepDataSource[i].DueDate = data.DueDate;
@@ -664,37 +663,37 @@
         },
         // save case ledger
         saveCaseLedger: function (url, type, model) {
-            $m.settings.common.ajaxFunction(url, type,null, model,true);
+            $m.settings.common.ajaxFunction(url, type, null, model, true);
         },
         // Rerieve case step data from data source
         getCaseStepsData: function () {
             return $m.nextStepDataSource;
         },
         searchCaseResponse: function (data) {
-            
+
             var cases = JSON.parse(JSON.parse(data).JsonResult);
             var casesLength = cases.length;
-            if(casesLength > 1){
+            if (casesLength > 1) {
                 $m.setMultipleSearchDataSource(cases);
             }
-            else if(casesLength > 0){
+            else if (casesLength > 0) {
                 $m.bindCaseData(cases[0]);
-            }else{
+            } else {
                 $m.settings.common.showNotification("No Results Found", "info");
             }
-            
+
         },
         notify: function (d) {
-            
-            if(JSON.parse(d).Result){
-                
+
+            if (JSON.parse(d).Result) {
+
                 $m.settings.common.showNotification("Successfully Saved", "success");
-                
-                if(JSON.parse(d).Request.Targert === "SaveCase")
-                   $m.clearCaseForm();
+
+                if (JSON.parse(d).Request.Targert === "SaveCase")
+                    $m.clearCaseForm();
             }
-            else{
-                 $m.settings.common.showNotification("Record Saving Failed", "error");
+            else {
+                $m.settings.common.showNotification("Record Saving Failed", "error");
             }
             // $m.settings.common.showNotification("Record Successfully Saved", "success");
             //  $m.clearCaseForm();  
@@ -731,26 +730,26 @@
             } else {
                 task.Description = $("#txtTaskDescription").val();
             }
-             if (kendo.parseDate($("#dtTaskDueOnDate").data("kendoDatePicker").value())==null){
+            if (kendo.parseDate($("#dtTaskDueOnDate").data("kendoDatePicker").value()) == null) {
                 $m.settings.common.setValidationMessages("val-message", "warning", "Please enter valid date");
                 return;
-            }else{
+            } else {
                 task.DueDate = $("#dtTaskDueOnDate").data("kendoDatePicker").value();
             }
 
             task.Status = $(".chkTaskStatus").prop('checked');
-            if($("#ddlTaskUsers").data("kendoMultiSelect").dataItems().length < 1){
-                 $m.settings.common.setValidationMessages("val-message", "warning", "Please select Owners");
+            if ($("#ddlTaskUsers").data("kendoMultiSelect").dataItems().length < 1) {
+                $m.settings.common.setValidationMessages("val-message", "warning", "Please select Owners");
                 return;
-            }else{
+            } else {
                 task.ByWhom = $("#ddlTaskUsers").data("kendoMultiSelect").dataItems();
             }
-            
-            
-            if(!task.CreatedDate)
-                    task.CreatedDate = new Date();
-                 
-                  task.UpdatedDate = new Date();
+
+
+            if (!task.CreatedDate)
+                task.CreatedDate = new Date();
+
+            task.UpdatedDate = new Date();
 
             $m.addToStepTasks(task);
         },
@@ -794,9 +793,9 @@
             $("#dtTaskDueOnDate").data("kendoDatePicker").value("");
             $("#chkStatus").prop('checked', false);
             $("#ddlTaskUsers").data("kendoMultiSelect").value([]);
-            
+
         },
-        addTasksToNextItemGrid: function (id,tasks) {
+        addTasksToNextItemGrid: function (id, tasks) {
             /// <summary>
             /// Adding final tasks into respective item
             /// </summary>
@@ -819,45 +818,45 @@
             dataSource.read();
             $("#grdStepsTasks").data("kendoGrid").refresh();
         },
-        bindCaseData:function(caseObj) {
-             /// <summary>
+        bindCaseData: function (caseObj) {
+            /// <summary>
             /// Bind case data to the form
             /// </summary>
             /// <param name="caseObj" type="CaseList"></param>
             $m.caseModel = {};
-             $m.caseModel = caseObj;
-             $m.nextStepDataSource = $m.caseModel.CaseSteps;
-              $m.attachmentsToDelete = [];
-             // $m.eventsToSave = [];
-              $m.eventsToDelete = [];
-             if($("#ddlType").data("kendoComboBox"))
-            $("#ddlType").data("kendoComboBox").value($m.caseModel.CaseTypeId);
-            
-            if($("#ddlParty").data("kendoComboBox"))
-            $("#ddlParty").data("kendoComboBox").value($m.caseModel.PartyId);
-            
-            if($("#txtCaseNo"))
-            $("#txtCaseNo").val($m.caseModel.CaseNumber);
-            
-            if($("#ddlCourt").data("kendoComboBox"))
-            $("#ddlCourt").data("kendoComboBox").value($m.caseModel.CourtId);
-            
-            if($("#dtStartDate").data("kendoDatePicker"))
-            $("#dtStartDate").data("kendoDatePicker").value($m.caseModel.StartDate);
-            
-            if($("#txtDescription"))
-            $("#txtDescription").val($m.caseModel.Description);
-            
-           if($m.caseModel.SendAutomaticReminders)
-            $("#chkSendReminders").prop('checked', true);
-           else
-            $("#chkSendReminders").prop('checked', false);  
+            $m.caseModel = caseObj;
+            $m.nextStepDataSource = $m.caseModel.CaseSteps;
+            $m.attachmentsToDelete = [];
+            // $m.eventsToSave = [];
+            $m.eventsToDelete = [];
+            if ($("#ddlType").data("kendoComboBox"))
+                $("#ddlType").data("kendoComboBox").value($m.caseModel.CaseTypeId);
+
+            if ($("#ddlParty").data("kendoComboBox"))
+                $("#ddlParty").data("kendoComboBox").value($m.caseModel.PartyId);
+
+            if ($("#txtCaseNo"))
+                $("#txtCaseNo").val($m.caseModel.CaseNumber);
+
+            if ($("#ddlCourt").data("kendoComboBox"))
+                $("#ddlCourt").data("kendoComboBox").value($m.caseModel.CourtId);
+
+            if ($("#dtStartDate").data("kendoDatePicker"))
+                $("#dtStartDate").data("kendoDatePicker").value($m.caseModel.StartDate);
+
+            if ($("#txtDescription"))
+                $("#txtDescription").val($m.caseModel.Description);
+
+            if ($m.caseModel.SendAutomaticReminders)
+                $("#chkSendReminders").prop('checked', true);
+            else
+                $("#chkSendReminders").prop('checked', false);
             //$m.setStepDataSource();
-             $m.refreshNextStepGrid();
+            $m.refreshNextStepGrid();
             $("#txt-search-case-no").val("");
-            
-             $m.uploadedFiles = $m.caseModel.Attachments;
-              $m.showUploadedFiles();
+
+            $m.uploadedFiles = $m.caseModel.Attachments;
+            $m.showUploadedFiles();
         },
         // setStepDataSource:function () {
         //     /// <summary>
@@ -874,70 +873,71 @@
         //     $("#caseSteps").data("kendoGrid").refresh();
         //     
         // },
-        setMultipleSearchDataSource:function(caseList){
-             /// <summary>
+        setMultipleSearchDataSource: function (caseList) {
+            /// <summary>
             /// Set MultipleSearchResult datasource and refresh the grid
             /// </summary>
-            
-           for (var i = 0, x = caseList.length; i < x; i++){
-              caseList[i].CaseTypeName =  $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
-              caseList[i].CourtName =  $.grep($m.masterData.Courts,function (e) {return e.ID === caseList[i].CourtId;})[0].Name;
-              caseList[i].PartyName =  $.grep($m.masterData.Parties,function (e) {return e.ID === caseList[i].PartyId;})[0].Name;
-                          
-           }
-           $m.multipleSearchResult = caseList;
-           
-             var dataSource = new kendo.data.DataSource({
+
+            for (var i = 0, x = caseList.length; i < x; i++) {
+                caseList[i].CaseTypeName = $.grep($m.masterData.CaseTypes, function (e) { return e.ID === caseList[i].CaseTypeId; })[0].Name;
+                caseList[i].CourtName = $.grep($m.masterData.Courts, function (e) { return e.ID === caseList[i].CourtId; })[0].Name;
+                caseList[i].PartyName = $.grep($m.masterData.Parties, function (e) { return e.ID === caseList[i].PartyId; })[0].Name;
+
+            }
+            $m.multipleSearchResult = caseList;
+
+            var dataSource = new kendo.data.DataSource({
                 data: $m.multipleSearchResult,
                 pageSize: 10
             });
-             $("#grdCaseMultipleResult").data("kendoGrid").setDataSource(dataSource);
+            $("#grdCaseMultipleResult").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#grdCaseMultipleResult").data("kendoGrid").refresh();
             $("#displayMultipleCaseSearchResult").modal('toggle');
         },
-        clearCaseForm:function () {
-            if($("#ddlType").data("kendoComboBox"))
-            $("#ddlType").data("kendoComboBox").text('');
-            
-            if($("#ddlParty").data("kendoComboBox"))
-            $("#ddlParty").data("kendoComboBox").text('');
-            
-             if($("#txtCaseNo"))
-            $("#txtCaseNo").val("");
-            
-            if($("#ddlCourt").data("kendoComboBox"))
-            $("#ddlCourt").data("kendoComboBox").text('');
-            
-            if($("#dtStartDate").data("kendoDatePicker"))
-            $("#dtStartDate").data("kendoDatePicker").value("");
-            
-            if($("#txtDescription"))
-            $("#txtDescription").val("");
-                    
+        clearCaseForm: function () {
+            if ($("#ddlType").data("kendoComboBox"))
+                $("#ddlType").data("kendoComboBox").text('');
+
+            if ($("#ddlParty").data("kendoComboBox"))
+                $("#ddlParty").data("kendoComboBox").text('');
+
+            if ($("#txtCaseNo"))
+                $("#txtCaseNo").val("");
+
+            if ($("#ddlCourt").data("kendoComboBox"))
+                $("#ddlCourt").data("kendoComboBox").text('');
+
+            if ($("#dtStartDate").data("kendoDatePicker"))
+                $("#dtStartDate").data("kendoDatePicker").value("");
+
+            if ($("#txtDescription"))
+                $("#txtDescription").val("");
+
             $("#chkSendReminders").prop('checked', true);
 
             var newStepDataSource = new kendo.data.DataSource({
                 data: []
-                }); 
+            });
             $("#caseSteps").data("kendoGrid").setDataSource(newStepDataSource);
             newStepDataSource.read();
             $("#caseSteps").data("kendoGrid").refresh();
-            
-            $m.getCurrentCaseNo(); 
-            
+
+            $m.getCurrentCaseNo();
+
             // $m.saveEvents();
-            $m.showUploadedFiles(); 
+            $m.showUploadedFiles();
             $m.deleteAttachments();
+            $m.nextStepDataSource = [];
             $("#collapse1").collapse('hide');
-            
+
         },
         deleteNextStepItem: function (dataItem) {
             // Delete from array and refresk kendo grid
             var yesFunction = function () {
                 $m.removeFromNextStepDataSource(dataItem);
             };
-            var noFunction = function () {};
+            var noFunction = function () { };
 
             $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this step ?");
         },
@@ -946,14 +946,14 @@
             /// Remove nextstep from array
             /// </summary>
             /// <param name="dataItem" type="type"></param>
-            debugger;
-            if(dataItem.events && dataItem.events.length > 0){
-                for (var i = 0,x= dataItem.events.length; i < x; i++) {
+            // debugger;
+            if (dataItem.events && dataItem.events.length > 0) {
+                for (var i = 0, x = dataItem.events.length; i < x; i++) {
                     $m.eventsToDelete.push(dataItem.events[i].eventId);
                 }
-                 $m.deleteEvents();
+                $m.deleteEvents();
             }
-            
+
             $m.nextStepDataSource = $.grep($m.nextStepDataSource, function (value) {
                 return value.StepId != dataItem.StepId;
             });
@@ -969,14 +969,14 @@
                 data: $m.nextStepDataSource,
                 pageSize: 5
             });
-            if($m.nextStepDataSource.length <1)
-             $("#collapse1").collapse('hide');
-            
-            dataSource.sort({field:"CreatedDate",dir:"desc"});
+            if ($m.nextStepDataSource.length < 1)
+                $("#collapse1").collapse('hide');
+
+            dataSource.sort({ field: "CreatedDate", dir: "desc" });
             $("#caseSteps").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#caseSteps").data("kendoGrid").refresh();
-            
+
         },
         setNextStepData: function (dataItem) {
 
@@ -986,14 +986,14 @@
             var values = [];
             if (dataItem.ByWhom.length > 0) {
                 for (var i = 0; i < dataItem.ByWhom.length; i++) {
-                    values.push(dataItem.ByWhom[i].Id);
+                    values.push(dataItem.ByWhom[i].ID);
                 }
             }
             $("#ddlUsers").data("kendoMultiSelect").value(values);
             $("#txtFee").val(dataItem.Fee);
             $("#chkNotification").prop('checked', dataItem.SendNotifications);
             $('#addStepModel').modal('toggle');
-            
+
         },
         setStepTaskSelectedData: function (dataItem) {
             /// <summary>
@@ -1030,489 +1030,510 @@
             $m.stepTaskItems = $.grep($m.stepTaskItems, function (value) {
                 return value.TaskId != dataItem.TaskId;
             });
-            
+
 
             $m.setstepTaskDataSource();
         },
-         browseCaseResponse:function (data) {
+        browseCaseResponse: function (data) {
             /// <summary>
             /// Callback function for deed search responseS
             /// </summary>
-             /// <param name="data" type="type"> search response Json string</param>
-         
+            /// <param name="data" type="type"> search response Json string</param>
+
             var cases = JSON.parse(JSON.parse(data).JsonResult);
             var casesLength = 0;
-               if(cases)
-               casesLength = cases.length;
-        
-                if(casesLength > 1){
-                    $m.setMultipleBrowseDataSource(cases);
-                }
-                else if(casesLength > 0){
-                    $m.bindCaseData(cases[0]);
-                    $("#browseModal").modal('toggle');
-                }else{
-                     $m.setMultipleBrowseDataSource(cases);
-                     $m.settings.common.setValidationMessages("val-messageBrowse","info","No Results Found");
-                }
-                
-            
-       },
-        setMultipleBrowseDataSource:function (caseList) {
+            if (cases)
+                casesLength = cases.length;
+
+            if (casesLength > 1) {
+                $m.setMultipleBrowseDataSource(cases);
+            }
+            else if (casesLength > 0) {
+                $m.bindCaseData(cases[0]);
+                $("#browseModal").modal('toggle');
+            } else {
+                $m.setMultipleBrowseDataSource(cases);
+                $m.settings.common.setValidationMessages("val-messageBrowse", "info", "No Results Found");
+            }
+
+
+        },
+        setMultipleBrowseDataSource: function (caseList) {
             /// <summary>
             /// Set MultipleSearchResult datasource and refresh the grid
             /// </summary>
-           
-          for (var i = 0, x = caseList.length; i < x; i++){
-              caseList[i].CaseTypeName =  $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
-              caseList[i].CourtName =  $.grep($m.masterData.Courts,function (e) {return e.ID === caseList[i].CourtId;})[0].Name;
-              caseList[i].PartyName =  $.grep($m.masterData.Parties,function (e) {return e.ID === caseList[i].PartyId;})[0].Name;              
-           }
-           $m.multipleSearchResult = caseList;
-           
-           //Set multiple search result grid data source
-             var dataSource = new kendo.data.DataSource({
-            
+
+            for (var i = 0, x = caseList.length; i < x; i++) {
+                caseList[i].CaseTypeName = $.grep($m.masterData.CaseTypes, function (e) { return e.ID === caseList[i].CaseTypeId; })[0].Name;
+                caseList[i].CourtName = $.grep($m.masterData.Courts, function (e) { return e.ID === caseList[i].CourtId; })[0].Name;
+                caseList[i].PartyName = $.grep($m.masterData.Parties, function (e) { return e.ID === caseList[i].PartyId; })[0].Name;
+            }
+            $m.multipleSearchResult = caseList;
+
+            //Set multiple search result grid data source
+            var dataSource = new kendo.data.DataSource({
+
                 data: $m.multipleSearchResult,
                 pageSize: 10,
-                page:1,
+                page: 1,
                 serverPaging: false
             });
-            
-             $("#grdBrowseMultipleResult").data("kendoGrid").setDataSource(dataSource);
+
+            $("#grdBrowseMultipleResult").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#grdBrowseMultipleResult").data("kendoGrid").refresh();
-            
-       },
-       buildBrowseQuery:function(){
-           
-          var whereClause = "";
-           if($("#ddlBrowseType").val() !=""){
-                 whereClause = "WHERE c.CaseTypeId = '"+$("#ddlBrowseType").val() +"'";
-             }
-             if($("#ddlBrowseParty").val() !=""){
-                 if(whereClause === "")
-                   whereClause = "WHERE c.PartyId = '"+$("#ddlBrowseParty").val() +"'";
-                 else
-                   whereClause = whereClause + " OR c.PartyId = '"+$("#ddlBrowseParty").val() +"'";
-             }
-             if($("#ddlBrowseCourt").val() !=""){
-                 if(whereClause === "")
-                   whereClause = "WHERE c.CourtId = '"+$("#ddlBrowseCourt").val() +"'";
-                 else
-                   whereClause = whereClause + " OR c.CourtId = '"+$("#ddlBrowseCourt").val() +"'";
-             }
-           
-              if($("#txtBrowseCaseNo").val() !=""){
-                 if(whereClause === "")
-                   whereClause = "WHERE LOWER(c.CaseNumber) = LOWER('"+$("#txtBrowseCaseNo").val() +"')";
-                 else
-                   whereClause = whereClause + " OR LOWER(c.CaseNumber) = LOWER('"+$("#txtBrowseCaseNo").val() +"')";
-             }
-             return whereClause;
-       },
-       onFileUpload:function(e) {
-            
-            if($("#txtCaseNo").val() !=""){
-                e.data = { 
-            client : "client1" , 
-            caseNumber:"Case/"+$("#txtCaseNo").val()
-            };  
-            }else{
+
+        },
+        buildBrowseQuery: function () {
+
+            var whereClause = "";
+            if ($("#ddlBrowseType").val() != "") {
+                whereClause = "WHERE c.CaseTypeId = '" + $("#ddlBrowseType").val() + "'";
+            }
+            if ($("#ddlBrowseParty").val() != "") {
+                if (whereClause === "")
+                    whereClause = "WHERE c.PartyId = '" + $("#ddlBrowseParty").val() + "'";
+                else
+                    whereClause = whereClause + " OR c.PartyId = '" + $("#ddlBrowseParty").val() + "'";
+            }
+            if ($("#ddlBrowseCourt").val() != "") {
+                if (whereClause === "")
+                    whereClause = "WHERE c.CourtId = '" + $("#ddlBrowseCourt").val() + "'";
+                else
+                    whereClause = whereClause + " OR c.CourtId = '" + $("#ddlBrowseCourt").val() + "'";
+            }
+
+            if ($("#txtBrowseCaseNo").val() != "") {
+                if (whereClause === "")
+                    whereClause = "WHERE LOWER(c.CaseNumber) = LOWER('" + $("#txtBrowseCaseNo").val() + "')";
+                else
+                    whereClause = whereClause + " OR LOWER(c.CaseNumber) = LOWER('" + $("#txtBrowseCaseNo").val() + "')";
+            }
+            return whereClause;
+        },
+        onFileUpload: function (e) {
+
+            if ($("#txtCaseNo").val() != "") {
+                e.data = {
+                    client: "client1",
+                    caseNumber: "Case/" + $("#txtCaseNo").val()
+                };
+            } else {
                 $m.settings.common.showNotification("Case Number Required", "warning");
                 return false;
-            }   
-       },
-       onUploadSuccess:function (e) {
-           
-           if(e.files){
-                for (var i = 0, x = e.files.length; i < x; i++){
-                   var data = $.grep($m.uploadedFiles,function (d) {return d.Name === e.files[i].name;});
-                 if(data.length <1){
-                       var url = $m.blobEndPoint+"client1"+"/"+$("#txtCaseNo").val()+"/"+e.files[i].name;
-                    var file = {};
-                    file.Name = e.files[i].name;
-                    file.Extension = e.files[i].extension;
-                    file.Type = e.files[i].rawFile.type;
-                    file.Url = url;
-                    file.BlobDir = "Case/"+$("#txtCaseNo").val();
-                    $m.uploadedFiles.push(file);
-                   }
-                    
-                } 
-           }
-               $m.showUploadedFiles();                  
-       },
-    
-       nextCaseNumberReponse:function (data) {
-        
-           if(data){
-               var newCaseNumber = 1;
-               if(JSON.parse(JSON.parse(data).JsonResult).length >0 ){
-                 var currentCaseNumber = JSON.parse(JSON.parse(data).JsonResult)[0].CaseNumber;
-                  var numberPattern = /\d+/g;
-                   var num = currentCaseNumber.match( numberPattern)[0];
+            }
+        },
+        onUploadSuccess: function (e) {
+
+            if (e.files) {
+                for (var i = 0, x = e.files.length; i < x; i++) {
+                    var data = $.grep($m.uploadedFiles, function (d) { return d.Name === e.files[i].name; });
+                    if (data.length < 1) {
+                        var url = $m.blobEndPoint + "client1" + "/" + $("#txtCaseNo").val() + "/" + e.files[i].name;
+                        var file = {};
+                        file.Name = e.files[i].name;
+                        file.Extension = e.files[i].extension;
+                        file.Type = e.files[i].rawFile.type;
+                        file.Url = url;
+                        file.BlobDir = "Case/" + $("#txtCaseNo").val();
+                        $m.uploadedFiles.push(file);
+                    }
+
+                }
+            }
+            $m.showUploadedFiles();
+        },
+
+        nextCaseNumberReponse: function (data) {
+
+            if (data) {
+                var newCaseNumber = 1;
+                if (JSON.parse(JSON.parse(data).JsonResult).length > 0) {
+                    var currentCaseNumber = JSON.parse(JSON.parse(data).JsonResult)[0].CaseNumber;
+                    var numberPattern = /\d+/g;
+                    var num = currentCaseNumber.match(numberPattern)[0];
                     newCaseNumber = parseInt(num) + 1;
-               }
-               var num2 = $m.paddingNumber(newCaseNumber);
+                }
+                var num2 = $m.paddingNumber(newCaseNumber);
                 var formattedNum = $m.masterData.CaseNumberPrefix + num2;
-                
-                if($("#txtCaseNo").val() === "")
-                   $("#txtCaseNo").val(formattedNum);  
-           }
-       },
-        paddingNumber:function(n) {
-            if(n<10){
-                return ("000"+n);
+
+                if ($("#txtCaseNo").val() === "")
+                    $("#txtCaseNo").val(formattedNum);
             }
-            else if(n<100){
-                return ("00"+n);
+        },
+        paddingNumber: function (n) {
+            if (n < 10) {
+                return ("000" + n);
             }
-            else if(n<1000){
-                return ("000"+n);
+            else if (n < 100) {
+                return ("00" + n);
             }
-            else{
+            else if (n < 1000) {
+                return ("000" + n);
+            }
+            else {
                 return n;
             }
-            
+
         },
-        showUploadedFiles:function () {
-          
-          var imageCnt = 0;
-          var docCnt = 0;
-          if($m.uploadedFiles.length > 0){
-             for (var i = 0, x = $m.uploadedFiles.length; i < x; i++){
-                if($m.uploadedFiles[i].Type.indexOf("image") > -1){
-                    imageCnt++
+        showUploadedFiles: function () {
+
+            var imageCnt = 0;
+            var docCnt = 0;
+            if ($m.uploadedFiles.length > 0) {
+                for (var i = 0, x = $m.uploadedFiles.length; i < x; i++) {
+                    if ($m.uploadedFiles[i].Type.indexOf("image") > -1) {
+                        imageCnt++
+                    }
+                    else {
+                        docCnt++;
+                    }
+                    $("#spnPhotos").text(imageCnt.toString());
+                    $("#spnDocuments").text(docCnt.toString());
+
+                    //  debugger;
                 }
-                else{
-                    docCnt++;
-                }
-                $("#spnPhotos").text(imageCnt.toString());
-                $("#spnDocuments").text(docCnt.toString());
-                
-              //  debugger;
-            }  
-          }
-          else{
-               $("#spnPhotos").text(0);
+            }
+            else {
+                $("#spnPhotos").text(0);
                 $("#spnDocuments").text(0);
-          }
-           
-            
+            }
+
+
         },
-        setAttachmentDataSource:function (type) {
+        setAttachmentDataSource: function (type) {
             var data = [];
-            if(type ==="photos"){
-                data = $.grep($m.uploadedFiles,function (e) {return (e.Type.toLowerCase().indexOf("image") >= 0)});
+            if (type === "photos") {
+                data = $.grep($m.uploadedFiles, function (e) { return (e.Type.toLowerCase().indexOf("image") >= 0) });
             }
-            else{
-                data = $.grep($m.uploadedFiles,function (e) {return (e.Type.toLowerCase().indexOf("image") < 0)});
+            else {
+                data = $.grep($m.uploadedFiles, function (e) { return (e.Type.toLowerCase().indexOf("image") < 0) });
             }
-           
+
             var dataLength = data.length;
-            
-                var dataSource = new kendo.data.DataSource({  
+
+            var dataSource = new kendo.data.DataSource({
                 data: data,
                 pageSize: 3,
-                page:1,
+                page: 1,
                 serverPaging: false
             });
-             $("#grdViewAttachments").data("kendoGrid").setDataSource(dataSource);
+            $("#grdViewAttachments").data("kendoGrid").setDataSource(dataSource);
             dataSource.read();
             $("#grdViewAttachments").data("kendoGrid").refresh();
-            
-           // $('#viewAttachmentModel').modal('toggle');   
+
+            // $('#viewAttachmentModel').modal('toggle');   
             return dataLength;
-               
+
         },
-        deleteAttachments:function(){
-            
-            if($m.attachmentsToDelete.length >0){
+        deleteAttachments: function () {
+
+            if ($m.attachmentsToDelete.length > 0) {
                 var params = {};
                 params.client = "client1";
                 params.files = JSON.stringify($m.attachmentsToDelete);
-                $m.settings.common.ajaxFunctionMultiParam('/CaseLedger/DeleteFiles', 'POST', null, params);     
+                $m.settings.common.ajaxFunctionMultiParam('/CaseLedger/DeleteFiles', 'POST', null, params);
             }
-           $m.attachmentsToDelete = [];
+            $m.attachmentsToDelete = [];
         },
-        downloadFile:function (file) {
-           // window.location = file;
+        downloadFile: function (file) {
+            // window.location = file;
             window.open(
             file,
             '_blank' // <- This is what makes it open in a new window.
             );
         },
-        prepareCaseModel:function () {
-              // Validate Type
-                if ($("#ddlType").data("kendoComboBox").value() == "") {
-                    $m.settings.common.showNotification("Please select Type", "warning");
-                    return;
-                } else {
-                    $m.caseModel.CaseTypeId = $("#ddlType").data("kendoComboBox").value();
-                }
+        prepareCaseModel: function () {
+            // Validate Type
+            if ($("#ddlType").data("kendoComboBox").value() == "") {
+                $m.settings.common.showNotification("Please select Type", "warning");
+                return;
+            } else {
+                $m.caseModel.CaseTypeId = $("#ddlType").data("kendoComboBox").value();
+            }
 
-                // Validate Party
-                if ($("#ddlParty").data("kendoComboBox").value() == "") {
-                    $m.settings.common.showNotification("Please select Party", "warning");
-                    return;
-                } else {
-                    $m.caseModel.PartyId = $("#ddlParty").data("kendoComboBox").value();
-                }
+            // Validate Party
+            if ($("#ddlParty").data("kendoComboBox").value() == "") {
+                $m.settings.common.showNotification("Please select Party", "warning");
+                return;
+            } else {
+                $m.caseModel.PartyId = $("#ddlParty").data("kendoComboBox").value();
+            }
 
-                // Validate CaseNumber
-                if ($("#txtCaseNo").val() == "") {
-                    $m.settings.common.showNotification("Please enter Case Number", "warning");
-                    return;
-                } else {
-                    $m.caseModel.CaseNumber = $("#txtCaseNo").val();
-                }
+            // Validate CaseNumber
+            if ($("#txtCaseNo").val() == "") {
+                $m.settings.common.showNotification("Please enter Case Number", "warning");
+                return;
+            } else {
+                $m.caseModel.CaseNumber = $("#txtCaseNo").val();
+            }
 
-                // Validate Court
-                if ($("#ddlCourt").data("kendoComboBox").value() == "") {
-                    $m.settings.common.showNotification("Please select Court", "warning");
-                    return;
-                } else {
-                    $m.caseModel.CourtId = $("#ddlCourt").data("kendoComboBox").value();
-                }
+            // Validate Court
+            if ($("#ddlCourt").data("kendoComboBox").value() == "") {
+                $m.settings.common.showNotification("Please select Court", "warning");
+                return;
+            } else {
+                $m.caseModel.CourtId = $("#ddlCourt").data("kendoComboBox").value();
+            }
 
-                $m.caseModel.StartDate = $("#dtStartDate").data("kendoDatePicker").value();
-                $m.caseModel.Description = $("#txtDescription").val();
-                $m.caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
-                $m.caseModel.CaseSteps = $m.getCaseStepsData();
-                if(!$m.caseModel.CreatedDate)
-                    $m.caseModel.CreatedDate = new Date();
-                 
-                  $m.caseModel.UpdatedDate = new Date();
-                  $m.caseModel.Attachments = $m.uploadedFiles;
-                  $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel); 
-                  $m.caseModel = {};
-                  $m.uploadedFiles = [];              
-             
+            $m.caseModel.StartDate = $("#dtStartDate").data("kendoDatePicker").value();
+            $m.caseModel.Description = $("#txtDescription").val();
+            $m.caseModel.SendAutomaticReminders = $("#chkSendReminders").prop('checked');
+            $m.caseModel.CaseSteps = $m.getCaseStepsData();
+            if (!$m.caseModel.CreatedDate)
+                $m.caseModel.CreatedDate = new Date();
+
+            $m.caseModel.UpdatedDate = new Date();
+            $m.caseModel.Attachments = $m.uploadedFiles;
+            $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel);
+            $m.caseModel = {};
+            $m.uploadedFiles = [];
+
         },
-        createNextStepData:function (guid) {
-                /// <summary>
-                /// Create next step data with passing guid
-                /// </summary>
-                /// <param name="guid" type="type"></param>
-                var nextStepModel = {};
-                if (guid) {
-                    nextStepModel.StepId = guid;
-                    nextStepModel.Tasks = [];
-                }else{
-                    nextStepModel.StepId = $("#hdnStepId").val();
-                }
-               
-                if ($("#txtNextStep").val() == "") {
-                    $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please enter step name");
-                    return;
-                } else {
-                    nextStepModel.NextStep = $("#txtNextStep").val();
+        createNextStepData: function (guid) {
+            /// <summary>
+            /// Create next step data with passing guid
+            /// </summary>
+            /// <param name="guid" type="type"></param>
+            var nextStepModel = {};
+            if (guid) {
+                nextStepModel.StepId = guid;
+                nextStepModel.Tasks = [];
+            } else {
+                nextStepModel.StepId = $("#hdnStepId").val();
+            }
+
+            if ($("#txtNextStep").val() == "") {
+                $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please enter step name");
+                return;
+            } else {
+                nextStepModel.NextStep = $("#txtNextStep").val();
+            }
+
+            nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
+            // nextStepModel.Status = '1';
+
+            if ($("#ddlUsers").data("kendoMultiSelect").dataItems().length < 1) {
+                $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please select a owner");
+                return;
+            }
+            else {
+                nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
+
+            }
+            var stepData = $.grep($m.nextStepDataSource, function (e) { return e.StepId === $("#hdnStepId").val(); });
+            //debugger;
+            if (stepData && stepData.length > 0) {
+                var events = stepData[0].events;
+                if (events && events.length > 0) {
+                    for (var i = 0, x = nextStepModel.ByWhom.length; i < x; i++) {
+                        //debugger;
+                        events = $.grep(events, function (e) { return e.attendee != nextStepModel.ByWhom[i].ID; });
+
+                    }
+                    for (var j = 0, x = events.length; j < x; j++) {
+                        //add old event id to delete list 
+                        $m.eventsToDelete.push(events[j].eventId);
+                    }
+                    $m.deleteEvents();
                 }
 
-                nextStepModel.DueDate = $("#dtDueOnDate").data("kendoDatePicker").value();
-                // nextStepModel.Status = '1';
-            
-                if($("#ddlUsers").data("kendoMultiSelect").dataItems().length < 1){
-                     $m.settings.common.setValidationMessages("val-message-sep-model", "warning", "Please select a owner");
-                    return;
-                }
-                else{
-                     nextStepModel.ByWhom = $("#ddlUsers").data("kendoMultiSelect").dataItems();
-                }
-               
-                nextStepModel.Fee = $("#txtFee").val();
-                nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
-                
-                if(!nextStepModel.CreatedDate)
-                    nextStepModel.CreatedDate = new Date();
-                 
-                    nextStepModel.UpdatedDate = new Date();
-                    
-                if ($m.addToCaseItems(nextStepModel)) {
-                    $("#hdnStepId").val("");
-                    $('#addStepModel').modal('toggle');
-                }
-                
-                $("#collapse1").collapse('show');
-                
-            },
-            setEventModelControls:function (data) {
-                
-                // Set task users from step items
-                var ddlEventAttendees = $("#ddlEventAttendees").data("kendoMultiSelect");
-                ddlEventAttendees.setDataSource(data.ByWhom);
-                ddlEventAttendees.refresh();
+            }
 
-                // Set max date from step item
-                var dtStartDateTime = $("#dtStartDateTime").data("kendoDateTimePicker");
-                dtStartDateTime.setOptions({
-                    max: new Date(data.DueDate)
-                });
-                
-                var dtEndDateTime = $("#dtEndDateTime").data("kendoDateTimePicker");
-                dtEndDateTime.setOptions({
-                    max: new Date(data.DueDate)
-                });
-                $("#hdnNextItemId").val(data.StepId);
-                
-                var stepData = $.grep($m.nextStepDataSource,function (e) {return e.StepId === data.StepId});
-                
-               if(stepData[0].events && stepData[0].events.length > 0)
-                   $m.getEventsByUser(stepData[0]);
-               else
-                 $("#addEventModel").modal('toggle');
-                  
-            },
-            getEventsByUser:function(data){
-            
-                var query = "SELECT  * FROM Scheduler s WHERE "
-                 for (var i = 0, x = data.events.length; i < x; i++){
-                     if(i=== 0)
-                      query = query +"s.id ='"+data.events[i].eventId +"'";
-                      else
-                       query = query +" OR s.id ='"+data.events[i].eventId+"'";
-                 }
-                 
-                 $m.settings.common.ajaxFunction('/CaseLedger/GetEvents', 'POST', null, query,false);
-                 
-            },
-            getEventsByUserResponse:function (data) {
-           
-                var events = JSON.parse(JSON.parse(data).JsonResult);
-                if(events.length > 0){
-                    
-                    $("#txtEventTitle").val(events[0].title);
-               $("#dtStartDateTime").data("kendoDateTimePicker").value(events[0].start);
-               $("#dtEndDateTime").data("kendoDateTimePicker").value(events[0].end);
-               $("#txtEventDescription").val(events[0].description);
-               
-               
+
+
+
+            nextStepModel.Fee = $("#txtFee").val();
+            nextStepModel.SendNotifications = $("#chkNotification").prop('checked');
+
+            if (!nextStepModel.CreatedDate)
+                nextStepModel.CreatedDate = new Date();
+
+            nextStepModel.UpdatedDate = new Date();
+
+            if ($m.addToCaseItems(nextStepModel)) {
+                $("#hdnStepId").val("");
+                $('#addStepModel').modal('toggle');
+            }
+
+            $("#collapse1").collapse('show');
+
+        },
+        setEventModelControls: function (data) {
+            //debugger;
+            // Set task users from step items
+            var ddlEventAttendees = $("#ddlEventAttendees").data("kendoMultiSelect");
+            ddlEventAttendees.setDataSource(data.ByWhom);
+            ddlEventAttendees.refresh();
+
+            // Set max date from step item
+            var dtStartDateTime = $("#dtStartDateTime").data("kendoDateTimePicker");
+            dtStartDateTime.setOptions({
+                max: new Date(data.DueDate)
+            });
+
+            var dtEndDateTime = $("#dtEndDateTime").data("kendoDateTimePicker");
+            dtEndDateTime.setOptions({
+                max: new Date(data.DueDate)
+            });
+            $("#hdnNextItemId").val(data.StepId);
+
+            var stepData = $.grep($m.nextStepDataSource, function (e) { return e.StepId === data.StepId });
+
+            if (stepData[0].events && stepData[0].events.length > 0)
+                $m.getEventsByUser(stepData[0]);
+            else
+                $("#addEventModel").modal('toggle');
+
+        },
+        getEventsByUser: function (data) {
+
+            var query = "SELECT  * FROM Scheduler s WHERE "
+            for (var i = 0, x = data.events.length; i < x; i++) {
+                if (i === 0)
+                    query = query + "s.id ='" + data.events[i].eventId + "'";
+                else
+                    query = query + " OR s.id ='" + data.events[i].eventId + "'";
+            }
+
+            $m.settings.common.ajaxFunction('/CaseLedger/GetEvents', 'POST', null, query, false);
+
+        },
+        getEventsByUserResponse: function (data) {
+
+            var events = JSON.parse(JSON.parse(data).JsonResult);
+            if (events.length > 0) {
+
+                $("#txtEventTitle").val(events[0].title);
+                $("#dtStartDateTime").data("kendoDateTimePicker").value(events[0].start);
+                $("#dtEndDateTime").data("kendoDateTimePicker").value(events[0].end);
+                $("#txtEventDescription").val(events[0].description);
+
+
                 var values = [];
-              
-                for (var i = 0, x = events.length; i < x; i++){
+                //debugger;
+                for (var i = 0, x = events.length; i < x; i++) {
                     values.push(events[i].attendees);
                 }
                 $("#ddlEventAttendees").data("kendoMultiSelect").value(values);
-                
-                $("#addEventModel").modal('show');
-                }
-                else{
-                    $("#txtEventTitle").val("");
-               $("#dtStartDateTime").data("kendoDateTimePicker").value("");
-               $("#dtEndDateTime").data("kendoDateTimePicker").value("");
-               $("#txtEventDescription").val("");
-               $("#ddlEventAttendees").data("kendoMultiSelect").value([]);
-                $("#addEventModel").modal('show');
-                }
-            },
-            saveEvent:function(){
-                var startdt = $("#dtStartDateTime").data("kendoDateTimePicker").value();
-                var enddt = $("#dtEndDateTime").data("kendoDateTimePicker").value();
-                
-                   if ($("#txtEventTitle").val() == "") {
-                    $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Title Required");
-                    return;
-                    } 
-                     else if (kendo.parseDate($("#dtStartDateTime").data("kendoDateTimePicker").value())==null){
-                        $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Valid Start Date Required");
-                        return;
-                    }
-                     else if (kendo.parseDate($("#dtEndDateTime").data("kendoDateTimePicker").value())==null){
-                        $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Valid End Date Required");
-                        return;
-                    }
-                    else if(startdt >= enddt)
-                    {
-                         $m.settings.common.setValidationMessages("val-messageEvent", "warning", "End Date and Time Must be Greater than Start Date and Time");
-                         return;
-                    }
-                    else  if($("#ddlEventAttendees").data("kendoMultiSelect").dataItems().length < 1){
-                     $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Attendees Required");
-                        return;
-                    }
-                    else{
-                        //Loop through nextStepDataSource
-                         for (var i = 0, x = $m.nextStepDataSource.length; i < x; i++){  
-                              // find the current step 
-                                if($m.nextStepDataSource[i].StepId === $("#hdnNextItemId").val()){
-                                    // if step has events 
-                                    if($m.nextStepDataSource[i].events && $m.nextStepDataSource[i].events.length >0){
-                                        //add events to delete list
-                                         for (var j = 0, x = $m.nextStepDataSource[i].events.length; j < x; j++){
-                                             //add old event id to delete list 
-                                                  $m.eventsToDelete.push($m.nextStepDataSource[i].events[j].eventId);
-                                                   
-                                             }
-                                    }
-                                    $m.nextStepDataSource[i].events = [];
-                                  }
-                          }
-                        var attendees = $("#ddlEventAttendees").data("kendoMultiSelect").dataItems();
-                        for (var i = 0, x = attendees.length; i < x; i++){
-                           
-                            $m.settings.common.createGUIDWithParams($m.saveEventCallBack,attendees[i]);
-                        }
-                        
-                        
-                    }      
-            },
-            saveEventCallBack:function (guid,attendee) {
-                var event = {};
-                event.id = guid;
-                event.title = $("#txtEventTitle").val();
-                event.start = $("#dtStartDateTime").data("kendoDateTimePicker").value();
-                event.end =$("#dtEndDateTime").data("kendoDateTimePicker").value();
-                event.description = $("#txtEventDescription").val();
-                event.attendees = attendee.ID;    
-               $m.deleteEvents();
-                
-                
-                 for (var i = 0, x = $m.nextStepDataSource.length; i < x; i++){   
-                        if($m.nextStepDataSource[i].StepId === $("#hdnNextItemId").val()){
-                             var eve = {};
-                             eve.eventId = guid;
-                             eve.attendee = attendee.ID;
-                            if(!$m.nextStepDataSource[i].events){
-                                 $m.nextStepDataSource[i].events = [];
-                                 $m.nextStepDataSource[i].events.push(eve);
-                            }
-                            else{
-                                $m.nextStepDataSource[i].events.push(eve);
-                            }
-                        }
-                 }
-                  $m.saveEvents(event);
-                  $("#addEventModel").modal('hide');
-                // $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
-  
-            },
-            deleteEvents:function(){
-                
-                 var sQuery = $m.eventsToDelete;   //"SELECT  * FROM Scheduler s WHERE s.id = '"+ e.event.id +"'";
-                            $m.settings.common.ajaxFunction('/CaseLedger/DeleteEvent', 'POST', null,sQuery,true);
-            },
-            saveEvents:function(event){
-                $m.settings.common.ajaxFunction('/CaseLedger/SaveEvent', 'POST', null,event,true);
-                 
-            },
-            eventNotify:function (d) {
-                 if(JSON.parse(d).Result){
 
-                    // if(JSON.parse(d).Request.Targert === "SaveSchedulerTask")
-                    //     $m.eventsToSave = [];
-                    if(JSON.parse(d).Request.Targert === "DeleteTasks")
-                        $m.eventsToDelete = [];
-                 }
+                $("#addEventModel").modal('show');
             }
-           
-            
-       
-       
-       
-       
+            else {
+                $("#txtEventTitle").val("");
+                $("#dtStartDateTime").data("kendoDateTimePicker").value("");
+                $("#dtEndDateTime").data("kendoDateTimePicker").value("");
+                $("#txtEventDescription").val("");
+                $("#ddlEventAttendees").data("kendoMultiSelect").value([]);
+                $("#addEventModel").modal('show');
+            }
+        },
+        saveEvent: function () {
+            var startdt = $("#dtStartDateTime").data("kendoDateTimePicker").value();
+            var enddt = $("#dtEndDateTime").data("kendoDateTimePicker").value();
+
+            if ($("#txtEventTitle").val() == "") {
+                $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Title Required");
+                return;
+            }
+            else if (kendo.parseDate($("#dtStartDateTime").data("kendoDateTimePicker").value()) == null) {
+                $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Valid Start Date Required");
+                return;
+            }
+            else if (kendo.parseDate($("#dtEndDateTime").data("kendoDateTimePicker").value()) == null) {
+                $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Valid End Date Required");
+                return;
+            }
+            else if (startdt >= enddt) {
+                $m.settings.common.setValidationMessages("val-messageEvent", "warning", "End Date and Time Must be Greater than Start Date and Time");
+                return;
+            }
+            else if ($("#ddlEventAttendees").data("kendoMultiSelect").dataItems().length < 1) {
+                $m.settings.common.setValidationMessages("val-messageEvent", "warning", "Attendees Required");
+                return;
+            }
+            else {
+                //Loop through nextStepDataSource
+                for (var i = 0, x = $m.nextStepDataSource.length; i < x; i++) {
+                    // find the current step 
+                    if ($m.nextStepDataSource[i].StepId === $("#hdnNextItemId").val()) {
+                        // if step has events 
+                        if ($m.nextStepDataSource[i].events && $m.nextStepDataSource[i].events.length > 0) {
+                            //add events to delete list
+                            for (var j = 0, x = $m.nextStepDataSource[i].events.length; j < x; j++) {
+                                //add old event id to delete list 
+                                $m.eventsToDelete.push($m.nextStepDataSource[i].events[j].eventId);
+
+                            }
+                        }
+                        $m.nextStepDataSource[i].events = [];
+                    }
+                }
+                var attendees = $("#ddlEventAttendees").data("kendoMultiSelect").dataItems();
+                for (var i = 0, x = attendees.length; i < x; i++) {
+
+                    $m.settings.common.createGUIDWithParams($m.saveEventCallBack, attendees[i]);
+                }
+
+
+            }
+        },
+        saveEventCallBack: function (guid, attendee) {
+            var event = {};
+            event.id = guid;
+            event.title = $("#txtEventTitle").val();
+            event.start = $("#dtStartDateTime").data("kendoDateTimePicker").value();
+            event.end = $("#dtEndDateTime").data("kendoDateTimePicker").value();
+            event.description = $("#txtEventDescription").val();
+            event.attendees = attendee.ID;
+            $m.deleteEvents();
+
+
+            for (var i = 0, x = $m.nextStepDataSource.length; i < x; i++) {
+                if ($m.nextStepDataSource[i].StepId === $("#hdnNextItemId").val()) {
+                    var eve = {};
+                    eve.eventId = guid;
+                    eve.attendee = attendee.ID;
+                    if (!$m.nextStepDataSource[i].events) {
+                        $m.nextStepDataSource[i].events = [];
+                        $m.nextStepDataSource[i].events.push(eve);
+                    }
+                    else {
+                        $m.nextStepDataSource[i].events.push(eve);
+                    }
+                }
+            }
+            $m.saveEvents(event);
+            $("#addEventModel").modal('hide');
+            // $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
+
+        },
+        deleteEvents: function () {
+
+            var sQuery = $m.eventsToDelete;   //"SELECT  * FROM Scheduler s WHERE s.id = '"+ e.event.id +"'";
+            $m.settings.common.ajaxFunction('/CaseLedger/DeleteEvent', 'POST', null, sQuery, true);
+        },
+        saveEvents: function (event) {
+            $m.settings.common.ajaxFunction('/CaseLedger/SaveEvent', 'POST', null, event, true);
+
+        },
+        eventNotify: function (d) {
+            if (JSON.parse(d).Result) {
+
+                // if(JSON.parse(d).Request.Targert === "SaveSchedulerTask")
+                //     $m.eventsToSave = [];
+                if (JSON.parse(d).Request.Targert === "DeleteTasks")
+                    $m.eventsToDelete = [];
+            }
+        }
+
+
+
+
+
+
     };
 
     return $m;
 
-} (window.Welkin, window.Welkin.$, window.Welkin.CaseHandler || {}));
+}(window.Welkin, window.Welkin.$, window.Welkin.CaseHandler || {}));
