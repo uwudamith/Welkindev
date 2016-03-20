@@ -24,7 +24,7 @@ namespace Welkin.UI.Controllers
             var r = new Request
             {
                 Json = @"__.filter(function(master) { return master; })",
-                JsCallback = "PopulateDraftDropdown",
+                JsCallback = "masterDataResponse",
                 Targert = "GetData",
                 UserId = 1,
                 Type = Enums.EntityType.Master

@@ -38,49 +38,14 @@
 </div>
 <script>
     $(function() {
-        var inlineDefault = new kendo.data.HierarchicalDataSource({
-            data: [
-                {
-                    text: "Case", items: [
-                      {
-                          text: "Land", items: [
-                              {
-                                  text:"Mortgage.docx"
-                              }
-                          ]
-                      },
-                      { text: "Partition" }
-                    ]
-                },
-                {
-                    text: "Deed"
-                },
-                {
-                    text: "General"
-                },
-                {
-                    text: "Misc", items: [
-                        {
-                            text: "Pedigree Diagram V1"
-                        },
-                        {
-                            text: "Pedigree Diagram V2"
-                        }
-                    ]
-                }
-            ]
-        });
+      
 
-        $("#treeview-left").kendoTreeView({
-            dataSource: inlineDefault
-        });
-
-        $("#ddlGrantee").kendoDropDownList({
-            dataTextField: "Name",
-            dataValueField: "ID",
-            optionLabel: "Select a Grantee",
-            index: 0
-        });
+        // $("#ddlGrantee").kendoDropDownList({
+        //     dataTextField: "Name",
+        //     dataValueField: "ID",
+        //     optionLabel: "Select a Grantee",
+        //     index: 0
+        // });
 
     });
 </script>

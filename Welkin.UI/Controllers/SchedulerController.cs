@@ -10,8 +10,8 @@ namespace Welkin.UI.Controllers
         // GET: Scheduler
         public async Task<ActionResult>  Index()
         {
-            await LoadData();
-            return View();
+           return await LoadData();
+            //return View();
 
 
         }
@@ -69,7 +69,7 @@ namespace Welkin.UI.Controllers
             return View("Index");
         }
 
-        private static async Task LoadData()
+        public async Task<ActionResult> LoadData()
         {
             var rList = new List<Request>();
 
@@ -84,6 +84,7 @@ namespace Welkin.UI.Controllers
             rList.Add(r);
             //await StorageQueueHandler.PushAsync<string>(r);
             await QueueHandler.PushToServiceAsync(rList);
+            return View("Index");
         }
     }
 }

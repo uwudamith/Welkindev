@@ -61,6 +61,7 @@
 
                  },
                  masterDataResponse:function(data){
+                  
                     $m.masterData = JSON.parse(JSON.parse(data).JsonResult)[0];
                     
                     var searchQuery = "SELECT * FROM Scheduler";
@@ -69,7 +70,7 @@
  
                  },
                  getSchedulerDataResponse:function (data) {
-                 
+             
                     var sDatasrc = {};
                   
                     var model = {};
@@ -89,7 +90,7 @@
                  },
                  
                  populateScedulerData:function(sdata){
-          
+                     //debugger;
                      var users = $m.masterData.Users;
                      var resourcesData = [];
                      var resources = {};
@@ -99,7 +100,7 @@
                       var data = {};
                       data.text = users[i].FirstName +" " + users[i].LastName;
                       data.value = users[i].ID;
-                      data.color = $m.makeRandomColor.toString();
+                      data.color =  users[i].DefaultColor;//$m.makeRandomColor.toString();
                       resourcesData.push(data);
                     
                     var chk = $('<input checked type="checkbox" id="chk' + users[i].FirstName+ users[i].LastName + '"  value="' + users[i].ID + '" > </input>');
