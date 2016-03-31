@@ -5,11 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Welkin.UI.App_Start;
 
 namespace Welkin.UI.Controllers
 {
     public class BaseController : Controller
     {
+        public BaseController()
+        {
+            SessionProvider.ClientId = "client001";
+            SessionProvider.UserId = "1";
+        }
         [HttpGet]
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
         public string CreateGUID()

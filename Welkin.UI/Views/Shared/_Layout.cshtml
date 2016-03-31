@@ -1,4 +1,5 @@
 ﻿@using Welkin.UI.Helpers
+@using Welkin.UI.App_Start
 <!DOCTYPE html>
 <html>
 <head>
@@ -120,6 +121,8 @@
             $scope.PageMode.controller = "@(ViewContext.RouteData.Values["controller"] as string)";
             $scope.Configs.hubUrl = "@Url.Content(SignalrHelper.GetSignalrServerUrl())";
             $scope.Configs.blobEndPoint = "@ConfigurationProvider.BlobEndPoint";
+            $scope.Configs.ClientId = "@SessionProvider.ClientId";
+            $scope.Configs.UserId = "@SessionProvider.UserId";
 
         })(window.Welkin);
     </script>

@@ -10,7 +10,7 @@ using Welkin.UI.Models;
 
 namespace Welkin.UI.Controllers
 {
-    public class DeedLedgerController : Controller
+    public class DeedLedgerController : BaseController
     {
         // GET: DeedLedger
         public async Task<ActionResult> Index()
@@ -28,9 +28,9 @@ namespace Welkin.UI.Controllers
 
             var r = new Request
             {
-                Json = @"__.filter(function(master) { return master; })",
+                Json = @"SELECT * FROM Data d WHERE d.Type ='Master' AND d.ClientId ='" + SessionProvider.ClientId + "'",
                 JsCallback = "PopulateDeedDropdown",
-                Targert = "GetData",
+                Targert = "GetMaster",
                 UserId = 1,
                 Type = Enums.EntityType.Master
             };
@@ -48,7 +48,7 @@ namespace Welkin.UI.Controllers
             var r = new Request
             {
                 Json = model,
-                JsCallback = "notify",
+                JsCallback = "notifyDeed",
                 Targert = "SaveDeed",
                 UserId = 1,
                 Type = Enums.EntityType.Deed
@@ -66,7 +66,7 @@ namespace Welkin.UI.Controllers
             var r = new Request
             {
                 Json = model,
-                JsCallback = "notify",
+                JsCallback = "notifyDeed",
                 Targert = "UpdateDeed",
                 UserId = 1,
                 Type = Enums.EntityType.Deed

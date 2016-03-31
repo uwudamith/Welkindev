@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Welkin.UI.App_Start;
 
 namespace Welkin.UI.Controllers
 {
-    public class DraftController : Controller
+    public class DraftController : BaseController
     {
         // GET: Draft
         public async Task<ActionResult> Index()
@@ -23,7 +24,7 @@ namespace Welkin.UI.Controllers
 
             var r = new Request
             {
-                Json = @"__.filter(function(master) { return master; })",
+                Json = @"SELECT * FROM Data d WHERE d.Type ='Master' AND d.ClientId ='" + SessionProvider.ClientId + "'",
                 JsCallback = "masterDataResponse",
                 Targert = "GetData",
                 UserId = 1,

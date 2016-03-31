@@ -149,7 +149,7 @@
                 if ($("#txt-search-case-no").val() == "") {
                     $m.settings.common.showNotification("Search field should not be empty", "success");
                 } else {
-                    var searchQuery = "SELECT * FROM c WHERE CONTAINS(LOWER(c.CaseNumber),LOWER('" + $("#txt-search-case-no").val() + "'))";
+                    var searchQuery = "SELECT * FROM Data d WHERE CONTAINS(LOWER(d.CaseNumber),LOWER('" + $("#txt-search-case-no").val() + "')) AND d.Type='Case' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
                     $m.settings.common.ajaxFunction('/CaseLedger/GetCases', 'POST', null, searchQuery, false);
                 }
             });
@@ -198,13 +198,13 @@
             });
 
             $("#btnCaseBrowse").click(function () {
-                var searchQuery = "SELECT * FROM c";
+                var searchQuery = "SELECT * FROM Data d WHERE d.Type='Case' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
                 $m.settings.common.ajaxFunction('/CaseLedger/BrowseCases', 'POST', null, searchQuery, false);
                 $('#browseModal').modal('toggle');
 
             });
             $("#btnBrowseSearch").click(function () {
-                var searchQuery = "SELECT * FROM c";
+                var searchQuery = "SELECT * FROM Data d";
                 var whereClause = $m.buildBrowseQuery();
                 if (whereClause != "")
                     searchQuery = searchQuery + " " + whereClause;
@@ -247,7 +247,7 @@
                         if ($m.caseModel.id)
                             $m.attachmentsToDelete.push(dataItem);
 
-                        debugger;
+                    
                     }
                     $m.uploadedFiles = $.grep($m.uploadedFiles, function (e) {
                         return e.Name != dataItem.Name;
@@ -606,7 +606,8 @@
             $m.getCurrentCaseNo();
         },
         getCurrentCaseNo: function () {
-            var query = 'SELECT TOP 1 c.CaseNumber FROM c ORDER BY c.CreatedDate DESC';
+            var query = "SELECT TOP 1 d.CaseNumber FROM Data d  WHERE  d.Type='Case' AND d.ClientId = '"+$scope.Configs.ClientId+"' ORDER BY d.CreatedDate DESC";
+           // debugger;
             $m.settings.common.ajaxFunction('/CaseLedger/GetCurrentCaseNumber', 'POST', null, query, false);
         },
         // Add next case next step item
@@ -1064,6 +1065,7 @@
             /// </summary>
 
             for (var i = 0, x = caseList.length; i < x; i++) {
+               
                 caseList[i].CaseTypeName = $.grep($m.masterData.CaseTypes, function (e) { return e.ID === caseList[i].CaseTypeId; })[0].Name;
                 caseList[i].CourtName = $.grep($m.masterData.Courts, function (e) { return e.ID === caseList[i].CourtId; })[0].Name;
                 caseList[i].PartyName = $.grep($m.masterData.Parties, function (e) { return e.ID === caseList[i].PartyId; })[0].Name;
@@ -1088,27 +1090,32 @@
 
             var whereClause = "";
             if ($("#ddlBrowseType").val() != "") {
-                whereClause = "WHERE c.CaseTypeId = '" + $("#ddlBrowseType").val() + "'";
+                whereClause = "WHERE d.CaseTypeId = '" + $("#ddlBrowseType").val() + "'";
             }
             if ($("#ddlBrowseParty").val() != "") {
                 if (whereClause === "")
-                    whereClause = "WHERE c.PartyId = '" + $("#ddlBrowseParty").val() + "'";
+                    whereClause = "WHERE d.PartyId = '" + $("#ddlBrowseParty").val() + "'";
                 else
-                    whereClause = whereClause + " OR c.PartyId = '" + $("#ddlBrowseParty").val() + "'";
+                    whereClause = whereClause + " OR d.PartyId = '" + $("#ddlBrowseParty").val() + "'";
             }
             if ($("#ddlBrowseCourt").val() != "") {
                 if (whereClause === "")
-                    whereClause = "WHERE c.CourtId = '" + $("#ddlBrowseCourt").val() + "'";
+                    whereClause = "WHERE d.CourtId = '" + $("#ddlBrowseCourt").val() + "'";
                 else
-                    whereClause = whereClause + " OR c.CourtId = '" + $("#ddlBrowseCourt").val() + "'";
+                    whereClause = whereClause + " OR d.CourtId = '" + $("#ddlBrowseCourt").val() + "'";
             }
 
             if ($("#txtBrowseCaseNo").val() != "") {
                 if (whereClause === "")
-                    whereClause = "WHERE LOWER(c.CaseNumber) = LOWER('" + $("#txtBrowseCaseNo").val() + "')";
+                    whereClause = "WHERE LOWER(d.CaseNumber) = LOWER('" + $("#txtBrowseCaseNo").val() + "')";
                 else
-                    whereClause = whereClause + " OR LOWER(c.CaseNumber) = LOWER('" + $("#txtBrowseCaseNo").val() + "')";
+                    whereClause = whereClause + " OR LOWER(d.CaseNumber) = LOWER('" + $("#txtBrowseCaseNo").val() + "')";
             }
+            if(whereClause === "")
+                    whereClause = "WHERE d.Type='Case' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
+            else
+                   whereClause = whereClause + " AND d.Type='Case' AND d.ClientId = '"+$scope.Configs.ClientId+"'"; 
+            
             return whereClause;
         },
         onFileUpload: function (e) {
@@ -1282,9 +1289,15 @@
             $m.caseModel.CaseSteps = $m.getCaseStepsData();
             if (!$m.caseModel.CreatedDate)
                 $m.caseModel.CreatedDate = new Date();
+                
+            if(!$m.caseModel.CreatedBy)  
+                  $m.caseModel.CreatedBy = $scope.Configs.UserId
 
             $m.caseModel.UpdatedDate = new Date();
+            $m.caseModel.UpdatedBy = $scope.Configs.UserId
             $m.caseModel.Attachments = $m.uploadedFiles;
+            $m.caseModel.Type = "Case";
+            $m.caseModel.ClientId = $scope.Configs.ClientId;
             $m.saveCaseLedger('/CaseLedger/SaveCaseLedger', 'POST', $m.caseModel);
             $m.caseModel = {};
             $m.uploadedFiles = [];
@@ -1387,15 +1400,21 @@
 
         },
         getEventsByUser: function (data) {
-
-            var query = "SELECT  * FROM Scheduler s WHERE "
+          
+            var query = "SELECT  * FROM Data d "
+            var whereClause = "";
             for (var i = 0, x = data.events.length; i < x; i++) {
                 if (i === 0)
-                    query = query + "s.id ='" + data.events[i].eventId + "'";
+                    whereClause = "WHERE d.id ='" + data.events[i].eventId + "'";
                 else
-                    query = query + " OR s.id ='" + data.events[i].eventId + "'";
+                    whereClause = whereClause + " OR d.id ='" + data.events[i].eventId + "'";
             }
-
+           if(whereClause === "")
+                    whereClause = "WHERE d.Type='Scheduler' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
+            else
+                   whereClause = whereClause + " AND d.Type='Scheduler' AND d.ClientId = '"+$scope.Configs.ClientId+"'"; 
+            
+            query = query + whereClause;
             $m.settings.common.ajaxFunction('/CaseLedger/GetEvents', 'POST', null, query, false);
 
         },
@@ -1403,7 +1422,7 @@
 
             var events = JSON.parse(JSON.parse(data).JsonResult);
             if (events.length > 0) {
-
+                 debugger;
                 $("#txtEventTitle").val(events[0].title);
                 $("#dtStartDateTime").data("kendoDateTimePicker").value(events[0].start);
                 $("#dtEndDateTime").data("kendoDateTimePicker").value(events[0].end);
@@ -1482,10 +1501,19 @@
             var event = {};
             event.id = guid;
             event.title = $("#txtEventTitle").val();
-            event.start = $("#dtStartDateTime").data("kendoDateTimePicker").value();
-            event.end = $("#dtEndDateTime").data("kendoDateTimePicker").value();
+           
+            event.start = $("#dtStartDateTime").data("kendoDateTimePicker").value().toString();
+            // var s = $("#dtStartDateTime").data("kendoDateTimePicker").value(); 
+            // s.setHours(s.getHours() - s.getTimezoneOffset() / 60);
+            // 
+            // event.start = s; 
+            event.end = $("#dtEndDateTime").data("kendoDateTimePicker").value().toString();
             event.description = $("#txtEventDescription").val();
             event.attendees = attendee.ID;
+            event.CreatedBy = $scope.Configs.UserId;
+            event.CreatedDate = new Date();
+            event.Type = "Scheduler";
+            event.ClientId = $scope.Configs.ClientId;
             $m.deleteEvents();
 
 
@@ -1503,11 +1531,13 @@
                     }
                 }
             }
+           
             $m.saveEvents(event);
             $("#addEventModel").modal('hide');
             // $.grep($m.masterData.CaseTypes,function (e) {return e.ID === caseList[i].CaseTypeId;})[0].Name;
 
         },
+      
         deleteEvents: function () {
 
             var sQuery = $m.eventsToDelete;   //"SELECT  * FROM Scheduler s WHERE s.id = '"+ e.event.id +"'";

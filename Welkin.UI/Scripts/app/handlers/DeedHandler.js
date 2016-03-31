@@ -19,8 +19,8 @@
                         fn: this.populateDeedDropdown
                     },
                     {
-                        name: "notify",
-                        fn: this.notify
+                        name: "notifyDeed",
+                        fn: this.notifyDeed
                     },
                      {
                         name:"searchDeedResponse",
@@ -52,7 +52,7 @@
                 if ($("#txt-search-deed-no").val() == "") {
                     alert("Search field should not be empty");
                 } else {
-                    var searchQuery = "SELECT * FROM Deed d WHERE CONTAINS(LOWER(d.DeedNumber),LOWER('" + $("#txt-search-deed-no").val() + "'))";
+                    var searchQuery = "SELECT * FROM Data d WHERE CONTAINS(LOWER(d.DeedNumber),LOWER('" + $("#txt-search-deed-no").val() + "')) AND d.Type='Deed' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
                     $m.settings.common.ajaxFunction('/DeedLedger/GetDeeds', 'POST', null, searchQuery,false);
                 }
             });
@@ -117,14 +117,14 @@
             })
             
             $("#btnDeedBrowse").click(function(){
-                 var searchQuery = "SELECT * FROM Deed";
+                 var searchQuery = "SELECT * FROM Data d WHERE d.Type='Deed' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
                     $m.settings.common.ajaxFunction('/DeedLedger/BrowseDeeds', 'POST', null, searchQuery,false);
                 $('#browseModal').modal('toggle');   
            
             });
             
              $("#btnBrowseSearch").click(function(){
-                 var searchQuery = "SELECT * FROM Deed d";
+                 var searchQuery = "SELECT * FROM Data d WHERE d.Type='Deed' AND d.ClientId = '"+$scope.Configs.ClientId+"'";
                var whereClause =  $m.buildBrowseQuery();
                 if(whereClause != "")
                    searchQuery = searchQuery +" " + whereClause;
@@ -498,10 +498,10 @@
           $m.getCurrentDeedNo();
         },
         getCurrentDeedNo:function () {
-            var query ='SELECT TOP 1 d.DeedNumber FROM Deed d ORDER BY d.CreatedDate DESC';
+            var query ="SELECT TOP 1 d.DeedNumber FROM Data d WHERE d.Type='Deed' AND d.ClientId = '"+$scope.Configs.ClientId+"' ORDER BY d.CreatedDate DESC";
            $m.settings.common.ajaxFunction('/DeedLedger/GetCurrentDeedNumber', 'POST', null, query,false);
         },
-        notify:function(d){
+        notifyDeed:function(d){
           
             if(JSON.parse(d).Result){
                 
@@ -695,6 +695,9 @@
                     granteeObj.Email = $("#txtGranteeEmail").val();
                     granteeObj.ContactNumber = $("#txtGranteeContactNo").val();
                     granteeObj.NIC = $("#txtGranteeNIC").val();
+                    granteeObj.CreatedBy = $scope.Configs.UserId;
+                    granteeObj.CreatedDate = new Date();
+                                    
                     
                 // Push to master data global variable
                 if($m.masterData && $m.masterData.Grantees)
@@ -719,6 +722,8 @@
                     grantorObj.Email = $("#txtGrantorEmail").val();
                     grantorObj.ContactNumber = $("#txtGrantorContactNo").val();
                     grantorObj.NIC = $("#txtGrantorNIC").val();
+                    grantorObj.CreatedBy = $scope.Configs.UserId;
+                    grantorObj.CreatedDate = new Date();
                 
                 
                 // Push to master data global variable
@@ -827,9 +832,15 @@
           
                   if(!$m.deedModel.CreatedDate)
                     $m.deedModel.CreatedDate = new Date();
-                 
+                    
+                  if(!$m.deedModel.CreatedBy)
+                      $m.deedModel.CreatedBy = $scope.Configs.UserId;
+                      
+                  $m.deedModel.UpdatedBy = $scope.Configs.UserId;
                   $m.deedModel.UpdatedDate = new Date();
                    $m.deedModel.Attachments = $m.uploadedFiles;
+                   $m.deedModel.Type = "Deed";
+                   $m.deedModel.ClientId = $scope.Configs.ClientId;
                   
                   $m.saveDeedLedger('/DeedLedger/SaveDeedLedger', 'POST', $m.deedModel); 
                   $m.deedModel = {};
@@ -925,6 +936,11 @@
                  else
                    whereClause = whereClause + " OR LOWER(d.NameOfLand) = LOWER('"+$("#txtBrowseNameOfLand").val() +"')";
              }
+             if(whereClause === "")
+                    whereClause = "WHERE d.Type='Deed' AND d.ClientId = '"+$scope.Configs.ClientId+"'"
+             else
+                    whereClause = whereClause + " AND d.Type='Deed' AND d.ClientId = '"+$scope.Configs.ClientId+"'"         
+                    
              return whereClause;
        },
        onGranteeFiltering:function (data) {

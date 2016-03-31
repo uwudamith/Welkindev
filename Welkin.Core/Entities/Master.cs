@@ -55,7 +55,7 @@ namespace Welkin.Core.Entities
 
         public List<object> ExecuteQuery(string cName, string query)
         {
-            throw new NotImplementedException();
+            return _dataRepository.ExecuteQuery(cName, query);
         }
 
         public Task DeleteDocument(string docSelectQuery, string cName)

@@ -24,8 +24,8 @@
                                 fn:this.getSchedulerDataResponse
                             },
                             {
-                                name:"notify",
-                                fn:this.notify
+                                name:"notifyScheduler",
+                                fn:this.notifyScheduler
                             }
                         ]);
                         this.settings.sAgent.start();
@@ -64,7 +64,7 @@
                   
                     $m.masterData = JSON.parse(JSON.parse(data).JsonResult)[0];
                     
-                    var searchQuery = "SELECT * FROM Scheduler";
+                    var searchQuery = "SELECT * FROM Data d WHERE d.Type ='Scheduler' AND d.ClientId = '"+ $scope.Configs.ClientId+ "'";
                     $m.settings.common.ajaxFunction('/Scheduler/GetSchedulerData', 'POST', null, searchQuery,false);
                     
  
@@ -130,6 +130,10 @@
                                                 $m.schedulerData[i].end = e.event.end;
                                                 $m.schedulerData[i].description = e.event.description;
                                                 $m.schedulerData[i].attendees = e.event.attendees;
+                                                $m.schedulerData[i].CreatedBy = $scope.Configs.UserId;
+                                                $m.schedulerData[i].CreatedDate = new Date();
+                                                $m.schedulerData[i].Type = "Scheduler"; 
+                                                $m.schedulerData[i].ClientId = $scope.Configs.ClientId; 
                                                 $m.settings.common.ajaxFunction('/Scheduler/Save', 'POST', null, $m.schedulerData[i],true);
                                      }
                                  
@@ -144,6 +148,11 @@
                             $m.currentTask.description = e.event.description;
                             $m.currentTask.attendees = e.event.attendees;
                             $m.currentTask.id = e.event.uid;
+                            $m.currentTask.Type = "Scheduler";
+                            $m.currentTask.ClientId = $scope.Configs.ClientId;
+                            $m.currentTask.UpdatedBy = $scope.Configs.UserId;
+                            $m.currentTask.UpdatedDate = new Date();
+                         
                             $m.schedulerData.push($m.currentTask);
                             $m.settings.common.ajaxFunction('/Scheduler/Save', 'POST', null,$m.currentTask,true);
                      
@@ -213,7 +222,7 @@
                         }
                         return '#'+c;
                     },
-                   notify:function(d){
+                   notifyScheduler:function(d){
           
                         if(JSON.parse(d).Result){
                             
@@ -227,14 +236,14 @@
                                  }
                                  $m.settings.common.showNotification("Successfully Deleted", "success");  
                                  $m.currentTask = {};  
-                                 var searchQuery = "SELECT * FROM Scheduler";
+                                 var searchQuery = "SELECT * FROM Data d WHERE d.Type ='Scheduler' AND d.ClientId = '"+ $scope.Configs.ClientId+ "'";
                                $m.settings.common.ajaxFunction('/Scheduler/GetSchedulerData', 'POST', null, searchQuery,false);
                            
                                 //   $m.setSchedulerDatasource();
                             }
                             else{
                                 $m.settings.common.showNotification("Successfully Saved", "success"); 
-                               var searchQuery = "SELECT * FROM Scheduler";
+                               var searchQuery = "SELECT * FROM Data d WHERE d.Type ='Scheduler' AND d.ClientId = '"+ $scope.Configs.ClientId+ "'";
                                $m.settings.common.ajaxFunction('/Scheduler/GetSchedulerData', 'POST', null, searchQuery,false);
                             
                             // $m.setSchedulerDatasource();

@@ -22,7 +22,7 @@ namespace Welkin.Core
             var r = new Response<Master> { Request = request };
             try
             {
-                var data = await instance.GetData("Master", request.Json,"query");
+                var data = await instance.GetData("Data", request.Json,"query");
                 r.JsonResult = data.ToString();
             }
             catch (Exception e)
@@ -40,7 +40,7 @@ namespace Welkin.Core
             var r = new Response<bool> { Request = request };
             try
             {
-                await instance.UpsertDocument(request.Json, request.Type.ToString());
+                await instance.UpsertDocument(request.Json, "Data");
                 r.Result = true;
             }
             catch (Exception e)
@@ -62,7 +62,25 @@ namespace Welkin.Core
             var r = new Response<bool> { Request = request };
             try
             {
-                await instance.ReplaceDocument(request.Json, request.Type.ToString());
+                await instance.ReplaceDocument(request.Json, "Data");
+                r.Result = true;
+            }
+            catch (Exception e)
+            {
+                r.Result = false;
+                r.StatusType = Enums.StatusType.Error;
+                r.Message = e.Message;
+            }
+            await SignalRHandler.Send(r);
+        }
+
+        public async void GetMaster(Request request)
+        {
+            var instance = _entityFactory.CreateEntity<Master>(request.Type.ToString());
+            var r = new Response<bool> { Request = request };
+            try
+            {
+                r.JsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(instance.ExecuteQuery("Data", request.Json));
                 r.Result = true;
             }
             catch (Exception e)

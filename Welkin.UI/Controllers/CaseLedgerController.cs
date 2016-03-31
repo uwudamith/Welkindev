@@ -6,17 +6,18 @@ using System.Configuration;
 using Welkin.UI.App_Start;
 using Welkin.UI.Models;
 using System;
+using Microsoft.Ajax.Utilities;
 
 namespace Welkin.UI.Controllers
 {
-    public class CaseLedgerController : Controller
+    public class CaseLedgerController : BaseController
     {
         // GET: CaseLedger
         public async Task<ActionResult> Index()
         {
             return  await LoadMasterData();
         }
-
+        
         /// <summary>
         /// Loads the master data.
         /// </summary>
@@ -27,9 +28,9 @@ namespace Welkin.UI.Controllers
 
             var r = new Request
                     {
-                        Json = @"__.filter(function(master) { return master; })",
+                        Json = @"SELECT * FROM Data d WHERE d.Type ='Master' AND d.ClientId ='"+ SessionProvider.ClientId +"'",
                         JsCallback = "PopulateCaseDropdown",
-                        Targert = "GetData",
+                        Targert = "GetMaster",
                         UserId = 1,
                         Type = Enums.EntityType.Master
                     };

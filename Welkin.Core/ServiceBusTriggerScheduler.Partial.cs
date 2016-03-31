@@ -21,7 +21,7 @@ namespace Welkin.Core
             var r = new Response<bool> { Request = request };
             try
             {
-                await instance.UpsertDocument(request.Json, request.Type.ToString());
+                await instance.UpsertDocument(request.Json, "Data");
                 r.Result = true;
             }
             catch (Exception e)
@@ -44,7 +44,7 @@ namespace Welkin.Core
             var r = new Response<bool> { Request = request };
             try
             {
-                r.JsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(instance.ExecuteQuery("Scheduler", request.Json));
+                r.JsonResult = Newtonsoft.Json.JsonConvert.SerializeObject(instance.ExecuteQuery("Data", request.Json));
                 r.Result = true;
             }
             catch (Exception e)
@@ -62,7 +62,7 @@ namespace Welkin.Core
             var r = new Response<bool> { Request = request };
             try
             {
-                await instance.DeleteDocument(request.Json,"Scheduler");
+                await instance.DeleteDocument(request.Json, "Data");
                 r.Result = true;
             }
             catch (Exception e)
