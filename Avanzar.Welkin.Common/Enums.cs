@@ -8,6 +8,7 @@
             Master,
             Deed,
             Scheduler,
+            Draft,
             None
         }
 

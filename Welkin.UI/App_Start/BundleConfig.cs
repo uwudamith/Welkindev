@@ -52,6 +52,7 @@ namespace Welkin.UI
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/bootstrap-checkbox.js",
                 "~/Scripts/bootstrap-checkbox.min.js",
+                "~/Scripts/bootstrap-treeview.js",
                 "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/kendo-jquery").Include(

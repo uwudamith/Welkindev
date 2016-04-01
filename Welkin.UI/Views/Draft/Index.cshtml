@@ -23,10 +23,11 @@
         <div class="col-lg-12">
             <div class="row">
                 <div class="col-lg-6">
-                        <div class="demo-section k-content">
+                        <!--<div class="demo-section k-content">
                             <h4>Template explorer</h4>
                             <div id="treeview-left"></div>
-                        </div>
+                        </div>-->
+                        <div id="tree"></div>
                 </div>
                 <div class="col-lg-6">
                    <div>Template Preview</div>
@@ -36,16 +37,41 @@
         </div>
     </div>
 </div>
-<script>
-    $(function() {
-      
 
-        // $("#ddlGrantee").kendoDropDownList({
-        //     dataTextField: "Name",
-        //     dataValueField: "ID",
-        //     optionLabel: "Select a Grantee",
-        //     index: 0
-        // });
-
-    });
-</script>
+<div class="modal fade" tabindex="-1" id="uploadModel" role="dialog">
+    <div class="modal-dialog upload-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmUpload">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload Files</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageUpload"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        
+                                        <div class="col-lg-8 k-content">
+                                           <input name="draftFileUpload" id="draftFileUpload" type="file" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary" id="save-borrow">Save changes</button>-->
+            </div>
+             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

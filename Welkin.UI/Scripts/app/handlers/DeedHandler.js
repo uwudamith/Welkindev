@@ -976,7 +976,7 @@
             
             if($("#txtDeedNo").val() !=""){
                 e.data = { 
-            client : "client1" , 
+            client : $scope.Configs.ClientId , 
             deedNumber:"Deed/"+$("#txtDeedNo").val()
             };  
             }else{
@@ -990,7 +990,7 @@
                 for (var i = 0, x = e.files.length; i < x; i++){
                    var data = $.grep($m.uploadedFiles,function (d) {return d.Name === e.files[i].name;});
                  if(data.length <1){
-                       var url = $m.blobEndPoint+"client1"+"/"+$("#txtDeedNo").val()+"/"+e.files[i].name;
+                       var url = $m.blobEndPoint+$scope.Configs.ClientId+"/"+$("#txtDeedNo").val()+"/"+e.files[i].name;
                     var file = {};
                     file.Name = e.files[i].name;
                     file.Extension = e.files[i].extension;
@@ -1092,7 +1092,7 @@
             
             if($m.attachmentsToDelete.length >0){
                 var params = {};
-                params.client = "client1";
+                params.client = $scope.Configs.ClientId;
                 params.files = JSON.stringify($m.attachmentsToDelete);
                 $m.settings.common.ajaxFunctionMultiParam('/DeedLedger/DeleteFiles', 'POST', null, params);     
             }

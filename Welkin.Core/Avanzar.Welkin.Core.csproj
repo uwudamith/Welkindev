@@ -148,6 +148,7 @@
   <ItemGroup>
     <Compile Include="Entities\CaseType.cs" />
     <Compile Include="Entities\Court.cs" />
+    <Compile Include="Entities\Draft.cs" />
     <Compile Include="Entities\Master.cs" />
     <Compile Include="Entities\Scheduler.cs" />
     <Compile Include="EntityRequestHandler.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="ServiceBusTrigger.cs" />
     <Compile Include="ServiceBusTriggerCase.Partial.cs" />
     <Compile Include="ServiceBusTriggerDeed.Partial.cs" />
+    <Compile Include="ServiceBusTriggerDraft.Partial.cs" />
     <Compile Include="ServiceBusTriggerMaster.Partial.cs" />
     <Compile Include="ServiceBusTriggerScheduler.Partial.cs" />
     <Compile Include="SignalRHandler.cs" />
