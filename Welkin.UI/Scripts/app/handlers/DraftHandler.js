@@ -22,6 +22,14 @@
              $('#uploadModel').on('hidden.bs.modal', function () {
                 $(".k-upload-files.k-reset").find("li").remove();
             })
+            
+            $(document).on("click", ".btn-upload", function (e) {
+                e.preventDefault();
+               // debugger;
+                $m.currentNode = $(this).closest(".k-item")[0].innerText;
+                $('#uploadModel').modal('toggle');   
+              
+            });
         },
         initControlls:function () {
             
@@ -48,14 +56,25 @@
         $m.createTree();
         },
         createTree:function(){
-             $('#tree').treeview({data: $m.draft.Structure,
-           onNodeSelected: function(event, data) {
-          
-            $m.nodeSelected(event,data);
-          }});
+            
+            $("#tree").kendoTreeView({
+            dataSource: $m.draft.Structure,
+            template: "#= item.text # # if (item.type === 'file') { #<button class='btn btn-primary btn-download'> <i class='glyphicon glyphicon glyphicon-download-alt'></i></button>   # } else if(item.type === 'sub') {# <button class='btn btn-primary btn-upload'> <i class='glyphicon glyphicon glyphicon-cloud-upload'></i></button>  #}# ",
+            select: function(e) {
+                //debugger;
+                alert("awa");
+            }
+            });
+        //      $('#tree').treeview({data: $m.draft.Structure,
+        //      showTags: true,
+        //    
+        //    onNodeSelected: function(event, data) {
+        //   
+        //     $m.nodeSelected(event,data);
+        //   }});
         },
         nodeSelected:function (event,data) {
-            if(data && data.selectable != "false"){
+            if(data && data.nodeType === "sub"){
                 $m.currentNode = data.text;
                 $('#uploadModel').modal('toggle');   
             }

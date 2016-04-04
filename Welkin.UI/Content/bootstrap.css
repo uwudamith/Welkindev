@@ -4948,12 +4948,15 @@ a.badge:focus {
 .nav-pills > .active > a > .badge {
   color: #337ab7;
   background-color: #fff;
+  
 }
 .list-group-item > .badge {
   float: right;
+ 
 }
 .list-group-item > .badge + .badge {
   margin-right: 5px;
+
 }
 .nav-pills > li > a > .badge {
   margin-left: 3px;
