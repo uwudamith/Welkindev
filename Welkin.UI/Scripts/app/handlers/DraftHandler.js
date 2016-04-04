@@ -9,6 +9,7 @@
 
             }, options);
             if (this.settings.sAgent) {
+                //register client methods with signalr agent
                 this.settings.sAgent.registerEvents([
                     {
                         name: "draftDataResponse",
@@ -26,13 +27,14 @@
             $(document).on("click", ".btn-upload", function (e) {
                 e.preventDefault();
                // debugger;
-                $m.currentNode = $(this).closest(".k-item")[0].innerText;
+                $m.currentNode = $(this).closest(".k-item")[0].childNodes[0].innerText.replace(/ /g,'');
+              
                 $('#uploadModel').modal('toggle');   
               
             });
         },
         initControlls:function () {
-            
+            // initialize controls
            $("#draftFileUpload").kendoUpload({
                         async: {
                            saveUrl: "/Draft/SaveUploadFiles",
@@ -59,11 +61,11 @@
             
             $("#tree").kendoTreeView({
             dataSource: $m.draft.Structure,
-            template: "#= item.text # # if (item.type === 'file') { #<button class='btn btn-primary btn-download'> <i class='glyphicon glyphicon glyphicon-download-alt'></i></button>   # } else if(item.type === 'sub') {# <button class='btn btn-primary btn-upload'> <i class='glyphicon glyphicon glyphicon-cloud-upload'></i></button>  #}# ",
-            select: function(e) {
-                //debugger;
-                alert("awa");
-            }
+            template: "#=item.text# # if (item.type === 'file') { #        <button class='btn btn-primary btn-download'> <i class='glyphicon glyphicon glyphicon-download-alt'></i></button>   # } else if(item.type === 'sub') {# <button class='btn btn-primary btn-upload'> <i class='glyphicon glyphicon glyphicon-cloud-upload'></i></button>  #}# ",
+            // select: function(e) {
+            //     //debugger;
+            //     alert("awa");
+            // }
             });
         //      $('#tree').treeview({data: $m.draft.Structure,
         //      showTags: true,
@@ -83,14 +85,14 @@
             
          e.data = { 
             client : $scope.Configs.ClientId , 
-            folder:"Draft/"+$m.currentNode
+            folder:"Draft/"+ $m.currentNode
             };  
            
        },
        onUploadSuccess:function (e) {
            
            if(e.files){
-                for (var i = 0, x = e.files.length; i < x; i++){
+                for (var h = 0, z = e.files.length; h < z; h++){
                   // var data = $.grep($m.uploadedFiles,function (d) {return d.Name === e.files[i].name;});
                  //if(data.length <1){
                     // var url = $m.blobEndPoint+$scope.Configs.ClientId+"/"+$("#txtDeedNo").val()+"/"+e.files[i].name;
@@ -105,27 +107,35 @@
                   
                   for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
                       
-                      for(var j = 0, y = $m.draft.Structure[i].nodes.length; j < y; j++){
+                      for(var j = 0, y = $m.draft.Structure[i].items.length; j < y; j++){
                           
-                          if($m.draft.Structure[i].nodes[j].text === $m.currentNode){
+                          if($m.draft.Structure[i].items[j].text.replace(/ /g,'') === $m.currentNode.replace(/ /g,'')){
                               var node = {};
-                              node.text = e.files[i].name;
+                            
+                              node.text = e.files[h].name;
                               node.BlobDir = "Draft/"+$m.currentNode;
-                              node.selectable = true;
-                              node.nodeType = "file";
-                                if(!$m.draft.Structure[i].nodes[j].nodes)
-                                    $m.draft.Structure[i].nodes[j].nodes = [];
+                              //node.selectable = true;
+                              node.type = "file";
+                         
+                                if(!$m.draft.Structure[i].items[j].items)
+                                    $m.draft.Structure[i].items[j].items = [];
                                      
-                               var eNode = $.grep($m.draft.Structure[i].nodes[j].nodes,function (d) {return d.text === e.files[i].name;});
-                                if(eNode.length < 1)
-                                     $m.draft.Structure[i].nodes[j].nodes.push(node);
+                               var eNode = $.grep($m.draft.Structure[i].items[j].items,function (d) {return d.text === e.files[h].name;});
+                               
+                                if(eNode.length < 1){
+                                //var tree = $("#tree").data("kendoTreeView");
+                                //tree.append({ text: node.text,BlobDir:node.BlobDir,type:node.type });
+                                //tree.append(tree.findByText(node.text), tree.findByText($m.currentNode));
+                                  $m.draft.Structure[i].items[j].items.push(node);
+                                }
+                                    
                           }
                       }
                   }  
                 }
                 
                 $m.saveDraft('/Draft/SaveDraft', 'POST', $m.draft); 
-                $m.createTree();
+                $m.refreshTree();
            }
              
                
@@ -140,7 +150,13 @@
             /// <param name="model" type="type"> deed object</param>
             $m.settings.common.ajaxFunction(url, type,null, model,true);
         },
-        
+        refreshTree:function () {
+            debugger;
+            var tree = $("#tree").data("kendoTreeView");
+              tree.setDataSource($m.draft.Structure);
+               tree.dataSource.read();
+              // tree.refresh();
+        }
     };
   return $m;
 }(window.Welkin, window.Welkin.$,window.Welkin.DraftHandler || {}));
