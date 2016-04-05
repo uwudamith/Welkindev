@@ -47,6 +47,11 @@
                         if(callBackFunc) callBackFunc(data);
                         else 
                          return data;
+                    },
+                    error:function (data) {
+                         if(callBackFunc) callBackFunc(data);
+                        else 
+                         return data;
                     }
                 });
             } else {
@@ -226,7 +231,8 @@
                             saveMasterData:$scope.saveMasterData,
                             showNotification: $scope.showNotification,
                             setValidationMessages:$scope.setValidationMessages,
-                            validateEmail:$scope.validateEmail
+                            validateEmail:$scope.validateEmail,
+                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam
                         }
                     });
                 }

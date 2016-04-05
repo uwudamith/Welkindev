@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Welkin.UI.App_Start;
+using Welkin.UI.Models;
 
 namespace Welkin.UI.Controllers
 {
@@ -76,6 +77,43 @@ namespace Welkin.UI.Controllers
             rList.Add(r);
             await QueueHandler.PushToServiceAsync(rList);
             return View("Index");
+        }
+
+        public ActionResult DeleteFiles(string client, string name, string blobdir)
+        {
+            try
+            {
+                
+                
+                    FileHandler.DeleteFile(client, blobdir, name);
+               
+
+                return Content("success");
+            }
+            catch (Exception e)
+            {
+
+                return Content("error");
+            }
+        }
+
+        public ActionResult DownloadFiles(string client, string name, string blobdir)
+        {
+            try
+            {
+              
+
+                var f = FileHandler.DownloadFile(client, blobdir, name);
+
+
+                return Json(f);
+
+            }
+            catch (Exception e)
+            {
+
+                return Content("error");
+            }
         }
     }
 }

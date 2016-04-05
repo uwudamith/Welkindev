@@ -200,7 +200,7 @@
                           if($m.deedModel.id)
                           $m.attachmentsToDelete.push(dataItem);
                           
-                          debugger;
+                         // debugger;
                      }
                      $m.uploadedFiles = $.grep($m.uploadedFiles, function(e){ 
                         return e.Name != dataItem.Name; 
@@ -219,7 +219,7 @@
                 var dataItem = $("#grdViewAttachments").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
              
                 var params = {};
-                params.client = "client1";
+                params.client = $scope.Configs.ClientId;
                 params.file = JSON.stringify(dataItem);
                 $m.settings.common.ajaxFunctionMultiParam('/DeedLedger/DownloadFiles', 'POST', $m.downloadFile, params);   
                 
