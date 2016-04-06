@@ -257,6 +257,28 @@
                         }
                     });
                 }
+                
+                 if ($scope.PageMode.controller === "Account" && $scope.PageMode.action === "Index") {
+                    $scope.AccountHandler.init({
+                        sAgent: new $scope.Utils.SignalR({
+                            config: {
+                                id: "1",
+                            },
+                            hub: {
+                                url: $scope.Configs.hubUrl
+                            }
+                        }),
+                        common: {
+                            ajaxFunction: $scope.ajaxFunction,
+                            createGUID:$scope.createGUID,
+                            saveMasterData:$scope.saveMasterData,
+                            showNotification: $scope.showNotification,
+                            setValidationMessages:$scope.setValidationMessages,
+                            validateEmail:$scope.validateEmail,
+                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam
+                        }
+                    });
+                }
 
             });
         }

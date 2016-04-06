@@ -39,7 +39,8 @@ namespace Welkin.UI
                 "~/Scripts/app/handlers/CaseHandler.js",
                 "~/Scripts/app/handlers/DeedHandler.js",
                "~/Scripts/app/handlers/DraftHandler.js",
-               "~/Scripts/app/handlers/SchedulerHandler.js"
+               "~/Scripts/app/handlers/SchedulerHandler.js",
+               "~/Scripts/app/handlers/AccountHandler.js"
 
                 ));
 
