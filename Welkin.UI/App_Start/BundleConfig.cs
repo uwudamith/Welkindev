@@ -56,7 +56,11 @@ namespace Welkin.UI
                 "~/Scripts/bootstrap-treeview.js",
                 "~/Scripts/respond.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/kendo-jquery").Include(
+            bundles.Add(new ScriptBundle("~/bundles/owl").Include(
+                 "~/Scripts/owl.carousel.min.js"
+                ));
+
+           bundles.Add(new ScriptBundle("~/bundles/kendo-jquery").Include(
                 "~/Scripts/kendo/jquery.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/kendo-web").Include(
@@ -96,6 +100,10 @@ namespace Welkin.UI
                 "~/Content/kendo/web/kendo.rtl.min.css",
                 string.Format("~/Content/kendo/web/kendo.{0}.min.css",
                     ConfigurationProvider.DefaultThemeForKendo.ToLower())
+                ));
+
+            bundles.Add(new StyleBundle("~/Content/owl").Include(
+                "~/Content/owl.carousel.css"
                 ));
         }
     }

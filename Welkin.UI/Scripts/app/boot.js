@@ -123,7 +123,7 @@
 
             $("#" + target).append("<div class='alert alert-" + type + " fade in' id='bsAlert'><a class='close' data-dismiss='alert'>×</a>" + message + "</div>");
             setTimeout(function () {
-                $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                $(".alert").fadeTo(2000, 0).slideUp(1000, function () {
                     $(this).remove();
                 });
             }, 2000);

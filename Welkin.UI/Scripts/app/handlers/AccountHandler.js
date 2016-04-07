@@ -33,7 +33,11 @@
                 ]);
                 this.settings.sAgent.start();
             }
+            $('.carousel').carousel({
+                interval: false
+            })
             $m.initControlls(); 
+            
             
               $("#grdStampDuty").on("click", ".btn-edit", function (e) {
                     e.preventDefault();
@@ -48,17 +52,24 @@
              }); 
              
               // Add stamp duty
-        $("#save-stampDuty").click(function () {
-            if($("#hdnStampDutyId").val() == ""){
-                $m.settings.common.createGUID($m.saveStampDuty);
-            }
-            else
-            {
-                $m.saveStampDuty("");
-            }
-             
-              
-        });  
+            $("#save-stampDuty").click(function () {
+                if($("#hdnStampDutyId").val() == ""){
+                    $m.settings.common.createGUID($m.saveStampDuty);
+                }
+                else
+                {
+                    $m.saveStampDuty("");
+                } 
+            });
+            $('#chkAny').change(function() {
+                 if(this.checked){
+                    $('#txtRangeMax').prop('disabled', true);
+                    $('#txtRangeMax').val("");
+                    
+               }else{
+                   $('#txtRangeMax').prop('disabled', false);
+               }
+            });  
         
          $("#txtRangeMin").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
@@ -119,7 +130,11 @@
             });  
         },
         initControlls:function () {
-            
+            $("#chkAny").checkboxpicker({
+               html: true,
+                offLabel: '<span>Max</span>',
+                onLabel: '<span>Any</span>'
+            });
             // create DropDownList from input HTML element
         $("#ddlAccountType").kendoDropDownList({
             dataSource: $m.accountTypeData,
@@ -205,42 +220,277 @@
             $("#txtRangeMin").val("");
             $("#txtRangeMax").val("");
             $("#txtPercentage").val("");
+             $('#txtRangeMax').prop('disabled', false);
+              $("#chkAny").prop('checked', false);  
             //$("#hdnUUID").val("");
         },
          openStampDutyPopup : function (data) {
             var splited = data.Range.split("-");
             $("#hdnStampDutyId").val(data.ID);
             $("#txtRangeMin").val(splited[0]);
-            $("#txtRangeMax").val(splited[1]);
+            if(splited[1].replace(/ /g,'') === "Any"){
+               $('#txtRangeMax').prop('disabled', true);
+               $("#chkAny").prop('checked', true); 
+            }
+            else{
+                $("#txtRangeMax").val(splited[1]);
+            }
+            
             $("#txtPercentage").val(data.Percentage);
             $('#addStampDuty').modal('toggle');
+            
         },
        
         saveStampDuty:function (guid) {
             //Save stamp duty data
+            
+            //Check Min Range Empty
             if ($("#txtRangeMin").val() == "") {
                  $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Min Value Required");
                 return;
             }
-
-            if ($("#txtRangeMax").val() == "") {
+             //Check Min Range Empty if Any is not checked
+            if (!$("#chkAny").prop('checked') && $("#txtRangeMax").val() == "") {
                   $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value Required");
                 return;
             }
-         
-             if(parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
-                    $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
-                return;
-            }
-
-            if ($("#txtPercentage").val() == "") {
+             if ( $("#txtPercentage").val() == "") {
                   $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Percentage Required");
                 return;
             }
+            //Check Min Rangeis Zero if current is the first range to enter
+          if( !$m.masterData.Stampduty||  $m.masterData.Stampduty.length === 0){     
+                if(parseInt($("#txtRangeMin").val()) > 0){
+                     $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Should Start with Minimum Value of Zero");
+                    return;
+                }      
+            }
+            else
+            {
+                debugger;
+                var lastindex = $m.masterData.Stampduty.length - 1;
+                 var range = $m.masterData.Stampduty[lastindex].Range;
+                var id = $m.masterData.Stampduty[lastindex].ID;
+                  var splited = range.split("-");
+                var max = splited[1];
+                
+                //If in Edit mode
+                if($("#hdnStampDutyId").val() != "" ){
+                    //If editing the first item
+                        if($m.masterData.Stampduty.length === 1){
+                            if(parseInt($("#txtRangeMin").val()) > 0){
+                                    $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Should Start with Minimum Value of Zero");
+                                    return;
+                            }
+                            else if(!$("#chkAny").prop('checked') && parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
+                                    $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
+                                    return;
+                            } 
+                        }
+                        //If not editing the last item
+                        else if (id != $("#hdnStampDutyId").val()){
+                            //If the max is Any, not allowed to add Range
+                            if( max.replace(/ /g,'') == "Any"){
+                                   //If Any checked
+                                  if($("#chkAny").prop('checked')){  
+                                         $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Invalid Range");
+                                        return;
+                                  }
+                                  // If Any not checked
+                                  else{
+                                       // have to get index and -1  max val +1 min val
+                                       var preMax = "";
+                                       var preSplited = [];
+                                       var nextMin = "";
+                                       var nextSplited = [];
+                                      for (var i = 0, x = $m.masterData.Stampduty.length; i < x; i++){
+                                          if($m.masterData.Stampduty[i].ID === $("#hdnStampDutyId").val() ){
+                                              if(i >0){
+                                                    preSplited = $m.masterData.Stampduty[i-1].Range.split("-");
+                                              }
+                                            
+                                              nextSplited = $m.masterData.Stampduty[i+1].Range.split("-");
+                                              
+                                          }
+                                      }
+                                      debugger;
+                                      if(preSplited.length > 0){
+                                         preMax = preSplited[1];
+                                      }
+                                      nextMin = nextSplited[0];
+                                       if(preMax != "" && parseInt($("#txtRangeMin").val()) != parseInt(preMax) +1){
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(preMax)+1);
+                                            return;
+                                        }
+                                        else if (parseInt($("#txtRangeMax").val()) != parseInt(nextMin) -1){
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Maximum Value Should be : " + (parseInt(nextMin)-1).toString());
+                                            return;
+                                        }
+                                  }
+                                }
+                                 // not editing the last item & If the max is not Any
+                                else{
+                                     //If any not checked
+                                    if(!$("#chkAny").prop('checked')){  
+                                            var preMax = "";
+                                        var preSplited = [];
+                                        var nextMin = "";
+                                        var nextSplited = [];
+                                        for (var i = 0, x = $m.masterData.Stampduty.length; i < x; i++){
+                                            if($m.masterData.Stampduty[i].ID === $("#hdnStampDutyId").val() ){
+                                               if(i >0){
+                                                preSplited = $m.masterData.Stampduty[i-1].Range.split("-");
+                                                 }
+                                                nextSplited = $m.masterData.Stampduty[i+1].Range.split("-");
+                                                
+                                            }
+                                        }
+                                        debugger;
+                                        if(preSplited.length > 0){
+                                        preMax = preSplited[1];
+                                        }
+                                        nextMin = nextSplited[0];
+                                        if(preMax != "" && parseInt($("#txtRangeMin").val()) != parseInt(preMax) +1){
+                                                $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(preMax)+1);
+                                                return;
+                                        }
+                                        else if (parseInt($("#txtRangeMax").val()) != parseInt(nextMin) -1){
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Maximum Value Should be : " + (parseInt(nextMin)-1).toString());
+                                            return;
+                                        }
+                                    }
+                                    //If any checked don't allow to add range since Any not allowed in the middle
+                                    else{
+                                          $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Invalid Range");
+                                        return;
+                                    }
+                                }
+                            }
+                            //If editing last item
+                            else if (id === $("#hdnStampDutyId").val()){
+                                //And max is not Any
+                                 //if( max.replace(/ /g,'') != "Any"){
+                                     //If Any Checked
+                                    if(!$("#chkAny").prop('checked')){  
+                                           var preMax = "";
+                                        var preSplited = [];
+                                         var sdl = $m.masterData.Stampduty.length;
+                                         if(sdl > 1)
+                                            preSplited = $m.masterData.Stampduty[sdl-2].Range.split("-"); 
+                                       
+                                        debugger;
+                                        preMax = preSplited[1];
+                                      
+                                        if(parseInt($("#txtRangeMin").val()) != parseInt(preMax) +1){
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(preMax)+1);
+                                            return;
+                                        }
+                                        if(parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
+                                            return;
+                                         }
+                                    }
+                                // }
+                              
+                                
+                            }
+                           
+                     
+                        }
+                
+                //Adding New Range
+                else{
+                    //If Current last Range ends with Any do not allow to add new Range
+                     if( max.replace(/ /g,'') == "Any"){
+                         //If Any checked do not allow to add Range
+                         if($("#chkAny").prop('checked')){  
+                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Invalid Range");
+                            return;
+                        }
+                        //If Any not checked
+                        else{
+                             //Min value Validation
+                             if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
+                                $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
+                                return;
+                            }
+                        }
+                     }
+                     // If max is not Any
+                     else{
+                         //Check Any is selected 
+                        if(!$("#chkAny").prop('checked')){      
+                            //Range Validation 
+                            if(parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
+                                            return;
+                            }
+                            //Min value Validation
+                            else if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
+                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
+                            return;
+                            }
+                        }
+                        //Any checked
+                        else{
+                             if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
+                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
+                            return;
+                            }
+                        }
+                     }
+                }
+                
+               
+                 
+                
+                
+                 
+                //  else if(id === $("#hdnStampDutyId").val() && $m.masterData.Stampduty.length > 1 && $("#chkAny").prop('checked')){
+                //       $m.settings.common.setValidationMessages("val-messageStampDuty","warning","You Cannot Add 'Any' in the Middle of Ranges ");
+                //             return;
+                //  }
+                // else if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
+                //        $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
+                //        return;
+                // }
+                
+                
+            //    
+            //     if(id != $("#hdnStampDutyId").val() &&  max === "Any"){
+            //          $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Inorder to Add Another Range, First Please Set Maximum Value for the Previous Range Instead of 'Any'" );
+            //          return;
+            //     }
+            //     else if (id === $("#hdnStampDutyId").val() &&  max === "Any"){
+            //           $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
+            //            return;
+            //     }
+               
+            }
+           
+//              if(!$("#chkAny").prop('checked') && parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
+//                     $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
+//                 return;
+//             }
+// 
+//             if ( $("#txtPercentage").val() == "") {
+//                   $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Percentage Required");
+//                 return;
+//             }
+           
+                   var max2 = "";
+             if($("#chkAny").prop('checked')){
+                 max2 = "Any";
+             }
+             else{
+                max2 = $("#txtRangeMax").val()
+             }
+           
          var stampDuty = { 
-                    Range: $("#txtRangeMin").val() +"-"+ $("#txtRangeMax").val(),
+                    Range: $("#txtRangeMin").val() +"-"+ max2,
                     Percentage :$("#txtPercentage").val()
              };
+           
          
             if(guid != ""){
                  stampDuty.ID = guid;
