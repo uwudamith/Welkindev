@@ -38,7 +38,7 @@
             })
             $m.initControlls(); 
             
-            
+            // Stam Duty Events
               $("#grdStampDuty").on("click", ".btn-edit", function (e) {
                     e.preventDefault();
                     var dataItem = $("#grdStampDuty").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
@@ -46,9 +46,15 @@
              });     
              
                 $("#grdStampDuty").on("click", ".btn-delete", function (e) {
-                    e.preventDefault();
-                    var dataItem = $("#grdStampDuty").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                     e.preventDefault();
+                       var yesFunction = function () {
+                       var dataItem = $("#grdStampDuty").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
                     $m.deleteStampDuty(dataItem);
+                    };
+            var noFunction = function () { };
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+          
              }); 
              
               // Add stamp duty
@@ -70,6 +76,15 @@
                    $('#txtRangeMax').prop('disabled', false);
                }
             });  
+            
+              $("#addStampDuty").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addStampDuty').on('hidden.bs.modal', function () {
+             
+                   $m.clearStampDuty();
+                
+            })
         
          $("#txtRangeMin").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
@@ -128,9 +143,253 @@
                     e.preventDefault();
                 }
             });  
+            // Stamp Duty Events End ---
+            
+            // Lawyer Fee Events
+              $("#grdLawyerFee").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdLawyerFee").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openLawyerFeePopup(dataItem);
+             });     
+             
+                $("#grdLawyerFee").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdLawyerFee").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.deleteLawyerFee(dataItem);
+                    };
+            var noFunction = function () { };
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+             
+              // Add LawyerFee
+            $("#save-LawyerFee").click(function () {
+                if($("#hdnLawyerFeeId").val() == ""){
+                    $m.settings.common.createGUID($m.saveLawyerFee);
+                }
+                else
+                {
+                    $m.saveLawyerFee("");
+                } 
+            });
+            $('#chkLawyerFeeAny').change(function() {
+                 if(this.checked){
+                    $('#txtLawyerFeeRangeMax').prop('disabled', true);
+                    $('#txtLawyerFeeRangeMax').val("");
+                    
+               }else{
+                   $('#txtLawyerFeeRangeMax').prop('disabled', false);
+               }
+            });  
+            
+              $("#addLawyerFee").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addLawyerFee').on('hidden.bs.modal', function () {
+             
+                   $m.clearLawyerFee();
+                
+            })
+        
+         $("#txtLawyerFeeRangeMin").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });     
+             $("#txtLawyerFeeRangeMax").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });  
+             $("#txtLawyerFeePercentage").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A
+                    (e.keyCode == 65 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+C
+                    (e.keyCode == 67 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+X
+                    (e.keyCode == 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });  
+            
+            $("#grdLawyerFee .k-grid-header").hide();
+            
+            // End of Lawyer Fee Section
+            
+            
+            // Deed Type Section 
+            
+            $("#grdDeedType").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdDeedType").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openDeedTypePopup(dataItem);
+             });     
+             
+                $("#grdDeedType").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdDeedType").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.deleteDeedType(dataItem);
+                    };
+                      var noFunction = function () { };
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+              $("#grdDeedType .k-grid-header").hide();
+              
+                $("#save-DeedType").click(function () {
+                if($("#hdnDeedTypeId").val() == ""){
+                    $m.settings.common.createGUID($m.saveDeedType);
+                }
+                else
+                {
+                    $m.saveDeedType("");
+                } 
+            });
+            
+              $("#addDeedType").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addDeedType').on('hidden.bs.modal', function () {
+             
+                   $m.clearDeedType();
+                
+            })
+            // End of Deed Type Section
+            
+            // Case Type Section
+            $("#grdCaseType").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdCaseType").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openCaseTypePopup(dataItem);
+             });     
+             
+                $("#grdCaseType").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdCaseType").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.deleteCaseType(dataItem);
+                    };
+                      var noFunction = function () { };
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+              $("#grdCaseType .k-grid-header").hide();
+              
+                $("#save-CaseType").click(function () {
+                if($("#hdnCaseTypeId").val() == ""){
+                    $m.settings.common.createGUID($m.saveCaseType);
+                }
+                else
+                {
+                    $m.saveCaseType("");
+                } 
+            });
+            
+              $("#addCaseType").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addCaseType').on('hidden.bs.modal', function () {
+             
+                   $m.clearCaseType();
+                
+            })
+            
+            // End of Case Type Section
+            
+             // Court Section
+            $("#grdCourt").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdCourt").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openCourtPopup(dataItem);
+             });     
+             
+                $("#grdCourt").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdCourt").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                       $m.deleteCourt(dataItem);
+                    };
+                      var noFunction = function () { };
+
+            $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+              $("#grdCourt .k-grid-header").hide();
+              
+                $("#save-Court").click(function () {
+                if($("#hdnCourtId").val() == ""){
+                    $m.settings.common.createGUID($m.saveCourt);
+                }
+                else
+                {
+                    $m.saveCourt("");
+                } 
+            });
+            
+              $("#addCourt").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addCourt').on('hidden.bs.modal', function () {
+             
+                   $m.clearCourt();
+                
+            })
+            
+            // End of Case Type Section
         },
         initControlls:function () {
             $("#chkAny").checkboxpicker({
+               html: true,
+                offLabel: '<span>Max</span>',
+                onLabel: '<span>Any</span>'
+            });
+              $("#chkLawyerFeeAny").checkboxpicker({
                html: true,
                 offLabel: '<span>Max</span>',
                 onLabel: '<span>Any</span>'
@@ -171,9 +430,9 @@
             });
             
              $("#grdStampDuty").kendoGrid({
-            dataSource: {
-                data: [],
-            },
+            // dataSource: {
+            //     data: [],
+            // },
              pageable: {
                     input: false,
                     numeric: true
@@ -186,6 +445,80 @@
                 { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
                 
             ]
+         
+        });
+        
+         $("#grdLawyerFee").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Range", title: "Range" },
+                { field: "Percentage", width: 50, title: "Percentage", template: "<span>#=Percentage#%</span>" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
+        });
+        
+         $("#grdDeedType").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Name", title: "Name" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
+        });
+        
+        $("#grdCaseType").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Name", title: "Name" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
+        });
+        
+         $("#grdCourt").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Name", title: "Name" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
         });
         },
          saveMasterData: function (url, type, model) {
@@ -210,10 +543,15 @@
           $m.masterData = JSON.parse(JSON.parse(data).JsonResult)[0];
           if($m.masterData){
                $m.setStampDutyGridDataSource();
+                $m.setLawyerFeeGridDataSource();
+                $m.setDeedTypeGridDataSource();
+                $m.setCaseTypeGridDataSource();
+                $m.setCourtGridDataSource();
           }
           
           
         },
+        
         //Stamp Duty Section
         clearStampDuty : function () {
             $("#hdnStampDutyId").val("");
@@ -267,7 +605,7 @@
             }
             else
             {
-                debugger;
+                
                 var lastindex = $m.masterData.Stampduty.length - 1;
                  var range = $m.masterData.Stampduty[lastindex].Range;
                 var id = $m.masterData.Stampduty[lastindex].ID;
@@ -313,13 +651,13 @@
                                               
                                           }
                                       }
-                                      debugger;
+                                      //debugger;
                                       if(preSplited.length > 0){
                                          preMax = preSplited[1];
                                       }
                                       nextMin = nextSplited[0];
                                        if(preMax != "" && parseInt($("#txtRangeMin").val()) != parseInt(preMax) +1){
-                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(preMax)+1);
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + (parseInt(preMax)+1).toString());
                                             return;
                                         }
                                         else if (parseInt($("#txtRangeMax").val()) != parseInt(nextMin) -1){
@@ -336,6 +674,7 @@
                                         var preSplited = [];
                                         var nextMin = "";
                                         var nextSplited = [];
+                                        //Get Pre Max value & Next Min Value to validate current Min & Max
                                         for (var i = 0, x = $m.masterData.Stampduty.length; i < x; i++){
                                             if($m.masterData.Stampduty[i].ID === $("#hdnStampDutyId").val() ){
                                                if(i >0){
@@ -345,15 +684,17 @@
                                                 
                                             }
                                         }
-                                        debugger;
+                                 
                                         if(preSplited.length > 0){
                                         preMax = preSplited[1];
                                         }
                                         nextMin = nextSplited[0];
+                                        //Validate Min
                                         if(preMax != "" && parseInt($("#txtRangeMin").val()) != parseInt(preMax) +1){
-                                                $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(preMax)+1);
+                                                $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + (parseInt(preMax)+1).toString());
                                                 return;
                                         }
+                                        //Validate Max
                                         else if (parseInt($("#txtRangeMax").val()) != parseInt(nextMin) -1){
                                             $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Maximum Value Should be : " + (parseInt(nextMin)-1).toString());
                                             return;
@@ -378,21 +719,20 @@
                                          if(sdl > 1)
                                             preSplited = $m.masterData.Stampduty[sdl-2].Range.split("-"); 
                                        
-                                        debugger;
+                                       
                                         preMax = preSplited[1];
-                                      
+                                      //Validate Min Value
                                         if(parseInt($("#txtRangeMin").val()) != parseInt(preMax) +1){
-                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(preMax)+1);
+                                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + (parseInt(preMax)+1).toString());
                                             return;
                                         }
+                                        //Validate Range
                                         if(parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
                                             $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
                                             return;
                                          }
                                     }
-                                // }
-                              
-                                
+   
                             }
                            
                      
@@ -402,19 +742,10 @@
                 else{
                     //If Current last Range ends with Any do not allow to add new Range
                      if( max.replace(/ /g,'') == "Any"){
-                         //If Any checked do not allow to add Range
-                         if($("#chkAny").prop('checked')){  
+                              
                             $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Invalid Range");
                             return;
-                        }
-                        //If Any not checked
-                        else{
-                             //Min value Validation
-                             if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
-                                $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
-                                return;
-                            }
-                        }
+                     
                      }
                      // If max is not Any
                      else{
@@ -427,7 +758,7 @@
                             }
                             //Min value Validation
                             else if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
-                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
+                            $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + (parseInt(max)+1).toString());
                             return;
                             }
                         }
@@ -440,45 +771,12 @@
                         }
                      }
                 }
-                
-               
-                 
-                
-                
-                 
-                //  else if(id === $("#hdnStampDutyId").val() && $m.masterData.Stampduty.length > 1 && $("#chkAny").prop('checked')){
-                //       $m.settings.common.setValidationMessages("val-messageStampDuty","warning","You Cannot Add 'Any' in the Middle of Ranges ");
-                //             return;
-                //  }
-                // else if(parseInt($("#txtRangeMin").val()) != parseInt(max) +1){
-                //        $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
-                //        return;
-                // }
-                
-                
-            //    
-            //     if(id != $("#hdnStampDutyId").val() &&  max === "Any"){
-            //          $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Inorder to Add Another Range, First Please Set Maximum Value for the Previous Range Instead of 'Any'" );
-            //          return;
-            //     }
-            //     else if (id === $("#hdnStampDutyId").val() &&  max === "Any"){
-            //           $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Minimum Value Should be : " + parseInt(max)+1);
-            //            return;
-            //     }
-               
+          
             }
            
-//              if(!$("#chkAny").prop('checked') && parseInt($("#txtRangeMin").val()) >= parseInt($("#txtRangeMax").val())){
-//                     $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Max Value must be Greater than Min Value");
-//                 return;
-//             }
-// 
-//             if ( $("#txtPercentage").val() == "") {
-//                   $m.settings.common.setValidationMessages("val-messageStampDuty","warning","Percentage Required");
-//                 return;
-//             }
+
            
-                   var max2 = "";
+              var max2 = "";
              if($("#chkAny").prop('checked')){
                  max2 = "Any";
              }
@@ -488,12 +786,16 @@
            
          var stampDuty = { 
                     Range: $("#txtRangeMin").val() +"-"+ max2,
-                    Percentage :$("#txtPercentage").val()
+                    Percentage :$("#txtPercentage").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate:new Date()
              };
            
          
             if(guid != ""){
                  stampDuty.ID = guid;
+                  stampDuty.CreatedBy = $scope.Configs.UserId;
+                 stampDuty.CreatedDate = new Date();
                  if(!$m.masterData.Stampduty)
                           $m.masterData.Stampduty = [];
                  
@@ -532,19 +834,573 @@
         },
         deleteStampDuty:function (data) {
      
+            
              for (var i = 0, x = $m.masterData.Stampduty.length; i < x; i++){
                     if($m.masterData.Stampduty[i].ID === data.ID){
-                        $m.masterData.Stampduty.splice(i,1);     
+                        if(i +1 === x){
+                         $m.masterData.Stampduty.splice(i,1);     
                         $m.setStampDutyGridDataSource(); 
                          $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
                          return;
+                        }
+                        else{
+                             $m.settings.common.showNotification("You Can Only Delete Last Range", "warning");
+                        }
+                  
                     }
                 }
              
-        }
+        },
+       
         // End of Stam Duty Section
         
+        //Lawyer Fee  Section
+        clearLawyerFee : function () {
+            $("#hdnLawyerFeeId").val("");
+            $("#txtLawyerFeeRangeMin").val("");
+            $("#txtLawyerFeeRangeMax").val("");
+            $("#txtLawyerFeePercentage").val("");
+             $('#txtLawyerFeeRangeMax').prop('disabled', false);
+              $("#chkLawyerFeeAny").prop('checked', false);  
+            //$("#hdnUUID").val("");
+        },
+         openLawyerFeePopup : function (data) {
+            var splited = data.Range.split("-");
+            $("#hdnLawyerFeeId").val(data.ID);
+            $("#txtLawyerFeeRangeMin").val(splited[0]);
+            if(splited[1].replace(/ /g,'') === "Any"){
+               $('#txtLawyerFeeRangeMax').prop('disabled', true);
+               $("#chkLawyerFeeAny").prop('checked', true); 
+            }
+            else{
+                $("#txtLawyerFeeRangeMax").val(splited[1]);
+            }
+            
+            $("#txtLawyerFeePercentage").val(data.Percentage);
+            $('#addLawyerFee').modal('toggle');
+            
+        },
+       
+        saveLawyerFee:function (guid) {
+            //Save stamp duty data
+            
+            //Check Min Range Empty
+            if ($("#txtLawyerFeeRangeMin").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Min Value Required");
+                return;
+            }
+             //Check Min Range Empty if Any is not checked
+            if (!$("#chkLawyerFeeAny").prop('checked') && $("#txtLawyerFeeRangeMax").val() == "") {
+                  $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Max Value Required");
+                return;
+            }
+             if ( $("#txtLawyerFeePercentage").val() == "") {
+                  $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Percentage Required");
+                return;
+            }
+            //Check Min Rangeis Zero if current is the first range to enter
+          if( !$m.masterData.LawyerFee||  $m.masterData.LawyerFee.length === 0){     
+                if(parseInt($("#txtLawyerFeeRangeMin").val()) > 0){
+                     $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Should Start with Minimum Value of Zero");
+                    return;
+                }      
+            }
+            else
+            {
+                
+                var lastindex = $m.masterData.LawyerFee.length - 1;
+                 var range = $m.masterData.LawyerFee[lastindex].Range;
+                var id = $m.masterData.LawyerFee[lastindex].ID;
+                  var splited = range.split("-");
+                var max = splited[1];
+                
+                //If in Edit mode
+                if($("#hdnLawyerFeeId").val() != "" ){
+                    //If editing the first item
+                        if($m.masterData.LawyerFee.length === 1){
+                            if(parseInt($("#txtLawyerFeeRangeMin").val()) > 0){
+                                    $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Should Start with Minimum Value of Zero");
+                                    return;
+                            }
+                            else if(!$("#chkLawyerFeeAny").prop('checked') && parseInt($("#txtLawyerFeeRangeMin").val()) >= parseInt($("#txtLawyerFeeRangeMax").val())){
+                                    $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Max Value must be Greater than Min Value");
+                                    return;
+                            } 
+                        }
+                        //If not editing the last item
+                        else if (id != $("#hdnLawyerFeeId").val()){
+                            //If the max is Any, not allowed to add Range
+                            if( max.replace(/ /g,'') == "Any"){
+                                   //If Any checked
+                                  if($("#chkLawyerFeeAny").prop('checked')){  
+                                         $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Invalid Range");
+                                        return;
+                                  }
+                                  // If Any not checked
+                                  else{
+                                       // have to get index and -1  max val +1 min val
+                                       var preMax = "";
+                                       var preSplited = [];
+                                       var nextMin = "";
+                                       var nextSplited = [];
+                                      for (var i = 0, x = $m.masterData.LawyerFee.length; i < x; i++){
+                                          if($m.masterData.LawyerFee[i].ID === $("#hdnLawyerFeeId").val() ){
+                                              if(i >0){
+                                                    preSplited = $m.masterData.LawyerFee[i-1].Range.split("-");
+                                              }
+                                            
+                                              nextSplited = $m.masterData.LawyerFee[i+1].Range.split("-");
+                                              
+                                          }
+                                      }
+                                      //debugger;
+                                      if(preSplited.length > 0){
+                                         preMax = preSplited[1];
+                                      }
+                                      nextMin = nextSplited[0];
+                                       if(preMax != "" && parseInt($("#txtLawyerFeeRangeMin").val()) != parseInt(preMax) +1){
+                                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Minimum Value Should be : " + (parseInt(preMax)+1).toString());
+                                            return;
+                                        }
+                                        else if (parseInt($("#txtLawyerFeeRangeMax").val()) != parseInt(nextMin) -1){
+                                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Maximum Value Should be : " + (parseInt(nextMin)-1).toString());
+                                            return;
+                                        }
+                                  }
+                                }
+                                 // not editing the last item & If the max is not Any
+                                else{
+                                     //If any not checked
+                                    if(!$("#chkLawyerFeeAny").prop('checked')){  
+                                            var preMax = "";
+                                        var preSplited = [];
+                                        var nextMin = "";
+                                        var nextSplited = [];
+                                        //Get Pre Max value & Next Min Value to validate current Min & Max
+                                        for (var i = 0, x = $m.masterData.LawyerFee.length; i < x; i++){
+                                            if($m.masterData.LawyerFee[i].ID === $("#hdnLawyerFeeId").val() ){
+                                               if(i >0){
+                                                preSplited = $m.masterData.LawyerFee[i-1].Range.split("-");
+                                                 }
+                                                nextSplited = $m.masterData.LawyerFee[i+1].Range.split("-");
+                                                
+                                            }
+                                        }
+                                 
+                                        if(preSplited.length > 0){
+                                        preMax = preSplited[1];
+                                        }
+                                        nextMin = nextSplited[0];
+                                        //Validate Min
+                                        if(preMax != "" && parseInt($("#txtLawyerFeeRangeMin").val()) != parseInt(preMax) +1){
+                                                $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Minimum Value Should be : " + (parseInt(preMax)+1).toString());
+                                                return;
+                                        }
+                                        //Validate Max
+                                        else if (parseInt($("#txtLawyerFeeRangeMax").val()) != parseInt(nextMin) -1){
+                                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Maximum Value Should be : " + (parseInt(nextMin)-1).toString());
+                                            return;
+                                        }
+                                    }
+                                    //If any checked don't allow to add range since Any not allowed in the middle
+                                    else{
+                                          $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Invalid Range");
+                                        return;
+                                    }
+                                }
+                            }
+                            //If editing last item
+                            else if (id === $("#hdnLawyerFeeId").val()){
+                                //And max is not Any
+                                 //if( max.replace(/ /g,'') != "Any"){
+                                     //If Any Checked
+                                    if(!$("#chkLawyerFeeAny").prop('checked')){  
+                                           var preMax = "";
+                                        var preSplited = [];
+                                         var sdl = $m.masterData.LawyerFee.length;
+                                         if(sdl > 1)
+                                            preSplited = $m.masterData.LawyerFee[sdl-2].Range.split("-"); 
+                                       
+                                       
+                                        preMax = preSplited[1];
+                                      //Validate Min Value
+                                        if(parseInt($("#txtLawyerFeeRangeMin").val()) != parseInt(preMax) +1){
+                                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Minimum Value Should be : " + (parseInt(preMax)+1).toString());
+                                            return;
+                                        }
+                                        //Validate Range
+                                        if(parseInt($("#txtLawyerFeeRangeMin").val()) >= parseInt($("#txtLawyerFeeRangeMax").val())){
+                                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Max Value must be Greater than Min Value");
+                                            return;
+                                         }
+                                    }
+   
+                            }
+                           
+                     
+                        }
+                
+                //Adding New Range
+                else{
+                    //If Current last Range ends with Any do not allow to add new Range
+                     if( max.replace(/ /g,'') == "Any"){
+                              
+                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Invalid Range");
+                            return;
+                     
+                     }
+                     // If max is not Any
+                     else{
+                         //Check Any is selected 
+                        if(!$("#chkLawyerFeeAny").prop('checked')){      
+                            //Range Validation 
+                            if(parseInt($("#txtLawyerFeeRangeMin").val()) >= parseInt($("#txtLawyerFeeRangeMax").val())){
+                                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Max Value must be Greater than Min Value");
+                                            return;
+                            }
+                            //Min value Validation
+                            else if(parseInt($("#txtLawyerFeeRangeMin").val()) != parseInt(max) +1){
+                               // debugger;
+                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Minimum Value Should be : " + (parseInt(max)+1).toString());
+                            return;
+                            }
+                        }
+                        //Any checked
+                        else{
+                             if(parseInt($("#txtLawyerFeeRangeMin").val()) != parseInt(max) +1){
+                                // debugger;
+                            $m.settings.common.setValidationMessages("val-messageLawyerFee","warning","Minimum Value Should be : " + (parseInt(max)+1).toString());
+                            return;
+                            }
+                        }
+                     }
+                }
+          
+            }
+           
+
+           
+              var max2 = "";
+             if($("#chkLawyerFeeAny").prop('checked')){
+                 max2 = "Any";
+             }
+             else{
+                max2 = $("#txtLawyerFeeRangeMax").val()
+             }
+           
+         var lawyerFee = { 
+                    Range: $("#txtLawyerFeeRangeMin").val() +"-"+ max2,
+                    Percentage :$("#txtLawyerFeePercentage").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate:new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 lawyerFee.ID = guid;
+                 lawyerFee.CreatedBy = $scope.Configs.UserId;
+                 lawyerFee.CreatedDate = new Date();
+                 if(!$m.masterData.LawyerFee)
+                          $m.masterData.LawyerFee = [];
+                 
+                 $m.masterData.LawyerFee.push(lawyerFee);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.LawyerFee.length; i < x; i++){
+                    if($m.masterData.LawyerFee[i].ID === $("#hdnLawyerFeeId").val()){
+                        $m.masterData.LawyerFee[i].Range = lawyerFee.Range;
+                        $m.masterData.LawyerFee[i].Percentage = lawyerFee.Percentage;
+                        
+                    }
+                }
+            }
+            
+          $m.setLawyerFeeGridDataSource();
+           $('#addLawyerFee').modal('hide');
+           $m.clearStampDuty();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+            
+        },
+        setLawyerFeeGridDataSource:function () {
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.LawyerFee,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var lawyerFeeGrid = $("#grdLawyerFee").data("kendoGrid");
+           lawyerFeeGrid.setDataSource(dataSource);
+           lawyerFeeGrid.dataSource.read();
+           lawyerFeeGrid.refresh();
+        },
+        deleteLawyerFee:function (data) {
+     
+            
+             for (var i = 0, x = $m.masterData.LawyerFee.length; i < x; i++){
+                    if($m.masterData.LawyerFee[i].ID === data.ID){
+                        if(i +1 === x){
+                         $m.masterData.LawyerFee.splice(i,1);     
+                        $m.setLawyerFeeGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;
+                        }
+                        else{
+                             $m.settings.common.showNotification("You Can Only Delete Last Range", "warning");
+                        }
+                  
+                    }
+                }
+             
+        },
+       
+        // End of Lawyer Fee Section
         
+        // Deed Type Section
+        
+         clearDeedType : function () {
+      
+            $("#txtDeedType").val("");
+             $("#hdnDeedTypeId").val("");
+           
+            //$("#hdnUUID").val("");
+        },
+         openDeedTypePopup : function (data) {
+            
+            $("#hdnDeedTypeId").val(data.ID);
+            $("#txtDeedType").val(data.Name);
+            $('#addDeedType').modal('toggle');
+            
+        },
+        saveDeedType:function (guid) {
+             if ($("#txtDeedType").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messageDeedType","warning","Type Required");
+                return;
+            }
+              var deedType = { 
+                    Name: $("#txtDeedType").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate : new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 deedType.ID = guid;
+                 deedType.CreatedBy = $scope.Configs.UserId;
+                 deedType.CreatedDate = new Date();
+                 if(!$m.masterData.DeedTypes)
+                          $m.masterData.DeedTypes = [];
+                 
+                 $m.masterData.DeedTypes.push(deedType);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.DeedTypes.length; i < x; i++){
+                    if($m.masterData.DeedTypes[i].ID === $("#hdnDeedTypeId").val()){
+                        $m.masterData.DeedTypes[i].Name = deedType.Name;
+                        
+                        
+                    }
+                }
+            }
+            
+          $m.setDeedTypeGridDataSource();
+           $('#addDeedType').modal('hide');
+           $m.clearDeedType();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+        },
+         setDeedTypeGridDataSource:function () {
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.DeedTypes,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var deedTypeGrid = $("#grdDeedType").data("kendoGrid");
+           deedTypeGrid.setDataSource(dataSource);
+           deedTypeGrid.dataSource.read();
+           deedTypeGrid.refresh();
+        },
+        deleteDeedType:function (data) {
+             for (var i = 0, x = $m.masterData.DeedTypes.length; i < x; i++){
+                    if($m.masterData.DeedTypes[i].ID === data.ID){
+                      
+                         $m.masterData.DeedTypes.splice(i,1);     
+                        $m.setDeedTypeGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;               
+                    }
+                }         
+        },
+        // End of Deed Type Section
+        
+        // Case Type Section
+        
+         clearCaseType : function () {
+      
+            $("#txtCaseType").val("");
+             $("#hdnCaseTypeId").val("");
+           
+            //$("#hdnUUID").val("");
+        },
+         openCaseTypePopup : function (data) {
+            
+            $("#hdnCaseTypeId").val(data.ID);
+            $("#txtCaseType").val(data.Name);
+            $('#addCaseType').modal('toggle');
+            
+        },
+        saveCaseType:function (guid) {
+              if ($("#txtCaseType").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messageCaseType","warning","Type Required");
+                return;
+            }
+              var caseType = { 
+                    Name: $("#txtCaseType").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate : new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 caseType.ID = guid;
+                 caseType.CreatedBy = $scope.Configs.UserId;
+                 caseType.CreatedDate = new Date();
+                 if(!$m.masterData.CaseTypes)
+                          $m.masterData.CaseTypes = [];
+                 
+                 $m.masterData.CaseTypes.push(caseType);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.CaseTypes.length; i < x; i++){
+                    if($m.masterData.CaseTypes[i].ID === $("#hdnCaseTypeId").val()){
+                        $m.masterData.CaseTypes[i].Name = caseType.Name;
+                        
+                        
+                    }
+                }
+            }
+            
+          $m.setCaseTypeGridDataSource();
+           $('#addCaseType').modal('hide');
+           $m.clearCaseType();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+        },
+         setCaseTypeGridDataSource:function () {
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.CaseTypes,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var caseTypeGrid = $("#grdCaseType").data("kendoGrid");
+           caseTypeGrid.setDataSource(dataSource);
+           caseTypeGrid.dataSource.read();
+           caseTypeGrid.refresh();
+        },
+        deleteCaseType:function (data) {
+             for (var i = 0, x = $m.masterData.CaseTypes.length; i < x; i++){
+                    if($m.masterData.CaseTypes[i].ID === data.ID){
+                      
+                         $m.masterData.CaseTypes.splice(i,1);     
+                        $m.setCaseTypeGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;               
+                    }
+                }         
+        },
+        // End of Case Type Section
+        
+          // Court Section
+        
+         clearCourt : function () {
+      
+            $("#txtCourt").val("");
+             $("#hdnCourtId").val("");
+           
+            //$("#hdnUUID").val("");
+        },
+         openCourtPopup : function (data) {
+            
+            $("#hdnCourtId").val(data.ID);
+            $("#txtCourt").val(data.Name);
+            $('#addCourt').modal('toggle');
+            
+        },
+        saveCourt:function (guid) {
+              if ($("#txtCourt").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messageCourt","warning","Court Name Required");
+                return;
+            }
+              var court = { 
+                    Name: $("#txtCourt").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate : new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 court.ID = guid;
+                 court.CreatedBy = $scope.Configs.UserId;
+                 court.CreatedDate = new Date();
+                 if(!$m.masterData.Courts)
+                          $m.masterData.Courts = [];
+                 
+                 $m.masterData.Courts.push(court);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.Courts.length; i < x; i++){
+                    if($m.masterData.Courts[i].ID === $("#hdnCourtId").val()){
+                        $m.masterData.Courts[i].Name = court.Name;
+                        
+                        
+                    }
+                }
+            }
+            
+          $m.setCourtGridDataSource();
+           $('#addCourt').modal('hide');
+           $m.clearCourt();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+        },
+         setCourtGridDataSource:function () {
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.Courts,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var courtGrid = $("#grdCourt").data("kendoGrid");
+           courtGrid.setDataSource(dataSource);
+           courtGrid.dataSource.read();
+           courtGrid.refresh();
+        },
+        deleteCourt:function (data) {
+             for (var i = 0, x = $m.masterData.Courts.length; i < x; i++){
+                    if($m.masterData.Courts[i].ID === data.ID){
+                      
+                         $m.masterData.Courts.splice(i,1);     
+                        $m.setCourtGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;               
+                    }
+                }         
+        }
+        // End of Case Type Section
     };
     
     return $m;

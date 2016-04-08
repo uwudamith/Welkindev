@@ -275,7 +275,8 @@
                             showNotification: $scope.showNotification,
                             setValidationMessages:$scope.setValidationMessages,
                             validateEmail:$scope.validateEmail,
-                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam
+                            ajaxFunctionMultiParam:$scope.ajaxFunctionMultiParam,
+                             showConfirmDialog: $scope.showConfirmDialog
                         }
                     });
                 }
