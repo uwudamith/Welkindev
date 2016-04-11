@@ -29,7 +29,7 @@
                 //Upload button click event
                 e.preventDefault();
                // debugger;
-                $m.currentNode = $(this).closest(".k-item")[0].childNodes[0].innerText.replace(/ /g,'');
+                $m.currentNode = $(this).closest(".k-item")[0].childNodes[0].innerText.replace(/\s/g, '');
               
                 $('#uploadModel').modal('toggle');   
               
@@ -54,7 +54,7 @@
                
                 var data = $("#tree").data("kendoTreeView").dataItem($(this).closest(".k-item"));
                 
-                $m.currentNode = $(this).closest(".k-item")[0].childNodes[0].innerText.replace(/ /g,'');
+                $m.currentNode = $(this).closest(".k-item")[0].childNodes[0].innerText.replace(/\s/g, '');
                 $m.parentNode = data.parentNode().text;
                 var params = {};
                 params.client = $scope.Configs.ClientId;
@@ -90,7 +90,7 @@
         //   
         //     $m.nodeSelected(event,data);
         //   }});
-        
+     
         $m.createTree();
         },
         createTree:function(){
@@ -130,6 +130,7 @@
        },
        onUploadSuccess:function (e) {
            //If upload success create a new node in $m.draft.Structure which is the datasource of the tree & refresh the tree
+           
            if(e.files){
                 for (var h = 0, z = e.files.length; h < z; h++){
                   // var data = $.grep($m.uploadedFiles,function (d) {return d.Name === e.files[i].name;});
@@ -143,12 +144,12 @@
                     // file.BlobDir = "Deed/"+$("#txtDeedNo").val();
                    // $m.uploadedFiles.push(file);
                   // }
-                  
+            
                   for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
                         if($m.draft.Structure[i].items){
                                 for(var j = 0, y = $m.draft.Structure[i].items.length; j < y; j++){
                                     
-                                    if($m.draft.Structure[i].items[j].text.replace(/ /g,'') === $m.currentNode.replace(/ /g,'')){
+                                    if($m.draft.Structure[i].items[j].text.replace(/\s/g, '') === $m.currentNode.replace(/\s/g, '')){
                                         var node = {};
                                         
                                         node.text = e.files[h].name;
@@ -210,7 +211,7 @@
             for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
                  if($m.draft.Structure[i].items){
                         for(var j = 0, y = $m.draft.Structure[i].items.length; j < y; j++){
-                            if($m.draft.Structure[i].items[j].text.replace(/ /g,'') ===  $m.parentNode.replace(/ /g,'')){
+                            if($m.draft.Structure[i].items[j].text.replace(/\s/g, '') ===  $m.parentNode.replace(/\s/g, '')){
                                     if($m.draft.Structure[i].items[j].items){
                                         // for(var k = 0, z = $m.draft.Structure[i].items[j].items.length; k < z; k++){
                                         //     if($m.draft.Structure[i].items[j].items[k].text.replace(/ /g,'') === $m.currentNode.replace(/ /g,'')){
@@ -222,7 +223,7 @@
                                         //     }                                                                                                   
                                         // }
                                           $m.draft.Structure[i].items[j].items = $.grep($m.draft.Structure[i].items[j].items, function(e){ 
-                                                return e.text.replace(/ /g,'') != $m.currentNode.replace(/ /g,''); 
+                                                return e.text.replace(/\s/g, '') != $m.currentNode.replace(/\s/g, ''); 
                                             });
                                     }
                             }

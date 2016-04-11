@@ -2,6 +2,8 @@
     
     $m = {
          masterData: {},
+         draft:{},
+         currentDraftItem:{},
          accountTypeData: [
             { Name: "Law Firm", Id: "1" },
             { Name: "Individual", Id: "2" }
@@ -23,12 +25,20 @@
                 //register client methods with signalr agent
                 this.settings.sAgent.registerEvents([
                     {
-                        name: "masterDataResponse",
-                        fn: this.masterDataResponse
+                        name: "masterAccountDataResponse",
+                        fn: this.masterAccountDataResponse
                     },
                     {
                         name:"notifyAccount",
                         fn:this.notifyAccount
+                    },
+                    {
+                        name:"draftAccountDataResponse",
+                        fn:this.draftAccountDataResponse
+                    },
+                    {
+                        name:"notifyAccountDraft",
+                        fn:this.notifyAccountDraft
                     }
                 ]);
                 this.settings.sAgent.start();
@@ -531,11 +541,16 @@
             $m.settings.common.ajaxFunction(url, type,null, model,true);
         },
         notifyAccount:function (params) {
-           var res = JSON.parse(params).Result;
-           if(res=== true)
-            $m.settings.common.ajaxFunction('/Account/LoadMasterData', 'POST', null, null,false);
+           
+               if (JSON.parse(params).Result) {
+                 $m.settings.common.ajaxFunction('/Account/LoadMasterData', 'POST', null, null,false);
+            }
         },
-         masterDataResponse:function (data) {
+        notifyAccountDraft:function (params) {
+             $m.settings.common.ajaxFunction('/Account/LoadDraftData', 'POST', null, null,false);
+            
+        },
+         masterAccountDataResponse:function (data) {
               /// <summary>
             /// Callback function for Get Master data
             /// </summary>
@@ -1124,6 +1139,7 @@
            $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
             
         },
+        
         setLawyerFeeGridDataSource:function () {
             
              var dataSource = new kendo.data.DataSource({
@@ -1137,6 +1153,7 @@
            lawyerFeeGrid.dataSource.read();
            lawyerFeeGrid.refresh();
         },
+        //Only allow to delete the last item
         deleteLawyerFee:function (data) {
      
             
@@ -1195,7 +1212,12 @@
                  if(!$m.masterData.DeedTypes)
                           $m.masterData.DeedTypes = [];
                  
-                 $m.masterData.DeedTypes.push(deedType);        
+                 $m.masterData.DeedTypes.push(deedType);       
+                 $m.currentDraftItem = deedType;
+                 $m.currentDraftItem.operation = "Add"; 
+                 $m.currentDraftItem.operationType = "Deed";             
+                 $m.addDraftItem();
+                 
                  
             }
             else
@@ -1203,13 +1225,15 @@
                 for (var i = 0, x = $m.masterData.DeedTypes.length; i < x; i++){
                     if($m.masterData.DeedTypes[i].ID === $("#hdnDeedTypeId").val()){
                         $m.masterData.DeedTypes[i].Name = deedType.Name;
-                        
-                        
+                         $m.currentDraftItem = $m.masterData.DeedTypes[i];
+                        $m.currentDraftItem.operation = "Edit"; 
+                        $m.currentDraftItem.operationType = "Deed"; 
+                        $m.editDraftItem();
                     }
                 }
             }
             
-          $m.setDeedTypeGridDataSource();
+           $m.setDeedTypeGridDataSource();
            $('#addDeedType').modal('hide');
            $m.clearDeedType();
            $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
@@ -1230,9 +1254,13 @@
         deleteDeedType:function (data) {
              for (var i = 0, x = $m.masterData.DeedTypes.length; i < x; i++){
                     if($m.masterData.DeedTypes[i].ID === data.ID){
-                      
+                        $m.currentDraftItem = $m.masterData.DeedTypes[i];
+                        $m.currentDraftItem.operation = "Delete"; 
+                        $m.currentDraftItem.operationType = "Deed"; 
+                        
                          $m.masterData.DeedTypes.splice(i,1);     
                         $m.setDeedTypeGridDataSource(); 
+                        $m.deleteDraftItem();
                          $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
                          return;               
                     }
@@ -1249,6 +1277,7 @@
            
             //$("#hdnUUID").val("");
         },
+        //Open Popup and bind data
          openCaseTypePopup : function (data) {
             
             $("#hdnCaseTypeId").val(data.ID);
@@ -1268,7 +1297,7 @@
                     
              };
            
-         
+         // if new create an object & save
             if(guid != ""){
                  caseType.ID = guid;
                  caseType.CreatedBy = $scope.Configs.UserId;
@@ -1276,16 +1305,25 @@
                  if(!$m.masterData.CaseTypes)
                           $m.masterData.CaseTypes = [];
                  
-                 $m.masterData.CaseTypes.push(caseType);        
+                 $m.masterData.CaseTypes.push(caseType);  
+                 
+                 $m.currentDraftItem = caseType;
+                 $m.currentDraftItem.operation = "Add"; 
+                 $m.currentDraftItem.operationType = "Case";             
+                 $m.addDraftItem();      
                  
             }
             else
             {
+                //Update item
                 for (var i = 0, x = $m.masterData.CaseTypes.length; i < x; i++){
                     if($m.masterData.CaseTypes[i].ID === $("#hdnCaseTypeId").val()){
                         $m.masterData.CaseTypes[i].Name = caseType.Name;
                         
-                        
+                         $m.currentDraftItem = $m.masterData.CaseTypes[i];
+                        $m.currentDraftItem.operation = "Edit"; 
+                        $m.currentDraftItem.operationType = "Case"; 
+                        $m.editDraftItem();
                     }
                 }
             }
@@ -1311,9 +1349,13 @@
         deleteCaseType:function (data) {
              for (var i = 0, x = $m.masterData.CaseTypes.length; i < x; i++){
                     if($m.masterData.CaseTypes[i].ID === data.ID){
+                      $m.currentDraftItem = $m.masterData.CaseTypes[i];
+                        $m.currentDraftItem.operation = "Delete"; 
+                        $m.currentDraftItem.operationType = "Case"; 
                       
                          $m.masterData.CaseTypes.splice(i,1);     
                         $m.setCaseTypeGridDataSource(); 
+                        $m.deleteDraftItem();
                          $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
                          return;               
                     }
@@ -1399,8 +1441,194 @@
                          return;               
                     }
                 }         
-        }
-        // End of Case Type Section
+        },
+        // End of Court Section
+        
+        //Draft Section to Create the Draft Structure
+        
+       draftAccountDataResponse: function(a) {
+           // debugger;
+            $m.draft = JSON.parse(JSON.parse(a).JsonResult)[0];
+           
+     
+        },
+        // Add a new draft Item
+        addDraftItem:function () {
+          
+            
+            if($m.draft === "undefined" || $m.draft === undefined|| $m.draft === []){
+             
+             $m.draft = {};
+             $m.draft.ClientId = $scope.Configs.ClientId;
+             $m.draft.Type = "Draft";
+             $m.draft.Structure = [];   
+             
+             var caseObj = {};
+             caseObj.text = "Case";
+             caseObj.type = "main";
+             caseObj.items = [];
+             
+              var deedObj = {};
+             deedObj.text = "Deed";
+             deedObj.type = "main";
+             deedObj.items = [];
+             
+             $m.draft.Structure.push(caseObj);
+             $m.draft.Structure.push(deedObj);
+             
+            }
+            
+            if($m.draft.Structure && $m.draft.Structure != []){
+                
+               // Check if adding new Case Type
+                if($m.currentDraftItem != {} && $m.currentDraftItem.operationType === "Case"){
+                    //Loop through the Draft strucure items
+                    for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
+                          // Add new draft item to Case
+                        if($m.draft.Structure[i].text === "Case")
+                        {
+                            if(!$m.draft.Structure[i].items)
+                                $m.draft.Structure[i].items = [];
+                                
+                             var draftItem = {};
+                             draftItem.text = $m.currentDraftItem.Name;
+                             draftItem.type = "sub";
+                             draftItem.items = [];
+                             draftItem.itemId = $m.currentDraftItem.ID;
+                             
+                             $m.draft.Structure[i].items.push(draftItem);
+                             $m.saveDraft('/Account/SaveDraft', 'POST', $m.draft); 
+                             return;
+                        }
+                    }
+                }
+                // Check if adding new Deed Type
+                else if ($m.currentDraftItem != {} && $m.currentDraftItem.operationType === "Deed"){
+                    //Loop through the Draft strucure items
+                     for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
+                        // Add new draft item to Deed
+                        if($m.draft.Structure[i].text === "Deed")
+                        {
+                            if(!$m.draft.Structure[i].items)
+                                $m.draft.Structure[i].items = [];
+                                
+                             var draftItem = {};
+                             draftItem.text = $m.currentDraftItem.Name;
+                             draftItem.type = "sub";
+                             draftItem.items = [];
+                             draftItem.itemId = $m.currentDraftItem.ID;
+                             
+                             $m.draft.Structure[i].items.push(draftItem);
+                              $m.saveDraft('/Account/SaveDraft', 'POST', $m.draft); 
+                             return;
+                        }
+                    }
+                }
+            }
+          //reset current Draft Item  
+         $m.currentDraftItem = {};   
+        },
+        // Edit draft item
+        editDraftItem:function () {
+             if($m.draft.Structure && $m.draft.Structure != []){
+                 // Check if editing a Case type
+              if($m.currentDraftItem != {} && $m.currentDraftItem.operationType === "Case"){
+                    
+                    for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
+                        
+                        if($m.draft.Structure[i].text === "Case")
+                        {
+                            if(!$m.draft.Structure[i].items)
+                                $m.draft.Structure[i].items = [];
+                                
+                                for(var j = 0,y= $m.draft.Structure[i].items.length; j < y;j++){
+                                    if( $m.draft.Structure[i].items[j].itemId === $m.currentDraftItem.ID){
+                                        $m.draft.Structure[i].items[j].text = $m.currentDraftItem.Name;
+                                          $m.saveDraft('/Account/SaveDraft', 'POST', $m.draft); 
+                                       return;
+                                    }
+                                }
+                           
+                        }
+                    }
+                }
+                 // Check if editing a Deed type
+                else if($m.currentDraftItem != {} && $m.currentDraftItem.operationType === "Deed"){
+                     for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
+                        
+                        if($m.draft.Structure[i].text === "Deed")
+                        {
+                            if(!$m.draft.Structure[i].items)
+                                $m.draft.Structure[i].items = [];
+                                
+                                for(var j = 0,y= $m.draft.Structure[i].items.length; j < y;j++){
+                                    if( $m.draft.Structure[i].items[j].itemId === $m.currentDraftItem.ID){
+                                        $m.draft.Structure[i].items[j].text = $m.currentDraftItem.Name;
+                                         $m.saveDraft('/Account/SaveDraft', 'POST', $m.draft); 
+                                         return;
+                                    }
+                                }
+                            
+                        }
+                    }
+                }
+             }
+        },
+        deleteDraftItem:function () {
+            if($m.draft.Structure && $m.draft.Structure != []){
+                 if($m.currentDraftItem != {} && $m.currentDraftItem.operationType === "Case"){
+                    
+                    for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
+                        
+                        if($m.draft.Structure[i].text === "Case")
+                        {
+                            if(!$m.draft.Structure[i].items)
+                                $m.draft.Structure[i].items = [];
+                                
+                                for(var j = 0,y= $m.draft.Structure[i].items.length; j < y;j++){
+                                    if( $m.draft.Structure[i].items[j].itemId === $m.currentDraftItem.ID){
+                                        $m.draft.Structure[i].items.splice(j,1);
+                                         $m.saveDraft('/Account/SaveDraft', 'POST', $m.draft); 
+                                    }
+                                }
+                            
+                            
+                        }
+                    }
+                }
+                  // Check if editing a Deed type
+                else if($m.currentDraftItem != {} && $m.currentDraftItem.operationType === "Deed"){
+                     for (var i = 0, x = $m.draft.Structure.length; i < x; i++){
+                        
+                        if($m.draft.Structure[i].text === "Deed")
+                        {
+                            if(!$m.draft.Structure[i].items)
+                                $m.draft.Structure[i].items = [];
+                                
+                                for(var j = 0,y= $m.draft.Structure[i].items.length; j < y;j++){
+                                    if( $m.draft.Structure[i].items[j].itemId === $m.currentDraftItem.ID){
+                                        $m.draft.Structure[i].items.splice(j,1);
+                                         $m.saveDraft('/Account/SaveDraft', 'POST', $m.draft); 
+                                        
+                                    }
+                                }
+                            
+                        }
+                    }
+                }
+            }
+        },
+         saveDraft: function (url, type, model) {
+            /// <summary>
+            /// Call ajax function to save deed
+            /// </summary>
+            /// <param name="url" type="type"> url of the controller action</param>
+            /// <param name="type" type="type"> GET/POST</param>
+            /// <param name="model" type="type"> deed object</param>
+            $m.settings.common.ajaxFunction(url, type,null, model,true);
+        },
+        
+        
     };
     
     return $m;
