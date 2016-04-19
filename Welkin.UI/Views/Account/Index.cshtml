@@ -159,15 +159,15 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <h3 class="panel-title pull-left">
-                                                    Archive
+                                                    Districts
                                                 </h3>
 
-                                                <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addUsersModel">
+                                                <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addDistrict">
                                                     <i class="glyphicon glyphicon-plus-sign"></i>
                                                 </button>
                                                 <div class="clearfix"></div>
                                             </div>
-
+                                              <div id="grdDistrict"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -539,6 +539,48 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-Court">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- Districts popup-->
+<div class="modal fade" tabindex="-1" id="addDistrict" role="dialog">
+    <div class="modal-dialog step-model">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add/Edit District</h4>
+            </div>
+            <div class="modal-body">
+                   <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageDistrict"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                        <form class="form-horizontal" role="form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtDistrict" class="col-lg-4 control-label">District</label>
+                                         <input id="hdnDistrictId" type="hidden">
+                                        <div class="col-lg-4">
+                                            <input id="txtDistrict" class="form-control" type="text">
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-District">Save</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

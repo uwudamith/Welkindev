@@ -391,7 +391,49 @@
                 
             })
             
-            // End of Case Type Section
+            // End of Court Section
+            
+             // District Section
+            $("#grdDistrict").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdDistrict").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openDistrictPopup(dataItem);
+             });     
+             
+                $("#grdDistrict").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdDistrict").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                       $m.deleteDistrict(dataItem);
+                    };
+                      var noFunction = function () { };
+
+                    $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+              $("#grdDistrict .k-grid-header").hide();
+              
+                $("#save-District").click(function () {
+                if($("#hdnDistrictId").val() == ""){
+                    $m.settings.common.createGUID($m.saveDistrict);
+                }
+                else
+                {
+                    $m.saveDistrict("");
+                } 
+            });
+            
+              $("#addDistrict").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addDistrict').on('hidden.bs.modal', function () {
+             
+                   $m.clearDistrict();
+                
+            })
+            
+            // End of Court Section
         },
         initControlls:function () {
             $("#chkAny").checkboxpicker({
@@ -530,6 +572,24 @@
             ]
          
         });
+        
+        $("#grdDistrict").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Name", title: "Name" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
+        });
         },
          saveMasterData: function (url, type, model) {
             /// <summary>
@@ -562,6 +622,7 @@
                 $m.setDeedTypeGridDataSource();
                 $m.setCaseTypeGridDataSource();
                 $m.setCourtGridDataSource();
+                $m.setDistrictGridDataSource();
           }
           
           
@@ -1444,7 +1505,7 @@
         },
         // End of Court Section
         
-        //Draft Section to Create the Draft Structure
+     //Draft Section to Create the Draft Structure
         
        draftAccountDataResponse: function(a) {
            // debugger;
@@ -1627,6 +1688,89 @@
             /// <param name="model" type="type"> deed object</param>
             $m.settings.common.ajaxFunction(url, type,null, model,true);
         },
+        // End of Draft Section
+        
+          // Court Section
+        
+         clearDistrict : function () {
+      
+            $("#txtDistrict").val("");
+             $("#hdnDistrictId").val("");
+           
+            //$("#hdnUUID").val("");
+        },
+         openDistrictPopup : function (data) {
+            
+            $("#hdnDistrictId").val(data.ID);
+            $("#txtDistrict").val(data.Name);
+            $('#addDistrict').modal('toggle');
+            
+        },
+        saveDistrict:function (guid) {
+              if ($("#txtDistrict").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messagedistrict","warning","District Name Required");
+                return;
+            }
+              var district = { 
+                    Name: $("#txtDistrict").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate : new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 district.ID = guid;
+                 district.CreatedBy = $scope.Configs.UserId;
+                 district.CreatedDate = new Date();
+                 if(!$m.masterData.Districts)
+                          $m.masterData.Districts = [];
+                 
+                 $m.masterData.Districts.push(district);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.Districts.length; i < x; i++){
+                    if($m.masterData.Districts[i].ID === $("#hdnDistrictId").val()){
+                        $m.masterData.Districts[i].Name = district.Name;
+                        
+                        
+                    }
+                }
+            }
+            
+          $m.setDistrictGridDataSource();
+           $('#addDistrict').modal('hide');
+           $m.clearDistrict();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+        },
+         setDistrictGridDataSource:function () {
+            
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.Districts,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var districtGrid = $("#grdDistrict").data("kendoGrid");
+           districtGrid.setDataSource(dataSource);
+           districtGrid.dataSource.read();
+           districtGrid.refresh();
+        },
+        deleteDistrict:function (data) {
+             for (var i = 0, x = $m.masterData.Districts.length; i < x; i++){
+                    if($m.masterData.Districts[i].ID === data.ID){
+                      
+                         $m.masterData.Districts.splice(i,1);     
+                        $m.setDistrictGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;               
+                    }
+                }         
+        },
+        // End of District Section
         
         
     };
