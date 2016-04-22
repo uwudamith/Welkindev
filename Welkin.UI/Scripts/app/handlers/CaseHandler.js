@@ -75,7 +75,7 @@
                 $m.setStepTaskModelData(dataItem);
             });
 
-
+                 $('#btnPartyPopup').prop('disabled', true);  
 
             // Save next step click function
             $("#save-step").click(function () {
@@ -92,7 +92,7 @@
                 $m.clearAddStepData();
             })
 
-            // After step model close function
+            // After step Task model close function
             $('#addStepTasks').on('hidden.bs.modal', function () {
                 $m.clearStepsTaskModel();
                 $m.addTasksToNextItemGrid($("#hdnNextItemId").val(), $m.stepTaskItems);
@@ -113,36 +113,11 @@
                 $("#txtContactNumber").val("");
                 return true;
             };
-            var savePartyData = function (guid) {
-                var partyObj = {};
-                if ($("#txtUserName").val() == "") {
-                    $m.settings.common.setValidationMessages("val-message-add-party", "warning", "Please enter party name");
-                    return;
-                } else {
-                    partyObj.Id = guid;
-                    partyObj.Name = $("#txtUserName").val();
-                    partyObj.Address = $("#txtAddress").val();
-                    partyObj.Email = $("#txtEmail").val();
-                    partyObj.ContactNumber = $("#txtContactNumber").val();
-                }
-
-                // Push to master data global variable
-                var party = $m.masterData.Parties;
-                party.push(partyObj);
-
-                // Adding to party data source
-                $("#ddlParty").data("kendoDropDownList").dataSource.insert(partyObj);
-
-                // Clear party model data
-                if (clearPartyModel()) {
-                    $('#addPartyModel').modal('toggle');
-                    // Calling the save master data function
-                    $m.settings.common.saveMasterData(null, $m.masterData);
-                }
-            };
+            
 
             $("#save-party").click(function () {
-                $m.settings.common.createGUID(savePartyData);
+                //$m.settings.common.createGUID(savePartyData);
+                $m.savePartyData();
             });
 
             $("#btn-search-case").click(function () {
@@ -364,7 +339,12 @@
                     { command: { text: "", template: "<button class='btn btn-primary btn-event'> <i class='glyphicon glyphicon glyphicon-calendar'></i></button>" }, width: 70 },
                     { command: { text: "", template: "<button class='btn btn-primary btn-task'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: "Task(s)", width: 70 },
                     { command: { text: "", template: "<button class='btn btn-primary btn-edit'> <i class='glyphicon glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50 },
-                    { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                    { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 },
+                    {field: "StepStatus",headerTemplate:"&nbsp;",width:50 ,template :"# if (StepStatus == true){#" + "<i class='glyphicon glyphicon glyphicon-thumbs-up'></i>" + "# }else {#" + "<i class='glyphicon glyphicon glyphicon-thumbs-down'></i>" + "#} #",headerAttributes: {
+                           
+                            style: "text-align:center"
+                            }
+                      }
                 ],
                 dataBinding: function (e) {
                     /// <summary>
@@ -374,9 +354,19 @@
                     var data = this.dataSource.data();
                     var total = 0;
                     $(data).each(function (index, item) {
-
+                        var status = true;
                         if (item.Fee != "")
                             total = total + parseInt(item.Fee);
+                            
+                            if(item.Tasks){
+                                 $(item.Tasks).each(function (i, task) {
+                                     if(!task.Status){
+                                         status = false;
+                                     }
+                                 });
+                            }
+                           // debugger;
+                          this.set("StepStatus", status);   
                     });
 
                     $("#txtTotalFee").val(total);
@@ -420,7 +410,8 @@
                 dataValueField: "ID",
                 placeholder: "Select Party",
                 filter: "startswith",
-                index: 0
+                index: 0,
+                change: $m.onPartyChange,
             });
 
             $("#ddlCourt").kendoComboBox({
@@ -835,6 +826,7 @@
 
             if ($("#ddlParty").data("kendoComboBox"))
                 $("#ddlParty").data("kendoComboBox").value($m.caseModel.PartyId);
+                $('#btnPartyPopup').prop('disabled', false); 
 
             if ($("#txtCaseNo"))
                 $("#txtCaseNo").val($m.caseModel.CaseNumber);
@@ -847,6 +839,14 @@
 
             if ($("#txtDescription"))
                 $("#txtDescription").val($m.caseModel.Description);
+             
+             if($m.caseModel.Party){
+                 $("#txtUserName").val($m.caseModel.Party.Name);
+                 $("#txtAddress").val($m.caseModel.Party.Address);
+                 $("#txtEmail").val($m.caseModel.Party.Email);
+                 $("#txtContactNumber").val($m.caseModel.Party.ContactNumber);
+             }   
+                
 
             if ($m.caseModel.SendAutomaticReminders)
                 $("#chkSendReminders").prop('checked', true);
@@ -927,6 +927,11 @@
             $m.getCurrentCaseNo();
 
             // $m.saveEvents();
+             $("#txtUserName").val("");
+                $("#txtAddress").val("");
+                $("#txtEmail").val("");
+                $("#txtContactNumber").val("");
+                $('#btnPartyPopup').prop('disabled', true); 
             $m.showUploadedFiles();
             $m.deleteAttachments();
             $m.nextStepDataSource = [];
@@ -1009,9 +1014,10 @@
             var values = [];
             if (dataItem.ByWhom.length > 0) {
                 for (var i = 0; i < dataItem.ByWhom.length; i++) {
-                    values.push(dataItem.ByWhom[i].Id);
+                    values.push(dataItem.ByWhom[i].ID);
                 }
             }
+           // debugger;
             $("#ddlTaskUsers").data("kendoMultiSelect").value(values);
         },
         deleteStepTaskItem: function (dataItem) {
@@ -1281,6 +1287,10 @@
                 return;
             } else {
                 $m.caseModel.CourtId = $("#ddlCourt").data("kendoComboBox").value();
+            }
+            if(!$m.caseModel.Party){
+                  $m.settings.common.showNotification("Please insert party details", "warning");
+                return;
             }
 
             $m.caseModel.StartDate = $("#dtStartDate").data("kendoDatePicker").value();
@@ -1555,7 +1565,38 @@
                 if (JSON.parse(d).Request.Targert === "DeleteTasks")
                     $m.eventsToDelete = [];
             }
-        }
+        },
+        
+        // Party Section
+        
+        onPartyChange:function (e) {
+             if ($("#ddlParty").data("kendoComboBox").value() == "") {
+              $('#btnPartyPopup').prop('disabled', true); 
+                return;
+            } else {
+               $('#btnPartyPopup').prop('disabled', false); 
+            }
+            
+        },
+       savePartyData : function (guid) {
+                var partyObj = {};
+                if ($("#txtUserName").val() == "") {
+                    $m.settings.common.setValidationMessages("val-message-add-party", "warning", "Please enter party name");
+                    return;
+                } else {
+                    
+                    partyObj.Name = $("#txtUserName").val();
+                    partyObj.Address = $("#txtAddress").val();
+                    partyObj.Email = $("#txtEmail").val();
+                    partyObj.ContactNumber = $("#txtContactNumber").val();
+                }
+
+                // Push to master data global variable
+                 $m.caseModel.Party = partyObj;
+
+                $('#addPartyModel').modal('toggle');
+             
+            }
 
 
 

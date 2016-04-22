@@ -433,7 +433,91 @@
                 
             })
             
-            // End of Court Section
+            // End of District Section
+            
+             // Grantor Section
+            $("#grdGrantor").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdGrantor").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openGrantorPopup(dataItem);
+             });     
+             
+                $("#grdGrantor").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdGrantor").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                       $m.deleteGrantor(dataItem);
+                    };
+                      var noFunction = function () { };
+
+                    $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+              $("#grdGrantor .k-grid-header").hide();
+              
+                $("#save-Grantor").click(function () {
+                if($("#hdnGrantorId").val() == ""){
+                    $m.settings.common.createGUID($m.saveGrantor);
+                }
+                else
+                {
+                    $m.saveGrantor("");
+                } 
+            });
+            
+              $("#addGrantor").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addGrantor').on('hidden.bs.modal', function () {
+             
+                   $m.clearGrantor();
+                
+            })
+            
+            // End of Grantor Section
+            
+              // Grantee Section
+            $("#grdGrantee").on("click", ".btn-edit", function (e) {
+                    e.preventDefault();
+                    var dataItem = $("#grdGrantee").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                    $m.openGranteePopup(dataItem);
+             });     
+             
+                $("#grdGrantee").on("click", ".btn-delete", function (e) {
+                    e.preventDefault();
+                     var yesFunction = function () {
+                      var dataItem = $("#grdGrantee").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+                       $m.deleteGrantee(dataItem);
+                    };
+                      var noFunction = function () { };
+
+                    $m.settings.common.showConfirmDialog(yesFunction, noFunction, "Are you sure you want to delete this item?");
+       
+                   
+             }); 
+              $("#grdGrantee .k-grid-header").hide();
+              
+                $("#save-Grantee").click(function () {
+                if($("#hdnGranteeId").val() == ""){
+                    $m.settings.common.createGUID($m.saveGrantee);
+                }
+                else
+                {
+                    $m.saveGrantee("");
+                } 
+            });
+            
+              $("#addGrantee").draggable({
+                    handle: ".modal-header"
+                });
+             $('#addGrantee').on('hidden.bs.modal', function () {
+             
+                   $m.clearGrantee();
+                
+            })
+            
+            // End of Grantee Section
         },
         initControlls:function () {
             $("#chkAny").checkboxpicker({
@@ -590,6 +674,46 @@
             ]
          
         });
+        
+         $("#grdGrantor").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Name", title: "Name" },
+                { field: "ContactNumber", title: "ContactNumber" },
+                 { field: "NIC", title: "NIC" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
+        });
+        
+         $("#grdGrantee").kendoGrid({
+            // dataSource: {
+            //     data: [],
+            // },
+             pageable: {
+                    input: false,
+                    numeric: true
+                },
+            columns: [
+                { field: "ID", hidden: true, },
+                { field: "Name", title: "Name" },
+                { field: "ContactNumber", title: "ContactNumber" },
+                 { field: "NIC", title: "NIC" },
+                { command: { text: "Edit", template: "<button class='btn btn-default btn-edit'> <i class='glyphicon glyphicon-edit'></i></button>" }, title: " ", width: 50},
+                { command: { text: "", template: "<button class='btn btn-danger btn-delete'> <i class='glyphicon glyphicon glyphicon-remove-sign'></i></button>" }, title: " ", width: 50 }
+                
+            ]
+         
+        });
         },
          saveMasterData: function (url, type, model) {
             /// <summary>
@@ -623,6 +747,8 @@
                 $m.setCaseTypeGridDataSource();
                 $m.setCourtGridDataSource();
                 $m.setDistrictGridDataSource();
+                $m.setGrantorGridDataSource();
+                 $m.setGranteeGridDataSource();
           }
           
           
@@ -1690,7 +1816,7 @@
         },
         // End of Draft Section
         
-          // Court Section
+          // District Section
         
          clearDistrict : function () {
       
@@ -1772,6 +1898,225 @@
         },
         // End of District Section
         
+        // Grantor Section
+        
+         clearGrantor : function () {
+      
+            $("#txtGrantorUserName").val("");
+            $("#txtGrantorAddress").val("");
+            $("#txtGrantorEmail").val("");
+            $("#txtGrantorContactNo").val("");
+            $("#txtGrantorNIC").val("");
+            $("#hdnGrantorId").val("");
+           
+            //$("#hdnUUID").val("");
+        },
+         openGrantorPopup : function (data) {
+            
+            $("#hdnGrantorId").val(data.ID);
+            $("#txtGrantorUserName").val(data.Name);
+            $("#txtGrantorAddress").val(data.Address);
+            $("#txtGrantorEmail").val(data.Email);
+            $("#txtGrantorContactNo").val(data.ContactNumber);
+            $("#txtGrantorNIC").val(data.NIC);
+            $('#addGrantor').modal('toggle');
+            
+        },
+        saveGrantor:function (guid) {
+              if ($("#txtGrantorUserName").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messageGrantor","warning","Name Required");
+                return;
+            }
+            else if($m.settings.common.validateEmail($("#txtGrantorEmail").val())){
+                    $m.settings.common.setValidationMessages("val-messageGrantor","warning","Invalid Email Address");
+                    return;
+             }
+           else if($("#txtGrantorContactNo").val()=== ""){
+                    $m.settings.common.setValidationMessages("val-messageGrantor","warning","Contact No Required");
+                    return;
+                }
+            else if($("#txtGrantorNIC").val()=== ""){
+                $m.settings.common.setValidationMessages("val-messageGrantor","warning","NIC Required");
+                return;
+            }
+              var grantor = { 
+                    Name: $("#txtGrantorUserName").val(),
+                    Address : $("#txtGrantorAddress").val(),
+                    Email:$("#txtGrantorEmail").val(),
+                    ContactNumber:$("#txtGrantorContactNo").val(),
+                    NIC:$("#txtGrantorNIC").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate : new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 grantor.ID = guid;
+                 grantor.CreatedBy = $scope.Configs.UserId;
+                 grantor.CreatedDate = new Date();
+                 if(!$m.masterData.Grantors)
+                          $m.masterData.Grantors = [];
+                 
+                 $m.masterData.Grantors.push(grantor);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.Grantors.length; i < x; i++){
+                    if($m.masterData.Grantors[i].ID === $("#hdnGrantorId").val()){
+                        $m.masterData.Grantors[i].Name = grantor.Name;
+                         $m.masterData.Grantors[i].Address = grantor.Address;
+                          $m.masterData.Grantors[i].Email = grantor.Email;
+                           $m.masterData.Grantors[i].ContactNumber = grantor.ContactNumber;
+                            $m.masterData.Grantors[i].NIC = grantor.NIC;
+                        
+                        
+                    }
+                }
+            }
+            
+          $m.setGrantorGridDataSource();
+           $('#addGrantor').modal('hide');
+           $m.clearGrantor();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+        },
+         setGrantorGridDataSource:function () {
+            
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.Grantors,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var grantorGrid = $("#grdGrantor").data("kendoGrid");
+           grantorGrid.setDataSource(dataSource);
+           grantorGrid.dataSource.read();
+           grantorGrid.refresh();
+        },
+        deleteGrantor:function (data) {
+             for (var i = 0, x = $m.masterData.Grantors.length; i < x; i++){
+                    if($m.masterData.Grantors[i].ID === data.ID){
+                      
+                         $m.masterData.Grantors.splice(i,1);     
+                        $m.setGrantorGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;               
+                    }
+                }         
+        },
+        // End of Grantor Section
+        
+         // Grantee Section
+        
+         clearGrantee : function () {
+      
+            $("#txtGranteeUserName").val("");
+            $("#txtGranteeAddress").val("");
+            $("#txtGranteeEmail").val("");
+            $("#txtGranteeContactNo").val("");
+            $("#txtGranteeNIC").val("");
+            $("#hdnGranteeId").val("");
+           
+            //$("#hdnUUID").val("");
+        },
+         openGranteePopup : function (data) {
+            
+            $("#hdnGranteeId").val(data.ID);
+            $("#txtGranteeUserName").val(data.Name);
+            $("#txtGranteeAddress").val(data.Address);
+            $("#txtGranteeEmail").val(data.Email);
+            $("#txtGranteeContactNo").val(data.ContactNumber);
+            $("#txtGranteeNIC").val(data.NIC);
+            $('#addGrantee').modal('toggle');
+            
+        },
+        saveGrantee:function (guid) {
+              if ($("#txtGranteeUserName").val() == "") {
+                 $m.settings.common.setValidationMessages("val-messageGrantee","warning","Name Required");
+                return;
+            }
+            else if($m.settings.common.validateEmail($("#txtGranteeEmail").val())){
+                    $m.settings.common.setValidationMessages("val-messageGrantee","warning","Invalid Email Address");
+                    return;
+             }
+           else if($("#txtGranteeContactNo").val()=== ""){
+                    $m.settings.common.setValidationMessages("val-messageGrantee","warning","Contact No Required");
+                    return;
+                }
+            else if($("#txtGranteeNIC").val()=== ""){
+                $m.settings.common.setValidationMessages("val-messageGrantee","warning","NIC Required");
+                return;
+            }
+              var grantee = { 
+                    Name: $("#txtGranteeUserName").val(),
+                    Address : $("#txtGranteeAddress").val(),
+                    Email:$("#txtGranteeEmail").val(),
+                    ContactNumber:$("#txtGranteeContactNo").val(),
+                    NIC:$("#txtGranteeNIC").val(),
+                    UpdatedBy:$scope.Configs.UserId,
+                    UpdatedDate : new Date()
+                    
+             };
+           
+         
+            if(guid != ""){
+                 grantee.ID = guid;
+                 grantee.CreatedBy = $scope.Configs.UserId;
+                 grantee.CreatedDate = new Date();
+                 if(!$m.masterData.Grantees)
+                          $m.masterData.Grantees = [];
+                 
+                 $m.masterData.Grantees.push(grantee);        
+                 
+            }
+            else
+            {
+                for (var i = 0, x = $m.masterData.Grantees.length; i < x; i++){
+                    if($m.masterData.Grantees[i].ID === $("#hdnGranteeId").val()){
+                        $m.masterData.Grantees[i].Name = grantee.Name;
+                         $m.masterData.Grantees[i].Address = grantee.Address;
+                          $m.masterData.Grantees[i].Email = grantee.Email;
+                           $m.masterData.Grantees[i].ContactNumber = grantee.ContactNumber;
+                            $m.masterData.Grantees[i].NIC = grantee.NIC;
+                        
+                        
+                    }
+                }
+            }
+            
+          $m.setGranteeGridDataSource();
+           $('#addGrantee').modal('hide');
+           $m.clearGrantee();
+           $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+        },
+         setGranteeGridDataSource:function () {
+            
+            
+             var dataSource = new kendo.data.DataSource({
+                data: $m.masterData.Grantees,
+                pageSize: 3,
+                page:1,
+                serverPaging: false
+            });
+             var granteeGrid = $("#grdGrantee").data("kendoGrid");
+           granteeGrid.setDataSource(dataSource);
+           granteeGrid.dataSource.read();
+           granteeGrid.refresh();
+        },
+        deleteGrantee:function (data) {
+             for (var i = 0, x = $m.masterData.Grantees.length; i < x; i++){
+                    if($m.masterData.Grantees[i].ID === data.ID){
+                      
+                         $m.masterData.Grantees.splice(i,1);     
+                        $m.setGranteeGridDataSource(); 
+                         $m.saveMasterData("/Account/SaveAccountMasterData","POST",$m.masterData);
+                         return;               
+                    }
+              }         
+        },
+        // End of Grantee Section
         
     };
     

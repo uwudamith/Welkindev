@@ -171,6 +171,39 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                  <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title pull-left">
+                                                        Grantors
+                                                    </h3>
+
+                                                    <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addGrantor">
+                                                        <i class="glyphicon glyphicon-plus-sign"></i>
+                                                    </button>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                                    <div id="grdGrantor"></div>
+                                            </div>
+                                        </div>
+                                         <div class="col-lg-4">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title pull-left">
+                                                        Grantees
+                                                    </h3>
+
+                                                    <button class="btn btn-default pull-right" data-toggle="modal" data-target="#addGrantee">
+                                                        <i class="glyphicon glyphicon-plus-sign"></i>
+                                                    </button>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                                    <div id="grdGrantee"></div>
+                                            </div>
+                                        </div>
+                                  </div>
                             </div>    
                 
           
@@ -582,6 +615,170 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-District">Save</button>
             </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" tabindex="-1" id="addGrantor" role="dialog">
+    <div class="modal-dialog grantor-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmGrantor">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add/Edit Grantor</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageGrantor"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                        
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input id="hdnGrantorId" type="hidden">
+                                        <label for="txtGrantorUserName" class="col-lg-4 control-label">Name</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGrantorUserName" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGrantorAddress" class="col-lg-4 control-label">Address</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGrantorAddress" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGrantorEmail" class="col-lg-4 control-label">Email</label>
+                                        <div class="col-lg-8">
+                                            <input type="email" class="form-control" id="txtGrantorEmail" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGrantorContactNo" class="col-lg-4 control-label">Contact Number</label>
+                                        <div class="col-lg-8">
+                                            <input type="tel" class="form-control" id="txtGrantorContactNo" type="text" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGrantorNIC" class="col-lg-4 control-label">NIC</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGrantorNIC" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-Grantor">Save changes</button>
+            </div>
+             </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" tabindex="-1" id="addGrantee" role="dialog">
+    <div class="modal-dialog grantee-model">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form"  id="fmGrantee">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add/Edit Grantee</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="col-lg-12">
+                        <div id="val-messageGrantee"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-11">
+                        
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input id="hdnGranteeId" type="hidden">
+                                        <label for="txtGranteeUserName" class="col-lg-4 control-label">Name</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGranteeUserName" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGranteeAddress" class="col-lg-4 control-label">Address</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGranteeAddress" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGranteeEmail" class="col-lg-4 control-label">Email</label>
+                                        <div class="col-lg-8">
+                                            <input type="email" class="form-control" id="txtGranteeEmail" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGranteeContactNo" class="col-lg-4 control-label">Contact Number</label>
+                                        <div class="col-lg-8">
+                                            <input type="tel" class="form-control" id="txtGranteeContactNo" type="text" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="txtGranteeNIC" class="col-lg-4 control-label">NIC</label>
+                                        <div class="col-lg-8">
+                                            <input class="form-control" id="txtGranteeNIC" type="text">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-Grantee">Save changes</button>
+            </div>
+             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
